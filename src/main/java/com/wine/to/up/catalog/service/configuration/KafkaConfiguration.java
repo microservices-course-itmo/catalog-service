@@ -1,14 +1,14 @@
-package com.wine.to.up.demo.service.configuration;
+package com.wine.to.up.catalog.service.configuration;
 
+import com.wine.to.up.catalog.service.messaging.serialization.EventDeserializer;
 import com.wine.to.up.commonlib.messaging.BaseKafkaHandler;
 import com.wine.to.up.commonlib.messaging.KafkaMessageHandler;
 import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
 import com.wine.to.up.demo.service.api.DemoServiceApiProperties;
 import com.wine.to.up.demo.service.api.message.KafkaMessageSentEventOuterClass.KafkaMessageSentEvent;
-import com.wine.to.up.demo.service.components.DemoServiceMetricsCollector;
-import com.wine.to.up.demo.service.messaging.TestTopicKafkaMessageHandler;
-import com.wine.to.up.demo.service.messaging.serialization.EventDeserializer;
-import com.wine.to.up.demo.service.messaging.serialization.EventSerializer;
+import com.wine.to.up.catalog.service.components.CatalogServiceMetricsCollector;
+import com.wine.to.up.catalog.service.messaging.TestTopicKafkaMessageHandler;
+import com.wine.to.up.catalog.service.messaging.serialization.EventSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
@@ -85,13 +85,13 @@ public class KafkaConfiguration {
     //TODO create-service: use your DemoServiceApiProperties, rename to reflect your topic name
     @Bean
     BaseKafkaHandler<KafkaMessageSentEvent> testTopicMessagesHandler(Properties consumerProperties,
-                                                                     DemoServiceApiProperties demoServiceApiProperties,
+                                                                     DemoServiceApiProperties catalogServiceApiProperties,
                                                                      TestTopicKafkaMessageHandler handler) {
         // set appropriate deserializer for value
         consumerProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EventDeserializer.class.getName());
 
         // bind consumer with topic name and with appropriate handler
-        return new BaseKafkaHandler<>(demoServiceApiProperties.getMessageSentEventsTopicName(), new KafkaConsumer<>(consumerProperties), handler);
+        return new BaseKafkaHandler<>(catalogServiceApiProperties.getMessageSentEventsTopicName(), new KafkaConsumer<>(consumerProperties), handler);
     }
 
     /**
@@ -101,17 +101,17 @@ public class KafkaConfiguration {
      * the messages in different topics can have different types and require different serializers
      *
      * @param producerProperties       is the general producer properties. {@link #producerProperties()}
-     * @param demoServiceApiProperties class containing the values of the given service's API properties (in this particular case topic name)
+     * @param catalogServiceApiProperties class containing the values of the given service's API properties (in this particular case topic name)
      * @param metricsCollector         class encapsulating the logic of the metrics collecting and publishing
      */
     //TODO create-service: rename to reflect your topic name
     @Bean
     KafkaMessageSender<KafkaMessageSentEvent> testTopicKafkaMessageSender(Properties producerProperties,
-                                                                          DemoServiceApiProperties demoServiceApiProperties,
-                                                                          DemoServiceMetricsCollector metricsCollector) {
+                                                                          DemoServiceApiProperties catalogServiceApiProperties,
+                                                                          CatalogServiceMetricsCollector metricsCollector) {
         // set appropriate serializer for value
         producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EventSerializer.class.getName());
 
-        return new KafkaMessageSender<>(new KafkaProducer<>(producerProperties), demoServiceApiProperties.getMessageSentEventsTopicName(), metricsCollector);
+        return new KafkaMessageSender<>(new KafkaProducer<>(producerProperties), catalogServiceApiProperties.getMessageSentEventsTopicName(), metricsCollector);
     }
 }
