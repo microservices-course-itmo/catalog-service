@@ -4,7 +4,9 @@ import com.wine.to.up.commonlib.logging.NotableEvent;
 
 public enum CatalogServiceNotableEvents implements NotableEvent {
     //TODO create-service: replace
-    SOME_DEMO_EVENT("Something happened");
+    I_KAFKA_SEND_MESSAGE_SUCCESS("Kafka send message: {}"),
+    I_CONTROLLER_RECEIVED_MESSAGE("Message: {}"),
+    W_SOME_WARN_EVENT("Warn situation. Description: {}");
 
     private final String template;
 
