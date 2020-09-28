@@ -1,4 +1,4 @@
-package com.wine.to.up.demo.service.controller;
+package com.wine.to.up.catalog.service.controller;
 
 
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.wine.to.up.demo.service.controller;
+package com.wine.to.up.catalog.service.controller;
 
 
 import lombok.RequiredArgsConstructor;
@@ -8,25 +8,25 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/position")
+@RequestMapping("/grape")
 @Validated
 @Slf4j
-public class WineController {
+public class GrapeController {
     @GetMapping("/{id}")
-    public void getWinePositionById(){
+    public void getGrapeById(){
     }
 
     @GetMapping("/")
-    public void getAllWinePostions(){
-    }
-
-    @PostMapping("/")
-    public void createWinePosition(){
-
+    public void getAllGrapes(){
     }
 
     @PutMapping("/{id}")
-    public void updateWinePosition(){
+    public void updateGrape(){
+
+    }
+
+    @PostMapping("/")
+    public void createGrape(){
 
     }
 }
