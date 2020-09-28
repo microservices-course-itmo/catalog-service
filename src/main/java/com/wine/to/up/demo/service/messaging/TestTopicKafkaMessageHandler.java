@@ -2,7 +2,7 @@ package com.wine.to.up.demo.service.messaging;
 
 import com.wine.to.up.commonlib.messaging.KafkaMessageHandler;
 import com.wine.to.up.demo.service.api.message.KafkaMessageSentEventOuterClass.KafkaMessageSentEvent;
-import com.wine.to.up.demo.service.domain.entity.Message;
+import com.wine.to.up.demo.service.domain.Message;
 import com.wine.to.up.demo.service.repository.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
