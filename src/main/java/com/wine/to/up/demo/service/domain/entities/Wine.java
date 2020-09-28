@@ -18,13 +18,11 @@ public class Wine {
     @Column(name = "picture", nullable = false)
     private byte[] picture;
 
-    @ManyToOne()
-    @JoinColumn(name = "brandID", nullable = false)
-    private Brand brand;
+    @Column(name = "brandID", nullable = false)
+    private int brandID;
 
-    @ManyToOne
-    @JoinColumn(name = "countryID", nullable = false)
-    private Country country;
+    @Column(name = "countryID", nullable = false)
+    private int countryID;
 
     @Column(name = "volume", nullable = false)
     private float volume;
