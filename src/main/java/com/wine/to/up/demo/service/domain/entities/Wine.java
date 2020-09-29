@@ -1,14 +1,20 @@
 package com.wine.to.up.demo.service.domain.entities;
 
+import com.wine.to.up.demo.service.converters.ColorConverter;
+import com.wine.to.up.demo.service.converters.SugarConverter;
 import com.wine.to.up.demo.service.domain.enums.Color;
 import com.wine.to.up.demo.service.domain.enums.Sugar;
 import lombok.Data;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "Wine")
 @Data
+@TypeDef(name="colorConverter", typeClass= ColorConverter.class)
+@TypeDef(name="sugarConverter", typeClass= SugarConverter.class)
 public class Wine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,11 +24,13 @@ public class Wine {
     @Column(name = "picture", nullable = false)
     private byte[] picture;
 
-    @Column(name = "brandID", nullable = false)
-    private int brandID;
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "brandid", nullable = false)
+    private Brand brand;
 
-    @Column(name = "countryID", nullable = false)
-    private int countryID;
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "countryID", nullable = false)
+    private Country country;
 
     @Column(name = "volume", nullable = false)
     private float volume;
@@ -30,9 +38,11 @@ public class Wine {
     @Column(name = "abv", nullable = false)
     private float strength;
 
+    @Type(type="colorConverter")
     @Column(name = "color", nullable = false)
     private Color color;
 
+    @Type(type="sugarConverter")
     @Column(name = "sugar", nullable = false)
     private Sugar sugar;
 }
