@@ -15,8 +15,9 @@ public class Catalog {
     @Column(name = "winePositionID")
     private int winePositionID;
 
-    @Column(name = "shopID", nullable = false)
-    private int shopID;
+    @ManyToOne
+    @JoinColumn(name = "shopID", nullable = false)
+    private Shop shopID;
 
     @Column(name = "price")
     private int price;
