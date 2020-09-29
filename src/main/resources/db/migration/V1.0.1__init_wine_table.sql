@@ -1,5 +1,5 @@
 CREATE TYPE Color AS ENUM('red', 'white', 'rose');
-CREATE TYPE Sugae AS ENUM('dry', 'medium dry', 'medium', 'sweet');
+CREATE TYPE Sugar AS ENUM('dry', 'medium dry', 'medium', 'sweet');
 
 CREATE TABLE Brands
 (
@@ -47,7 +47,7 @@ CREATE TABLE WineGrapesInfo
 
 CREATE TABLE Shops
 (
-    shopID   sertial PRIMARY KEY,
+    shopID   serial PRIMARY KEY,
     shopName TEXT
 );
 
