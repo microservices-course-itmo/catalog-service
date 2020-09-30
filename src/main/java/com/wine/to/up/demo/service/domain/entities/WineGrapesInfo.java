@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Data
 public class WineGrapesInfo {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "wineID", nullable = false)
     private int wineID;
 

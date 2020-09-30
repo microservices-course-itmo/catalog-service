@@ -12,6 +12,7 @@ public class Catalog {
     private int wineID;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "winePositionID")
     private int winePositionID;
 

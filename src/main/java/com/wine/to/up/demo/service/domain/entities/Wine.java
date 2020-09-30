@@ -24,11 +24,11 @@ public class Wine {
     @Column(name = "picture", nullable = false)
     private byte[] picture;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "brandid", nullable = false)
     private Brand brand;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "countryID", nullable = false)
     private Country country;
 

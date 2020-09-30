@@ -2,16 +2,14 @@ package com.wine.to.up.demo.service.domain.entities;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Shops")
 @Data
 public class Shop {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shopID", nullable = false)
     private int shopID;
 
