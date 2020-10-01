@@ -1,4 +1,4 @@
-package com.wine.to.up.catalog.service.domain;
+package com.wine.to.up.catalog.service.domain.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
 package com.wine.to.up.catalog.service.repository;
 
-import com.wine.to.up.catalog.service.domain.Message;
+import com.wine.to.up.catalog.service.domain.entity.Message;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
