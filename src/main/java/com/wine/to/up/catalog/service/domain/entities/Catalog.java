@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Data
 public class Catalog {
     @Column(name = "wineID", nullable = false)
-    private int wineID;
+    private String wineID;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

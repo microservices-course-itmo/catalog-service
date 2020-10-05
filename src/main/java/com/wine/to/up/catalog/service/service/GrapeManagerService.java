@@ -1,5 +1,6 @@
 package com.wine.to.up.catalog.service.service;
 
+import com.wine.to.up.catalog.service.domain.dto.GrapeDTO;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,29 +9,28 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-//@RequiredArgsConstructor
 public class GrapeManagerService {
 
 //    @Autowired
 //    public WineManagerService wineManagerService;
 
-    public Object getGrapeById(String id) {
+    public GrapeDTO getGrapeById(String id) {
 
         return null;
     }
 
-    public List<Object> getAllGrapes() {
+    public List<GrapeDTO> getAllGrapes() {
 
         return null;
     }
 
-    public Object updateGrape(String id, Object obj) {
+    public GrapeDTO updateGrape(String id, GrapeDTO grapeDTO) {
 
         return null;
     }
 
-    public Object createGrape(Object obj) {
+    public GrapeDTO createGrape(GrapeDTO grapeDTO) {
 
-        return obj;
+        return null;
     }
 }

@@ -27,7 +27,7 @@ public class ColorConverter implements UserType {
 
     @Override
     public boolean equals(Object o, Object o1) throws HibernateException {
-        return false;
+        return true;
     }
 
     @Override
@@ -38,15 +38,21 @@ public class ColorConverter implements UserType {
     @Override
     public Object nullSafeGet(ResultSet resultSet, String[] strings, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
         Object pgObject = null;
+        String trueName = "color";
+        for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
+            String nameColumn = resultSet.getMetaData().getColumnName(i);
+            if (nameColumn.contains("color")) {
+                trueName = nameColumn;
+                break;
+            }
+        }
         try {
-            pgObject = resultSet.getObject("color");
+            pgObject = resultSet.getObject(trueName);
         } catch (Exception e) {
             return null;
         }
         try {
-            Method valueMethod = pgObject.getClass().getMethod("getValue");
-            String value = (String) valueMethod.invoke(pgObject);
-            return Color.valueOf(value);
+            return Color.valueOf(((String) pgObject).toUpperCase());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,7 +101,11 @@ public class ColorConverter implements UserType {
 
     @Override
     public Object replace(Object o, Object o1, Object o2) throws HibernateException {
-        return null;
+        if (o == null) {
+            return o1;
+        } else {
+            return o;
+        }
     }
 
 

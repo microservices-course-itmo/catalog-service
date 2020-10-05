@@ -5,4 +5,4 @@ public enum Sugar {
     SEMI_DRY,
     SEMI_SWEET,
     SWEET,
-};
+}

@@ -17,12 +17,14 @@ import javax.persistence.*;
 @TypeDef(name="sugarConverter", typeClass= SugarConverter.class)
 public class Wine {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "wineID", nullable = false)
-    private int wineID;
+    private String wineID;
 
     @Column(name = "picture", nullable = false)
     private byte[] picture;
+
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "brandid", nullable = false)
@@ -37,6 +39,9 @@ public class Wine {
 
     @Column(name = "abv", nullable = false)
     private float strength;
+
+    @Column(name = "year", nullable = false)
+    private String production_year;
 
     @Type(type="colorConverter")
     @Column(name = "color", nullable = false)

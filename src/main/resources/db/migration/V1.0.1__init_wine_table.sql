@@ -1,5 +1,5 @@
-CREATE TYPE Color AS ENUM('red', 'white', 'rose');
-CREATE TYPE Sugar AS ENUM('dry', 'medium dry', 'medium', 'sweet');
+CREATE TYPE Color AS ENUM ('red', 'white', 'rose');
+CREATE TYPE Sugar AS ENUM ('dry', 'medium dry', 'medium', 'sweet');
 
 CREATE TABLE Brands
 (
@@ -9,24 +9,42 @@ CREATE TABLE Brands
 
 CREATE TABLE Countries
 (
-    countryID serial PRIMARY KEY,
+    countryID   serial PRIMARY KEY,
     countryName TEXT
 );
 
 CREATE TABLE Wine
 (
-    wineID    serial PRIMARY KEY,
-    picture   BYTEA NOT NULL,
+    wineID    VARCHAR(255) PRIMARY KEY,
+    picture   BYTEA        NOT NULL,
     brandID   INT,
-    countryID INT   NOT NULL,
-    volume    real  NOT NULL,
-    abv       real  NOT NULL,
-    color     Color NOT NULL,
-    sugar     Sugar NOT NULL,
+    countryID INT          NOT NULL,
+    volume    real         NOT NULL,
+    abv       real         NOT NULL,
+    color     Color        NOT NULL,
+    sugar     Sugar        NOT NULL,
+    name      varchar(255) NOT NULL,
+    year      varchar(10)  NOT NULL,
+
     FOREIGN KEY (brandID)
         REFERENCES Brands (brandID),
     FOREIGN KEY (countryID)
         REFERENCES Countries (countryID)
+);
+
+CREATE TABLE PositionPrice
+(
+    priceID serial PRIMARY KEY,
+    wineID  varchar(255),
+    shopID  int,
+    value   real
+);
+
+CREATE TABLE Discount
+(
+    wineID varchar(255),
+    shopID int,
+    value  real
 );
 
 CREATE TABLE Grapes
@@ -37,7 +55,7 @@ CREATE TABLE Grapes
 
 CREATE TABLE WineGrapesInfo
 (
-    wineID  INT,
+    wineID  VARCHAR(255),
     grapeID INT,
     FOREIGN KEY (wineID)
         REFERENCES Wine (wineID),
@@ -54,7 +72,7 @@ CREATE TABLE Shops
 CREATE TABLE Catalog
 (
     winePositionID serial PRIMARY KEY,
-    wineID         INT,
+    wineID         VARCHAR(255),
     shopID         INT,
     price          INT,
     FOREIGN KEY (wineID)
