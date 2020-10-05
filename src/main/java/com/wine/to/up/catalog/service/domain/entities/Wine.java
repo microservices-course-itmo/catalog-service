@@ -1,5 +1,6 @@
 package com.wine.to.up.catalog.service.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wine.to.up.catalog.service.domain.enums.Color;
 import com.wine.to.up.catalog.service.domain.enums.Sugar;
 import com.wine.to.up.catalog.service.converters.ColorConverter;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Wine")
@@ -50,4 +52,9 @@ public class Wine {
     @Type(type="sugarConverter")
     @Column(name = "sugar", nullable = false)
     private Sugar sugar;
+
+    @OneToMany
+    @JoinColumn(name = "wineID")
+    List<WineGrapesInfo> wineGrapesInfos;
+
 }

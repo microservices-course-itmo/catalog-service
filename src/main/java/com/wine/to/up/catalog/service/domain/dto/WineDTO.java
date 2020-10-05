@@ -38,4 +38,6 @@ public class WineDTO {
     private String brand;
 
     private List<Byte> picture;
+
+    private List<String> grapes_info;
 }

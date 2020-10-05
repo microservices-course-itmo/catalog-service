@@ -15,16 +15,17 @@ CREATE TABLE Countries
 
 CREATE TABLE Wine
 (
-    wineID    VARCHAR(255) PRIMARY KEY,
-    picture   BYTEA        NOT NULL,
-    brandID   INT,
-    countryID INT          NOT NULL,
-    volume    real         NOT NULL,
-    abv       real         NOT NULL,
-    color     Color        NOT NULL,
-    sugar     Sugar        NOT NULL,
-    name      varchar(255) NOT NULL,
-    year      varchar(10)  NOT NULL,
+    wineID      VARCHAR(255) PRIMARY KEY,
+    picture     BYTEA        NOT NULL,
+    brandID     INT,
+    countryID   INT          NOT NULL,
+    volume      real         NOT NULL,
+    abv         real         NOT NULL,
+    color       Color        NOT NULL,
+    sugar       Sugar        NOT NULL,
+    name        varchar(255) NOT NULL,
+    year        varchar(10)  NOT NULL,
+    grapes_info varchar(255),
 
     FOREIGN KEY (brandID)
         REFERENCES Brands (brandID),
@@ -49,14 +50,16 @@ CREATE TABLE Discount
 
 CREATE TABLE Grapes
 (
-    grapeID   serial PRIMARY KEY,
-    grapeName TEXT
+    grapeID   VARCHAR(255) PRIMARY KEY,
+    grapeName VARCHAR(255),
+    grapeCode VARCHAR(255)
 );
 
 CREATE TABLE WineGrapesInfo
 (
+    id      serial PRIMARY KEY,
     wineID  VARCHAR(255),
-    grapeID INT,
+    grapeID VARCHAR(255),
     FOREIGN KEY (wineID)
         REFERENCES Wine (wineID),
     FOREIGN KEY (grapeID)

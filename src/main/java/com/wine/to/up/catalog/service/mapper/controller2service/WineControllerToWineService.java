@@ -21,6 +21,7 @@ public class WineControllerToWineService {
         wineDTO.setColor(winePositionRequest.getColor());
         wineDTO.setBrand(winePositionRequest.getBrand());
         wineDTO.setPicture(winePositionRequest.getPicture());
+        wineDTO.setGrapes_info(winePositionRequest.getGrapes_info());
         return wineDTO;
     }
 
@@ -39,6 +40,7 @@ public class WineControllerToWineService {
         winePositionResponse.setColor(wineDTO.getColor());
         winePositionResponse.setBrand(wineDTO.getBrand());
         winePositionResponse.setPicture(wineDTO.getPicture());
+        winePositionResponse.setGrapes_info(wineDTO.getGrapes_info());
         return winePositionResponse;
     }
 

@@ -49,4 +49,8 @@ public class WinePositionRequest {
 
     @JsonProperty("picture")
     private List<Byte> picture;
+
+    @JsonProperty("grapes_info")
+    private List<String> grapes_info;
+
 }

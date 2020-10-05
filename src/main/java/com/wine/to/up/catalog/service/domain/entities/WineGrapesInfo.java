@@ -10,9 +10,11 @@ import javax.persistence.*;
 public class WineGrapesInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
+
     @Column(name = "wineID", nullable = false)
     private String wineID;
 
     @Column(name = "grapeID", nullable = false)
-    private int grapeID;
+    private String grapeID;
 }

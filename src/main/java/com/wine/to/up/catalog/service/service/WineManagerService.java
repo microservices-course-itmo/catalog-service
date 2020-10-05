@@ -1,17 +1,11 @@
 package com.wine.to.up.catalog.service.service;
 
 import com.wine.to.up.catalog.service.domain.dto.WineDTO;
-import com.wine.to.up.catalog.service.domain.entities.Brand;
-import com.wine.to.up.catalog.service.domain.entities.Country;
-import com.wine.to.up.catalog.service.domain.entities.Price;
-import com.wine.to.up.catalog.service.domain.entities.Wine;
+import com.wine.to.up.catalog.service.domain.entities.*;
 import com.wine.to.up.catalog.service.domain.enums.Color;
 import com.wine.to.up.catalog.service.domain.enums.Sugar;
 import com.wine.to.up.catalog.service.mapper.service2repository.WineServiceToWineRepository;
-import com.wine.to.up.catalog.service.repository.BrandRepository;
-import com.wine.to.up.catalog.service.repository.CountryRepository;
-import com.wine.to.up.catalog.service.repository.PositionPriceRepository;
-import com.wine.to.up.catalog.service.repository.WineRepository;
+import com.wine.to.up.catalog.service.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,17 +22,27 @@ public class WineManagerService {
     private final WineRepository wineRepository;
     private final BrandRepository brandRepository;
     private final CountryRepository countryRepository;
+    private final GrapeInfoRepository grapeInfoRepository;
     private final PositionPriceRepository positionPriceRepository;
 
 
     public WineDTO getWinePositionById(String id) {
-        return converter.convert(wineRepository.findWineBywineID(id));
+        WineDTO convert = converter.convert(wineRepository.findWineBywineID(id));
+        convert.setGrapes_info(wineRepository.findWineBywineID(id).getWineGrapesInfos()
+                .stream()
+                .map(WineGrapesInfo::getGrapeID)
+                .collect(Collectors.toList()
+                )
+        );
+        return convert;
     }
 
     public List<WineDTO> getAllWinePositions() {
         return StreamSupport
                 .stream(wineRepository.findAll().spliterator(), false)
-                .map(converter::convert)
+                .map((Wine wine) -> {
+                    return getWinePositionById(wine.getWineID());
+                })
                 .collect(Collectors.toList());
 
     }
@@ -47,8 +51,21 @@ public class WineManagerService {
         wineDTO.setId(UUID.randomUUID().toString());
 
         Wine result = getWineFromDTO(wineDTO);
-
         wineRepository.save(result);
+        updateGrapesInfo(wineDTO, result);
+    }
+
+    private void updateGrapesInfo(WineDTO wineDTO, Wine result) {
+        result.setWineGrapesInfos(wineDTO.getGrapes_info().stream()
+                .map((String value) -> {
+                    WineGrapesInfo wineGrapesInfo = new WineGrapesInfo();
+                    wineGrapesInfo.setWineID(wineDTO.getId());
+                    wineGrapesInfo.setGrapeID(value);
+                    grapeInfoRepository.save(wineGrapesInfo);
+                    return wineGrapesInfo;
+                })
+                .collect(Collectors.toList())
+        );
     }
 
     private Wine getWineFromDTO(WineDTO wineDTO) {
@@ -89,16 +106,15 @@ public class WineManagerService {
         return result;
     }
 
-
     public void updateWinePosition(String id, WineDTO wineDTO) {
         wineDTO.setId(id);
         Wine result = getWineFromDTO(wineDTO);
         wineRepository.save(result);
+        updateGrapesInfo(wineDTO, result);
     }
 
     public void deleteWinePosition(String id) {
         Wine wineBywineID = wineRepository.findWineBywineID(id);
-        countryRepository.delete(wineBywineID.getCountry());
         wineRepository.delete(wineBywineID);
     }
 
