@@ -6,17 +6,17 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "brand")
 @Data
-public class Brand {
+@Table(name = "producer")
+public class Producer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private int brandID;
+    private int producerID;
 
     @Column(name = "name")
-    private String brandName;
+    private String producerName;
 
-    @OneToMany(mappedBy = "wineBrand")
-    private List<Wine> brandWines;
+    @OneToMany(mappedBy = "wineProducer")
+    private List<Wine> producerWines;
 }

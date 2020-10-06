@@ -30,7 +30,7 @@ public class WineManagerService {
         WineDTO convert = converter.convert(wineRepository.findWineBywineID(id));
         convert.setGrapes_info(wineRepository.findWineBywineID(id).getWineGrapesInfos()
                 .stream()
-                .map(WineGrapesInfo::getGrapeID)
+                .map(WinePosition::getGrapeID)
                 .collect(Collectors.toList()
                 )
         );
@@ -58,11 +58,11 @@ public class WineManagerService {
     private void updateGrapesInfo(WineDTO wineDTO, Wine result) {
         result.setWineGrapesInfos(wineDTO.getGrapes_info().stream()
                 .map((String value) -> {
-                    WineGrapesInfo wineGrapesInfo = new WineGrapesInfo();
-                    wineGrapesInfo.setWineID(wineDTO.getId());
-                    wineGrapesInfo.setGrapeID(value);
-                    grapeInfoRepository.save(wineGrapesInfo);
-                    return wineGrapesInfo;
+                    WinePosition winePosition = new WinePosition();
+                    winePosition.setWineID(wineDTO.getId());
+                    winePosition.setGrapeID(value);
+                    grapeInfoRepository.save(winePosition);
+                    return winePosition;
                 })
                 .collect(Collectors.toList())
         );
@@ -84,14 +84,14 @@ public class WineManagerService {
             result.setColor(Color.ROSE);
         }
 
-        List<Country> countryByCountryName = countryRepository.findCountryByCountryName(wineDTO.getProduction_country());
-        if (countryByCountryName != null && !countryByCountryName.isEmpty()) {
-            result.setCountry(countryByCountryName.get(0));
+        List<Region> countryByRegionName = countryRepository.findCountryByCountryName(wineDTO.getProduction_country());
+        if (countryByRegionName != null && !countryByRegionName.isEmpty()) {
+            result.setCountry(countryByRegionName.get(0));
         } else {
-            Country country = new Country();
-            country.setCountryName(wineDTO.getProduction_country());
-            countryRepository.save(country);
-            result.setCountry(country);
+            Region region = new Region();
+            region.setCountryName(wineDTO.getProduction_country());
+            countryRepository.save(region);
+            result.setCountry(region);
         }
 
         List<Brand> brandByBrandName = brandRepository.findBrandByBrandName(wineDTO.getBrand());

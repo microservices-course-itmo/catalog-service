@@ -3,20 +3,19 @@ package com.wine.to.up.catalog.service.domain.entities;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "Grapes")
+@Table(name = "grape")
 @Data
 public class Grape {
     @Id
-    @Column(name = "grapeID", nullable = false)
-    private String id;
+    @Column(name = "id", nullable = false)
+    private String grapeID;
 
-    @Column(name = "grapeName")
-    private String grapesName;
+    @Column(name = "name")
+    private String grapeName;
 
-    @Column(name = "grapeCode")
-    private String code;
-
-
+    @OneToMany(mappedBy = "wineGrape")
+    private List<Wine> grapeWines;
 }

@@ -1,6 +1,5 @@
 package com.wine.to.up.catalog.service.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wine.to.up.catalog.service.domain.enums.Color;
 import com.wine.to.up.catalog.service.domain.enums.Sugar;
 import com.wine.to.up.catalog.service.converters.ColorConverter;
@@ -13,48 +12,51 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "Wine")
+@Table(name = "wine")
 @Data
 @TypeDef(name="colorConverter", typeClass= ColorConverter.class)
 @TypeDef(name="sugarConverter", typeClass= SugarConverter.class)
 public class Wine {
     @Id
-    @Column(name = "wineID", nullable = false)
-    private String wineID;
-
-    @Column(name = "picture", nullable = false)
-    private byte[] picture;
+    @Column(name = "id", nullable = false)
+    private int wineID;
 
     @Column(name = "name", nullable = false)
-    private String name;
+    private String wineName;
 
     @ManyToOne
-    @JoinColumn(name = "brandid", nullable = false)
-    private Brand brand;
+    @JoinColumn(name = "producer_id", nullable = false)
+    private Producer wineProducer;
 
     @ManyToOne
-    @JoinColumn(name = "countryID", nullable = false)
-    private Country country;
+    @JoinColumn(name = "brand_id", nullable = false)
+    private Brand wineBrand;
 
-    @Column(name = "volume", nullable = false)
-    private float volume;
+    @ManyToOne
+    @JoinColumn(name = "region_id", nullable = false)
+    private Region wineRegion;
 
-    @Column(name = "abv", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "grape_id", nullable = false)
+    private Grape wineGrape;
+
+    @Column(name = "avg", nullable = false)
     private float strength;
 
     @Column(name = "year", nullable = false)
-    private String production_year;
+    private int production_year;
 
     @Type(type="colorConverter")
     @Column(name = "color", nullable = false)
-    private Color color;
+    private Color wineColor;
 
     @Type(type="sugarConverter")
     @Column(name = "sugar", nullable = false)
-    private Sugar sugar;
+    private Sugar wineSugar;
 
-    @OneToMany
-    @JoinColumn(name = "wineID")
-    List<WineGrapesInfo> wineGrapesInfos;
+    @OneToMany(mappedBy = "wpWine")
+    private List<WinePosition> winePositions;
 
+    @OneToMany(mappedBy = "reviewWine")
+    private List<Review> wineReviews;
 }
