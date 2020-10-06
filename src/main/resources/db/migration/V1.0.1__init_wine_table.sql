@@ -1,5 +1,5 @@
-CREATE TYPE Color AS ENUM('red', 'white', 'rose');
-CREATE TYPE Sugar AS ENUM('dry', 'medium dry', 'medium', 'sweet');
+CREATE TYPE Color AS ENUM ('red', 'white', 'rose');
+CREATE TYPE Sugar AS ENUM ('dry', 'medium dry', 'medium', 'sweet');
 
 CREATE TABLE Brands
 (
@@ -9,36 +9,57 @@ CREATE TABLE Brands
 
 CREATE TABLE Countries
 (
-    countryID serial PRIMARY KEY,
+    countryID   serial PRIMARY KEY,
     countryName TEXT
 );
 
 CREATE TABLE Wine
 (
-    wineID    serial PRIMARY KEY,
-    picture   BYTEA NOT NULL,
-    brandID   INT,
-    countryID INT   NOT NULL,
-    volume    real  NOT NULL,
-    abv       real  NOT NULL,
-    color     Color NOT NULL,
-    sugar     Sugar NOT NULL,
+    wineID      VARCHAR(255) PRIMARY KEY,
+    picture     BYTEA        NOT NULL,
+    brandID     INT,
+    countryID   INT          NOT NULL,
+    volume      real         NOT NULL,
+    abv         real         NOT NULL,
+    color       Color        NOT NULL,
+    sugar       Sugar        NOT NULL,
+    name        varchar(255) NOT NULL,
+    year        varchar(10)  NOT NULL,
+    grapes_info varchar(255),
+
     FOREIGN KEY (brandID)
         REFERENCES Brands (brandID),
     FOREIGN KEY (countryID)
         REFERENCES Countries (countryID)
 );
 
+CREATE TABLE PositionPrice
+(
+    priceID serial PRIMARY KEY,
+    wineID  varchar(255),
+    shopID  int,
+    value   real
+);
+
+CREATE TABLE Discount
+(
+    wineID varchar(255),
+    shopID int,
+    value  real
+);
+
 CREATE TABLE Grapes
 (
-    grapeID   serial PRIMARY KEY,
-    grapeName TEXT
+    grapeID   VARCHAR(255) PRIMARY KEY,
+    grapeName VARCHAR(255),
+    grapeCode VARCHAR(255)
 );
 
 CREATE TABLE WineGrapesInfo
 (
-    wineID  INT,
-    grapeID INT,
+    id      serial PRIMARY KEY,
+    wineID  VARCHAR(255),
+    grapeID VARCHAR(255),
     FOREIGN KEY (wineID)
         REFERENCES Wine (wineID),
     FOREIGN KEY (grapeID)
@@ -54,7 +75,7 @@ CREATE TABLE Shops
 CREATE TABLE Catalog
 (
     winePositionID serial PRIMARY KEY,
-    wineID         INT,
+    wineID         VARCHAR(255),
     shopID         INT,
     price          INT,
     FOREIGN KEY (wineID)

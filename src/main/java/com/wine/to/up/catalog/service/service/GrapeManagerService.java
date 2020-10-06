@@ -1,36 +1,44 @@
 package com.wine.to.up.catalog.service.service;
 
-import lombok.NonNull;
+import com.wine.to.up.catalog.service.domain.dto.GrapeDTO;
+import com.wine.to.up.catalog.service.domain.entities.Grape;
+import com.wine.to.up.catalog.service.mapper.service2repository.GrapeServiceToGrapeRepository;
+import com.wine.to.up.catalog.service.repository.GrapeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class GrapeManagerService {
 
-//    @Autowired
-//    public WineManagerService wineManagerService;
+    private final GrapeRepository grapeRepository;
+    private final GrapeServiceToGrapeRepository converter;
 
-    public Object getGrapeById(String id) {
-
-        return null;
+    public GrapeDTO getGrapeById(String id) {
+        return converter.convert(grapeRepository.findById(id).get());
     }
 
-    public List<Object> getAllGrapes() {
-
-        return null;
+    public List<GrapeDTO> getAllGrapes() {
+        return StreamSupport
+                .stream(grapeRepository.findAll().spliterator(), false)
+                .map(converter::convert)
+                .collect(Collectors.toList());
     }
 
-    public Object updateGrape(String id, Object obj) {
-
-        return null;
+    public void updateGrape(String id, GrapeDTO grapeDTO) {
+        Grape convert = converter.convert(grapeDTO);
+        convert.setId(id);
+        grapeRepository.save(convert);
     }
 
-    public Object createGrape(Object obj) {
-
-        return obj;
+    public void createGrape(GrapeDTO grapeDTO) {
+        Grape convert = converter.convert(grapeDTO);
+        convert.setId(UUID.randomUUID().toString());
+        grapeRepository.save(convert);
     }
 }

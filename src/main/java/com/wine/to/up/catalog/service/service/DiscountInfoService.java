@@ -1,20 +1,20 @@
 package com.wine.to.up.catalog.service.service;
 
+import com.wine.to.up.catalog.service.domain.dto.DiscountDTO;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DiscountInfoService {
-    public Object createDiscountInfo(Object object) {
-//        System.out.println("Hello, Discount!");
+    public DiscountDTO createDiscountInfo(DiscountDTO discountDTO) {
         return null;
     }
 
-    public Object updateDiscountInfoById(String id, Object obj) {
+    public DiscountDTO updateDiscountInfoById(String id, DiscountDTO discountDTO) {
 
         return null;
     }
 
-    public Object getDiscountInfoById(String id) {
+    public DiscountDTO getDiscountInfoById(String id) {
 
         return null;
     }

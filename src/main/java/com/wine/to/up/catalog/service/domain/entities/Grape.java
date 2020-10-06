@@ -9,10 +9,14 @@ import javax.persistence.*;
 @Data
 public class Grape {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "grapeID", nullable = false)
-    private int id;
+    private String id;
 
-    @Column(name = "grapesName")
+    @Column(name = "grapeName")
     private String grapesName;
+
+    @Column(name = "grapeCode")
+    private String code;
+
+
 }

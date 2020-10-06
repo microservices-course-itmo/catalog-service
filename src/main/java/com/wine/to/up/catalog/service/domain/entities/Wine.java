@@ -1,5 +1,6 @@
 package com.wine.to.up.catalog.service.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wine.to.up.catalog.service.domain.enums.Color;
 import com.wine.to.up.catalog.service.domain.enums.Sugar;
 import com.wine.to.up.catalog.service.converters.ColorConverter;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Wine")
@@ -17,12 +19,14 @@ import javax.persistence.*;
 @TypeDef(name="sugarConverter", typeClass= SugarConverter.class)
 public class Wine {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "wineID", nullable = false)
-    private int wineID;
+    private String wineID;
 
     @Column(name = "picture", nullable = false)
     private byte[] picture;
+
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "brandid", nullable = false)
@@ -38,6 +42,9 @@ public class Wine {
     @Column(name = "abv", nullable = false)
     private float strength;
 
+    @Column(name = "year", nullable = false)
+    private String production_year;
+
     @Type(type="colorConverter")
     @Column(name = "color", nullable = false)
     private Color color;
@@ -45,4 +52,9 @@ public class Wine {
     @Type(type="sugarConverter")
     @Column(name = "sugar", nullable = false)
     private Sugar sugar;
+
+    @OneToMany
+    @JoinColumn(name = "wineID")
+    List<WineGrapesInfo> wineGrapesInfos;
+
 }
