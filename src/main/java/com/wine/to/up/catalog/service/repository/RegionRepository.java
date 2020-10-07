@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CountryRepository extends CrudRepository<Region, Integer> {
-    Region findCountryByCountryID(int countryId);
-    List<Region> findCountryByCountryName(String countryName);
+public interface RegionRepository extends CrudRepository<Region, String> {
+    Region findByRegionID(String regionID);
+    List<Region> findAllByRegionCountry(String regionCountry);
 }

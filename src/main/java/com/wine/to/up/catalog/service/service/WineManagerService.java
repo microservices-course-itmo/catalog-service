@@ -21,8 +21,8 @@ public class WineManagerService {
     private final WineServiceToWineRepository converter;
     private final WineRepository wineRepository;
     private final BrandRepository brandRepository;
-    private final CountryRepository countryRepository;
-    private final GrapeInfoRepository grapeInfoRepository;
+    private final RegionRepository regionRepository;
+    private final WinePositionRepository grapeInfoRepository;
     private final PositionPriceRepository positionPriceRepository;
 
 
@@ -84,13 +84,13 @@ public class WineManagerService {
             result.setColor(Color.ROSE);
         }
 
-        List<Region> countryByRegionName = countryRepository.findCountryByCountryName(wineDTO.getProduction_country());
+        List<Region> countryByRegionName = regionRepository.findCountryByCountryName(wineDTO.getProduction_country());
         if (countryByRegionName != null && !countryByRegionName.isEmpty()) {
             result.setCountry(countryByRegionName.get(0));
         } else {
             Region region = new Region();
             region.setCountryName(wineDTO.getProduction_country());
-            countryRepository.save(region);
+            regionRepository.save(region);
             result.setCountry(region);
         }
 
