@@ -1,6 +1,7 @@
 package com.wine.to.up.catalog.service.repository;
 
 import com.wine.to.up.catalog.service.domain.entities.Shop;
+import com.wine.to.up.catalog.service.domain.entities.Wine;
 import com.wine.to.up.catalog.service.domain.entities.WinePosition;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -12,4 +13,7 @@ import java.util.List;
 @Repository
 public interface WinePositionRepository extends PagingAndSortingRepository<WinePosition, String> {
     List<WinePosition> findAllByShop(Shop shop, Pageable pageable);
+    List<WinePosition> findAllByPrice(float price, Pageable pageable);
+    List<WinePosition> findAllByVolume(float volume, Pageable pageable);
+    List<WinePosition> findAllByWpWine(Wine wine, Pageable pageable);
 }
