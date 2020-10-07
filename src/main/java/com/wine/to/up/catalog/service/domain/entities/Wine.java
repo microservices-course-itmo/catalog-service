@@ -19,7 +19,7 @@ import java.util.List;
 public class Wine {
     @Id
     @Column(name = "id", nullable = false)
-    private int wineID;
+    private String wineID;
 
     @Column(name = "name", nullable = false)
     private String wineName;

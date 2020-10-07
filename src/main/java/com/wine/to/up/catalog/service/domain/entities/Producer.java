@@ -12,7 +12,7 @@ public class Producer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private int producerID;
+    private String producerID;
 
     @Column(name = "name")
     private String producerName;
