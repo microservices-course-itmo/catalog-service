@@ -11,7 +11,6 @@ import java.util.UUID;
 @Data
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "wine_id")
     private String wineID;
 
