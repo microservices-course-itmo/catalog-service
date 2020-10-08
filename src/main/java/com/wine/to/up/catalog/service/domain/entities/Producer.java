@@ -10,7 +10,6 @@ import java.util.List;
 @Table(name = "producer")
 public class Producer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private String producerID;
 

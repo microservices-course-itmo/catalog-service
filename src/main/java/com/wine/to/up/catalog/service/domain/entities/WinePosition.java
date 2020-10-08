@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Data
 public class WinePosition {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private String id;
 
