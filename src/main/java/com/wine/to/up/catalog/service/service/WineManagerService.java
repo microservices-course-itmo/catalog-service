@@ -23,12 +23,12 @@ public class WineManagerService {
     private final BrandRepository brandRepository;
     private final RegionRepository regionRepository;
     private final WinePositionRepository grapeInfoRepository;
-    private final PositionPriceRepository positionPriceRepository;
+    ///private final PositionPriceRepository positionPriceRepository;
 
 
     public WineDTO getWinePositionById(String id) {
-        WineDTO convert = converter.convert(wineRepository.findWineBywineID(id));
-        convert.setGrapes_info(wineRepository.findWineBywineID(id).getWineGrapesInfos()
+        WineDTO convert = converter.convert(wineRepository.findWineByWineID(id));
+        convert.setGrapes_info(wineRepository.findWineByWineID(id).getWineGrapesInfos()
                 .stream()
                 .map(WinePosition::getGrapeID)
                 .collect(Collectors.toList()
@@ -55,6 +55,7 @@ public class WineManagerService {
         updateGrapesInfo(wineDTO, result);
     }
 
+    /*
     private void updateGrapesInfo(WineDTO wineDTO, Wine result) {
         result.setWineGrapesInfos(wineDTO.getGrapes_info().stream()
                 .map((String value) -> {
@@ -67,6 +68,7 @@ public class WineManagerService {
                 .collect(Collectors.toList())
         );
     }
+    */
 
     private Wine getWineFromDTO(WineDTO wineDTO) {
         Wine result = converter.convert(wineDTO);
@@ -84,7 +86,7 @@ public class WineManagerService {
             result.setColor(Color.ROSE);
         }
 
-        List<Region> countryByRegionName = regionRepository.findCountryByCountryName(wineDTO.getProduction_country());
+        List<Region> countryByRegionName = regionRepository.findAllByRegionCountry(wineDTO.getProduction_country());
         if (countryByRegionName != null && !countryByRegionName.isEmpty()) {
             result.setCountry(countryByRegionName.get(0));
         } else {
@@ -114,7 +116,7 @@ public class WineManagerService {
     }
 
     public void deleteWinePosition(String id) {
-        Wine wineBywineID = wineRepository.findWineBywineID(id);
+        Wine wineBywineID = wineRepository.findWineByWineID(id);
         wineRepository.delete(wineBywineID);
     }
 

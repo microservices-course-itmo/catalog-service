@@ -13,7 +13,5 @@ import java.util.List;
 @Repository
 public interface WinePositionRepository extends PagingAndSortingRepository<WinePosition, String> {
     List<WinePosition> findAllByShop(Shop shop, Pageable pageable);
-    List<WinePosition> findAllByPrice(float price, Pageable pageable);
-    List<WinePosition> findAllByVolume(float volume, Pageable pageable);
     List<WinePosition> findAllByWpWine(Wine wine, Pageable pageable);
 }
