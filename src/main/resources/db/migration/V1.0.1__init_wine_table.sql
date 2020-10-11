@@ -17,13 +17,13 @@ CREATE TABLE region
 CREATE TABLE brand
 (
     id   UUID PRIMARY KEY,
-    name VARCHAR(255),
+    name VARCHAR(255)
 );
 
 CREATE TABLE producer
 (
     id   UUID PRIMARY KEY,
-    name VARCHAR(255),
+    name VARCHAR(255)
 );
 
 CREATE TABLE Wine
@@ -51,7 +51,7 @@ CREATE TABLE Wine
 CREATE TABLE shop
 (
     id   UUID PRIMARY KEY,
-    site VARCHAR(255),
+    site VARCHAR(255)
 );
 
 CREATE TABLE wine_position
@@ -77,7 +77,7 @@ CREATE TABLE review
     wine_id      UUID,
     user_id      UUID,
     user_name    VARCHAR(255),
-    bisness_name VARCHAR(255),
+    buisness_name VARCHAR(255),
     text         TEXT,
     mark         REAL,
     FOREIGN KEY (wine_id)
