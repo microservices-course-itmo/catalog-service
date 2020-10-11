@@ -10,8 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class GrapeRequest {
+public class BrandRequest {
     @JsonProperty("name")
     private String name;
-
 }

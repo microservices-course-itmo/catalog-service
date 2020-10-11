@@ -8,52 +8,36 @@ import lombok.Setter;
 
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class WinePositionResponse {
-    @JsonProperty("id")
-    private String id;
+    @JsonProperty("wine_id")
+    private int wine_id;
 
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("shop_id")
+    private int shop_id;
 
     @JsonProperty("price")
-    private Integer price;
+    private double price;
 
-    @JsonProperty("production_year")
-    private String production_year;
+    @JsonProperty("actual_price")
+    private double actual_price;
 
-    @JsonProperty("production_country")
-    private String production_country;
-
-    @JsonProperty("sugar_content")
-    private String sugar_content;
-
-    @JsonProperty("discount_info")
-    private String discount_info;
-
-    @JsonProperty("wine_chars")
-    private String wine_chars;
-
-    @JsonProperty("strength")
-    private float strength;
+    @JsonProperty("link_to_wine")
+    private String link_to_wine;
 
     @JsonProperty("volume")
-    private float volume;
+    private double volume;
 
-    @JsonProperty("color")
-    private String color;
+    @JsonProperty("description")
+    private String description;
 
-    @JsonProperty("brand")
-    private String brand;
+    @JsonProperty("gastronomy")
+    private String gastronomy;
 
-    @JsonProperty("picture")
-    private List<Byte> picture;
-
-    @JsonProperty("grapes_info")
-    private List<String> grapes_info;
-
+    @JsonProperty("image")
+    private List<Byte> image;
 
 }

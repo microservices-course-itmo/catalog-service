@@ -7,18 +7,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GrapeControllerToGrapeService {
-    public GrapeDTO convert(GrapeRequest grapeRequest) {
-        GrapeDTO grapeDTO = new GrapeDTO();
-        grapeDTO.setName(grapeRequest.getName());
-        grapeDTO.setCode(grapeRequest.getCode());
-        return grapeDTO;
+    public void convert(GrapeRequest grapeRequest) {
     }
 
-    public GrapeResponse convert(GrapeDTO grapeDTO) {
-        GrapeResponse grapeResponse = new GrapeResponse();
-        grapeResponse.setId(grapeDTO.getId());
-        grapeResponse.setName(grapeDTO.getName());
-        grapeResponse.setCode(grapeDTO.getCode());
-        return grapeResponse;
+    public GrapeResponse convert() {
+        return new GrapeResponse();
     }
 }

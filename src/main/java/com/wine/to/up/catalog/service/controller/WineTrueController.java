@@ -1,10 +1,9 @@
 package com.wine.to.up.catalog.service.controller;
 
 
-import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
-import com.wine.to.up.catalog.service.domain.request.WineRequest;
-import com.wine.to.up.catalog.service.domain.response.WineResponse;
-import com.wine.to.up.catalog.service.mapper.controller2service.WineControllerToWineService;
+import com.wine.to.up.catalog.service.domain.request.WineTrueRequest;
+import com.wine.to.up.catalog.service.domain.response.WineTrueResponse;
+import com.wine.to.up.catalog.service.mapper.controller2service.WineTrueControllerToWineTrueService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -16,20 +15,19 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/wine")
+@RequestMapping("/wine/true")
 @Validated
 @Slf4j
-@Api(value = "WineController", description = "Wine controller")
-public class WineController {
-
-    private final WineControllerToWineService converter;
+@Api(value = "WineTrueController", description = "Wine true controller")
+public class WineTrueController {
+    private final WineTrueControllerToWineTrueService converter;
 
     @ApiOperation(value = "Get wine by id",
             nickname = "getWineById", notes = "",
             tags = {"wine-controller",})
     @GetMapping("/{id}")
-    public WineResponse getWineById(@Valid @PathVariable(name = "id") String wineId) {
-        return new WineResponse();
+    public WineTrueResponse getWineById(@Valid @PathVariable(name = "id") String wineId) {
+        return new WineTrueResponse();
     }
 
 
@@ -44,7 +42,7 @@ public class WineController {
             nickname = "createWine", notes = "",
             tags = {"wine-controller",})
     @PostMapping("/")
-    public void createWine(@Valid @RequestBody WineRequest wineRequest) {
+    public void createWine(@Valid @RequestBody WineTrueRequest wineTrueRequest) {
 
     }
 
@@ -53,7 +51,7 @@ public class WineController {
             tags = {"wine-controller",})
     @PutMapping("/{id}")
     public void updateWine(@Valid @PathVariable(name = "id") String wineId,
-                                   @Valid @RequestBody WineRequest wineRequest) {
+                           @Valid @RequestBody WineTrueRequest wineTrueRequest) {
     }
 
     @ApiOperation(value = "Delete wine",

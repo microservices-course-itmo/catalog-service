@@ -11,13 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GrapeResponse {
-    @JsonProperty("id")
-    private String id;
-
     @JsonProperty("name")
     private String name;
-
-    @JsonProperty("code")
-    private String code;
 
 }

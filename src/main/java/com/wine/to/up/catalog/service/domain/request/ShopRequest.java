@@ -6,12 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-public class GrapeRequest {
-    @JsonProperty("name")
-    private String name;
+@AllArgsConstructor
+@NoArgsConstructor
+public class ShopRequest {
 
+    @JsonProperty("site")
+    private String site;
 }
