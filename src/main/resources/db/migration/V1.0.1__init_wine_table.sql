@@ -3,37 +3,37 @@ CREATE TYPE Sugar AS ENUM('dry', 'medium dry', 'medium', 'sweet');
 
 CREATE TABLE grape
 (
-    id   UUID PRIMARY KEY,
+    id   VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255)
 );
 
 CREATE TABLE region
 (
-    id      UUID PRIMARY KEY,
+    id      VARCHAR(255) PRIMARY KEY,
     name    VARCHAR(255),
     country VARCHAR(255)
 );
 
 CREATE TABLE brand
 (
-    id   UUID PRIMARY KEY,
+    id   VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255)
 );
 
 CREATE TABLE producer
 (
-    id   UUID PRIMARY KEY,
+    id   VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255)
 );
 
 CREATE TABLE Wine
 (
-    id          UUID PRIMARY KEY,
+    id          VARCHAR(255) PRIMARY KEY,
     name        VARCHAR(255),
-    producer_id UUID,
-    brand_id    UUID,
-    region_id   UUID,
-    grape_id    UUID,
+    producer_id VARCHAR(255),
+    brand_id    VARCHAR(255),
+    region_id   VARCHAR(255),
+    grape_id    VARCHAR(255),
     avg         REAL,
     color       Color,
     sugar       Sugar,
@@ -50,15 +50,15 @@ CREATE TABLE Wine
 
 CREATE TABLE shop
 (
-    id   UUID PRIMARY KEY,
+    id   VARCHAR(255) PRIMARY KEY,
     site VARCHAR(255)
 );
 
 CREATE TABLE wine_position
 (
-    id           UUID PRIMARY KEY,
-    wine_id      UUID,
-    shop_id      UUID,
+    id           VARCHAR(255) PRIMARY KEY,
+    wine_id      VARCHAR(255),
+    shop_id      VARCHAR(255),
     price        REAL,
     actual_price REAL,
     link_to_wine VARCHAR(255),
@@ -74,8 +74,8 @@ CREATE TABLE wine_position
 
 CREATE TABLE review
 (
-    wine_id      UUID,
-    user_id      UUID,
+    wine_id      VARCHAR(255),
+    user_id      VARCHAR(255),
     user_name    VARCHAR(255),
     buisness_name VARCHAR(255),
     text         TEXT,
