@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WineRepository extends CrudRepository<Wine, String> {
-    Wine findWineBywineID(String wineID);
+    Wine findWineByWineID(String wineID);
 }

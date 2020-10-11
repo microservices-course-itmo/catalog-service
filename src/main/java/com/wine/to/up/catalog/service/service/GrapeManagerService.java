@@ -32,7 +32,7 @@ public class GrapeManagerService {
 
     public void updateGrape(String id, GrapeDTO grapeDTO) {
         Grape convert = converter.convert(grapeDTO);
-        convert.setId(id);
+        convert.setGrapeId(id);
         grapeRepository.save(convert);
     }
 

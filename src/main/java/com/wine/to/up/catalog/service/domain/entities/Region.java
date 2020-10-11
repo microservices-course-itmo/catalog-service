@@ -7,16 +7,19 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "brand")
+@Table(name = "region")
 @Data
-public class Brand {
+public class Region {
     @Id
     @Column(name = "id", nullable = false)
-    private String brandID;
+    private String regionID;
 
     @Column(name = "name")
-    private String brandName;
+    private String regionName;
 
-    @OneToMany(mappedBy = "wineBrand")
-    private List<Wine> brandWines;
+    @Column(name = "country")
+    private String regionCountry;
+
+    @OneToMany(mappedBy = "wineRegion")
+    private List<Wine> regionWines;
 }

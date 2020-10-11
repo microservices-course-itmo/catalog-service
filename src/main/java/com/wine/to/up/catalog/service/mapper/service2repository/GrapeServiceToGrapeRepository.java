@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 public class GrapeServiceToGrapeRepository {
     public Grape convert(GrapeDTO grapeDTO) {
         Grape grape = new Grape();
-        grape.setGrapesName(grapeDTO.getName());
+        grape.setGrapeName(grapeDTO.getName());
         grape.setCode(grapeDTO.getCode());
         return grape;
     }
 
     public GrapeDTO convert(Grape wine) {
         GrapeDTO grapeDTO = new GrapeDTO();
-        grapeDTO.setId(wine.getId());
-        grapeDTO.setName(wine.getGrapesName());
+        grapeDTO.setId(wine.getGrapeId());
+        grapeDTO.setName(wine.getGrapeName());
         grapeDTO.setCode(wine.getCode());
         return grapeDTO;
     }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BrandRepository extends CrudRepository<Brand, Integer> {
-    Brand findBrandsByBrandID(int brandId);
+public interface BrandRepository extends CrudRepository<Brand, String> {
+    Brand findBrandsByBrandID(String brandId);
     List<Brand> findBrandByBrandName(String brandName);
 }

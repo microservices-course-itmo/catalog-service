@@ -2,9 +2,7 @@ package com.wine.to.up.catalog.service.controller;
 
 
 import com.wine.to.up.catalog.service.domain.request.DiscountInfoRequest;
-import com.wine.to.up.catalog.service.domain.request.GrapeRequest;
 import com.wine.to.up.catalog.service.domain.response.DiscountInfoResponse;
-import com.wine.to.up.catalog.service.repository.DiscountRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

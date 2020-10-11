@@ -21,16 +21,16 @@ public class WineManagerService {
     private final WineServiceToWineRepository converter;
     private final WineRepository wineRepository;
     private final BrandRepository brandRepository;
-    private final CountryRepository countryRepository;
-    private final GrapeInfoRepository grapeInfoRepository;
-    private final PositionPriceRepository positionPriceRepository;
+    private final RegionRepository regionRepository;
+    private final WinePositionRepository grapeInfoRepository;
+    ///private final PositionPriceRepository positionPriceRepository;
 
 
     public WineDTO getWinePositionById(String id) {
-        WineDTO convert = converter.convert(wineRepository.findWineBywineID(id));
-        convert.setGrapes_info(wineRepository.findWineBywineID(id).getWineGrapesInfos()
+        WineDTO convert = converter.convert(wineRepository.findWineByWineID(id));
+        convert.setGrapes_info(wineRepository.findWineByWineID(id).getWineGrapesInfos()
                 .stream()
-                .map(WineGrapesInfo::getGrapeID)
+                .map(WinePosition::getGrapeID)
                 .collect(Collectors.toList()
                 )
         );
@@ -55,18 +55,20 @@ public class WineManagerService {
         updateGrapesInfo(wineDTO, result);
     }
 
+    /*
     private void updateGrapesInfo(WineDTO wineDTO, Wine result) {
         result.setWineGrapesInfos(wineDTO.getGrapes_info().stream()
                 .map((String value) -> {
-                    WineGrapesInfo wineGrapesInfo = new WineGrapesInfo();
-                    wineGrapesInfo.setWineID(wineDTO.getId());
-                    wineGrapesInfo.setGrapeID(value);
-                    grapeInfoRepository.save(wineGrapesInfo);
-                    return wineGrapesInfo;
+                    WinePosition winePosition = new WinePosition();
+                    winePosition.setWineID(wineDTO.getId());
+                    winePosition.setGrapeID(value);
+                    grapeInfoRepository.save(winePosition);
+                    return winePosition;
                 })
                 .collect(Collectors.toList())
         );
     }
+    */
 
     private Wine getWineFromDTO(WineDTO wineDTO) {
         Wine result = converter.convert(wineDTO);
@@ -84,14 +86,14 @@ public class WineManagerService {
             result.setColor(Color.ROSE);
         }
 
-        List<Country> countryByCountryName = countryRepository.findCountryByCountryName(wineDTO.getProduction_country());
-        if (countryByCountryName != null && !countryByCountryName.isEmpty()) {
-            result.setCountry(countryByCountryName.get(0));
+        List<Region> countryByRegionName = regionRepository.findAllByRegionCountry(wineDTO.getProduction_country());
+        if (countryByRegionName != null && !countryByRegionName.isEmpty()) {
+            result.setCountry(countryByRegionName.get(0));
         } else {
-            Country country = new Country();
-            country.setCountryName(wineDTO.getProduction_country());
-            countryRepository.save(country);
-            result.setCountry(country);
+            Region region = new Region();
+            region.setCountryName(wineDTO.getProduction_country());
+            regionRepository.save(region);
+            result.setCountry(region);
         }
 
         List<Brand> brandByBrandName = brandRepository.findBrandByBrandName(wineDTO.getBrand());
@@ -114,7 +116,7 @@ public class WineManagerService {
     }
 
     public void deleteWinePosition(String id) {
-        Wine wineBywineID = wineRepository.findWineBywineID(id);
+        Wine wineBywineID = wineRepository.findWineByWineID(id);
         wineRepository.delete(wineBywineID);
     }
 
