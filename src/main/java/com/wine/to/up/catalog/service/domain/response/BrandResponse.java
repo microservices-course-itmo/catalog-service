@@ -10,17 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class DiscountInfoResponse {
-    @JsonProperty("id")
-    private String id;
-
-    @JsonProperty("size")
-    private String size;
-
-    @JsonProperty("wine_position_id")
-    private String wine_position_id;
-
-    @JsonProperty("source")
-    private String source;
-
+public class BrandResponse {
+    @JsonProperty("name")
+    private String name;
 }

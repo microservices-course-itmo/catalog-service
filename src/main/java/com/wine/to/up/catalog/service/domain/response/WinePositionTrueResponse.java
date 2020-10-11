@@ -1,23 +1,16 @@
-package com.wine.to.up.catalog.service.domain.request;
+package com.wine.to.up.catalog.service.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.wine.to.up.catalog.service.domain.request.WineTrueRequest;
 
 import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class WinePositionRequest {
-    @JsonProperty("wine_id")
-    private int wine_id;
-
+public class WinePositionTrueResponse {
     @JsonProperty("shop_id")
     private int shop_id;
+
+    @JsonProperty("wine")
+    private WineTrueResponse wineTrueResponse;
 
     @JsonProperty("price")
     private double price;
@@ -39,5 +32,4 @@ public class WinePositionRequest {
 
     @JsonProperty("image")
     private List<Byte> image;
-
 }

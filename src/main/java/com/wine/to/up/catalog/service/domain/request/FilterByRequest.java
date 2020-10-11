@@ -1,5 +1,6 @@
 package com.wine.to.up.catalog.service.domain.request;
 
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,16 +11,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class DiscountInfoRequest {
-    @JsonProperty("id")
-    private String id;
+public class FilterByRequest {
+    @JsonProperty("attribute_name")
+    private String attribute;
 
-    @JsonProperty("size")
-    private String size;
-
-    @JsonProperty("wine_position_id")
-    private String wine_position_id;
-
-    @JsonProperty("source")
-    private String source;
+    @JsonProperty("value")
+    private String value;
 }
