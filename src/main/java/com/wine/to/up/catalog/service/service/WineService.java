@@ -1,14 +1,21 @@
 package com.wine.to.up.catalog.service.service;
 
+import com.google.common.primitives.Bytes;
 import com.wine.to.up.catalog.service.domain.dto.WineDTO;
+import com.wine.to.up.catalog.service.domain.dto.WinePositionDTO;
 import com.wine.to.up.catalog.service.domain.entities.Wine;
+import com.wine.to.up.catalog.service.domain.entities.WinePosition;
 import com.wine.to.up.catalog.service.domain.enums.Color;
 import com.wine.to.up.catalog.service.domain.enums.Sugar;
 import com.wine.to.up.catalog.service.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +26,30 @@ public class WineService implements BaseCrudService<WineDTO> {
     private final BrandRepository brandRepository;
     private final RegionRepository regionRepository;
     private final GrapeRepository grapeRepository;
+
+    @Override
+    public List<WineDTO> readAll() {
+        return StreamSupport
+                .stream(wineRepository.findAll().spliterator(), false)
+                .map(new Function<Wine, WineDTO>() {
+                    @Override
+                    public WineDTO apply(Wine wine) {
+                        WineDTO wineDTO = new WineDTO();
+                        wineDTO.setId(wine.getWineID());
+                        wineDTO.setName(wine.getWineName());
+                        wineDTO.setProducer_id(wine.getWineProducer().getProducerID());
+                        wineDTO.setBrand_id(wine.getWineBrand().getBrandID());
+                        wineDTO.setRegion_id(wine.getWineRegion().getRegionID());
+                        wineDTO.setGrape_id(wine.getWineGrape().getGrapeID());
+                        wineDTO.setAvg(wine.getStrength());
+                        wineDTO.setYear(wine.getProduction_year());
+                        wineDTO.setColor(wine.getWineColor().name());
+                        wineDTO.setSugar(wine.getWineSugar().name());
+                        return wineDTO;
+                    }
+                })
+                .collect(Collectors.toList());
+    }
 
     @Override
     public void create(WineDTO wineDTO) {

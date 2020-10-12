@@ -57,6 +57,4 @@ public class Wine {
     @OneToMany(mappedBy = "wpWine")
     private List<WinePosition> winePositions;
 
-    @OneToMany(mappedBy = "reviewWine")
-    private List<Review> wineReviews;
 }

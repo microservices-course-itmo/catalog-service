@@ -4,6 +4,7 @@ import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
 import com.wine.to.up.catalog.service.domain.request.WinePositionRequest;
 import com.wine.to.up.catalog.service.domain.response.WinePositionResponse;
 import com.wine.to.up.catalog.service.mapper.controller2service.WinePositionControllerToWinePositionService;
+import com.wine.to.up.catalog.service.service.WinePositionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,13 +24,14 @@ import javax.validation.Valid;
 @Api(value = "WinePositionController", description = "Wine position controller")
 public class WinePositionController {
     private final WinePositionControllerToWinePositionService converter;
+    private final WinePositionService winePositionService;
 
     @ApiOperation(value = "Get wine position by id",
             nickname = "getWinePositionById", notes = "",
             tags = {"wine-position-controller",})
     @GetMapping("/{id}")
     public WinePositionResponse getWineById(@Valid @PathVariable(name = "id") String winePositionId) {
-        return new WinePositionResponse();
+        return converter.convert(winePositionService.read(winePositionId));
     }
 
 
@@ -35,7 +39,22 @@ public class WinePositionController {
             nickname = "getAllWinePositions", notes = "",
             tags = {"wine-position-controller",})
     @GetMapping("/")
-    public void getAllWinePositions(@RequestBody(required=false) SettingsRequest settingsRequest) {
+    public List<WinePositionResponse> getAllWinePositions() {
+        return winePositionService.readAll()
+                .stream()
+                .map(converter::convert)
+                .collect(Collectors.toList());
+    }
+
+    @ApiOperation(value = "Get all wine positions",
+            nickname = "getAllWinePositions", notes = "",
+            tags = {"wine-position-controller",})
+    @PostMapping("/getAllWithSettings")
+    public List<WinePositionResponse> getAllWinePositionsWithSettingsg(@RequestBody(required = false) SettingsRequest settingsRequest) {
+        return winePositionService.readAllWithSettings(settingsRequest)
+                .stream()
+                .map(converter::convert)
+                .collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Create wine position",
@@ -43,7 +62,7 @@ public class WinePositionController {
             tags = {"wine-position-controller",})
     @PostMapping("/")
     public void createWinePosition(@Valid @RequestBody WinePositionRequest winePositionRequest) {
-
+        winePositionService.create(converter.convert(winePositionRequest));
     }
 
     @ApiOperation(value = "Update wine position",
@@ -52,6 +71,7 @@ public class WinePositionController {
     @PutMapping("/{id}")
     public void updateWinePosition(@Valid @PathVariable(name = "id") String winePositionId,
                                    @Valid @RequestBody WinePositionRequest winePositionRequest) {
+        winePositionService.update(winePositionId, converter.convert(winePositionRequest));
     }
 
     @ApiOperation(value = "Delete wine position",
@@ -59,5 +79,6 @@ public class WinePositionController {
             tags = {"wine-position-controller",})
     @DeleteMapping("/{id}")
     public void deleteWinePosition(@Valid @PathVariable(name = "id") String winePositionId) {
+        winePositionService.delete(winePositionId);
     }
 }

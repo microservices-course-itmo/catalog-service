@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @Embeddable
 public class ReviewID implements Serializable {
-    @Column(name = "wine_id")
+    @Column(name = "wine_id", nullable = false)
     private String wineID;
 
     @Column(name = "user_id")

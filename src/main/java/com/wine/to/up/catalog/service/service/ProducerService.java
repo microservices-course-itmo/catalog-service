@@ -6,7 +6,10 @@ import com.wine.to.up.catalog.service.repository.ProducerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +17,14 @@ public class ProducerService implements BaseCrudService<ProducerDTO> {
 
     private final ProducerRepository producerRepository;
     private final ProducerServiceToProducerRepository converter;
+
+    @Override
+    public List<ProducerDTO> readAll() {
+        return StreamSupport
+                .stream(producerRepository.findAll().spliterator(), false)
+                .map(converter::convert)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public void create(ProducerDTO producerDTO) {

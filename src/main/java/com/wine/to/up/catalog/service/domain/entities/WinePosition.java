@@ -23,7 +23,7 @@ public class WinePosition {
     @Column(name = "price")
     private float price;
 
-    @Column(name = "actual_name", nullable = false)
+    @Column(name = "actual_price", nullable = false)
     private float actual_price;
 
     @Column(name = "link_to_wine")

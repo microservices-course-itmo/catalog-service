@@ -3,13 +3,21 @@ package com.wine.to.up.catalog.service.service;
 import com.google.common.primitives.Bytes;
 import com.wine.to.up.catalog.service.domain.dto.WinePositionDTO;
 import com.wine.to.up.catalog.service.domain.entities.WinePosition;
+import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
+import com.wine.to.up.catalog.service.domain.request.SortByRequest;
 import com.wine.to.up.catalog.service.repository.ShopRepository;
 import com.wine.to.up.catalog.service.repository.WinePositionRepository;
 import com.wine.to.up.catalog.service.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +26,64 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
     private final WinePositionRepository winePositionRepository;
     private final WineRepository wineRepository;
     private final ShopRepository shopRepository;
+
+
+    public List<WinePositionDTO> readAllWithSettings(SettingsRequest settingsRequest) {
+        Sort sort = null;
+        for (SortByRequest sortByRequest : settingsRequest.getSortBy()) {
+            if (sort == null) {
+                sort = sortByRequest.getOrder().equals("desc") ? Sort.by(sortByRequest.getAttribute()).descending() : Sort.by(sortByRequest.getAttribute()).ascending();
+            } else {
+                sort.and(sortByRequest.getOrder().equals("desc") ? Sort.by(sortByRequest.getAttribute()).descending() : Sort.by(sortByRequest.getAttribute()).ascending());
+            }
+        }
+
+        PageRequest of = PageRequest.of(settingsRequest.getFrom(), settingsRequest.getTo(), sort);
+        return StreamSupport
+                .stream(winePositionRepository.findAll(of).spliterator(), false)
+                .map(new Function<WinePosition, WinePositionDTO>() {
+                    @Override
+                    public WinePositionDTO apply(WinePosition winePosition) {
+                        WinePositionDTO winePositionDTO = new WinePositionDTO();
+                        winePositionDTO.setWine_position_id(winePosition.getId());
+                        winePositionDTO.setWine_id(winePosition.getWpWine().getWineID());
+                        winePositionDTO.setShop_id(winePosition.getShop().getShopID());
+                        winePositionDTO.setPrice(winePosition.getPrice());
+                        winePositionDTO.setActual_price(winePosition.getActual_price());
+                        winePositionDTO.setLink_to_wine(winePosition.getLinkToWine());
+                        winePositionDTO.setVolume(winePosition.getVolume());
+                        winePositionDTO.setDescription(winePosition.getDescription());
+                        winePositionDTO.setGastronomy(winePosition.getGastronomy());
+                        winePositionDTO.setImage(Bytes.asList(winePosition.getImage()));
+                        return winePositionDTO;
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<WinePositionDTO> readAll() {
+        return StreamSupport
+                .stream(winePositionRepository.findAll().spliterator(), false)
+                .map(new Function<WinePosition, WinePositionDTO>() {
+                    @Override
+                    public WinePositionDTO apply(WinePosition winePosition) {
+                        WinePositionDTO winePositionDTO = new WinePositionDTO();
+                        winePositionDTO.setWine_position_id(winePosition.getId());
+                        winePositionDTO.setWine_id(winePosition.getWpWine().getWineID());
+                        winePositionDTO.setShop_id(winePosition.getShop().getShopID());
+                        winePositionDTO.setPrice(winePosition.getPrice());
+                        winePositionDTO.setActual_price(winePosition.getActual_price());
+                        winePositionDTO.setLink_to_wine(winePosition.getLinkToWine());
+                        winePositionDTO.setVolume(winePosition.getVolume());
+                        winePositionDTO.setDescription(winePosition.getDescription());
+                        winePositionDTO.setGastronomy(winePosition.getGastronomy());
+                        winePositionDTO.setImage(Bytes.asList(winePosition.getImage()));
+                        return winePositionDTO;
+                    }
+                })
+                .collect(Collectors.toList());
+    }
 
     @Override
     public void create(WinePositionDTO winePositionDTO) {

@@ -18,7 +18,7 @@ import javax.validation.Valid;
 @RequestMapping("/position/true")
 @Validated
 @Slf4j
-@Api(value = "WinePositionTrueController", description = "Wine position true controller")
+//@Api(value = "WinePositionTrueController", description = "Wine position true controller")
 public class WinePositionTrueController {
     private final WinePositionTrueControllerToWinePositionTrueService converter;
 

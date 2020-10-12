@@ -14,10 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 public class WinePositionRequest {
     @JsonProperty("wine_id")
-    private int wine_id;
+    private String wine_id;
 
     @JsonProperty("shop_id")
-    private int shop_id;
+    private String shop_id;
 
     @JsonProperty("price")
     private float price;

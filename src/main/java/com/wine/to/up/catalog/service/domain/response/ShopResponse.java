@@ -12,6 +12,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ShopResponse {
 
+    @JsonProperty("id")
+    private String id;
+
     @JsonProperty("site")
     private String site;
 }

@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+
 @NoArgsConstructor
 @Getter
 @Setter

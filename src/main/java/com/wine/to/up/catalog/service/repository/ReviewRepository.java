@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public interface ReviewRepository extends CrudRepository<Review, String> {
+
+public interface ReviewRepository {
     List<Review> findAllByWineID(String wineID);
     List<Review> findAllByUserID(String userID);
 }

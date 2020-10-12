@@ -23,7 +23,4 @@ public class Review {
     @Column(name = "mark")
     private float mark;
 
-    @ManyToOne
-    @JoinColumn(name = "wine_id")
-    private Wine reviewWine;
 }

@@ -6,7 +6,10 @@ import com.wine.to.up.catalog.service.repository.RegionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +17,14 @@ public class RegionService implements BaseCrudService<RegionDTO> {
 
     private final RegionRepository regionRepository;
     private final RegionServiceToRegionRepository converter;
+
+    @Override
+    public List<RegionDTO> readAll() {
+        return StreamSupport
+                .stream(regionRepository.findAll().spliterator(), false)
+                .map(converter::convert)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public void create(RegionDTO regionDTO) {

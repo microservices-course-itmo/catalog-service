@@ -5,11 +5,18 @@ import com.wine.to.up.catalog.service.repository.WinePositionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class WinePositionTrueService implements BaseCrudService<WinePositionTrueDTO> {
 
     private final WinePositionRepository winePositionRepository;
+
+    @Override
+    public List<WinePositionTrueDTO> readAll() {
+        return null;
+    }
 
     @Override
     public void create(WinePositionTrueDTO winePositionTrueDTO) {

@@ -6,7 +6,10 @@ import com.wine.to.up.catalog.service.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +17,14 @@ public class ShopService implements BaseCrudService<ShopDTO> {
 
     private final ShopRepository shopRepository;
     private final ShopServiceToShopRepository converter;
+
+    @Override
+    public List<ShopDTO> readAll() {
+        return StreamSupport
+                .stream(shopRepository.findAll().spliterator(), false)
+                .map(converter::convert)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public void create(ShopDTO shopDTO) {
