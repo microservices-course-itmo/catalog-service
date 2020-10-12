@@ -6,6 +6,9 @@ import com.wine.to.up.catalog.service.domain.request.WineTrueRequest;
 import java.util.List;
 
 public class WinePositionTrueResponse {
+    @JsonProperty("wine_position_id")
+    private String wine_position_id;
+
     @JsonProperty("shop_id")
     private int shop_id;
 
@@ -13,16 +16,16 @@ public class WinePositionTrueResponse {
     private WineTrueResponse wineTrueResponse;
 
     @JsonProperty("price")
-    private double price;
+    private float price;
 
     @JsonProperty("actual_price")
-    private double actual_price;
+    private float actual_price;
 
     @JsonProperty("link_to_wine")
     private String link_to_wine;
 
     @JsonProperty("volume")
-    private double volume;
+    private float volume;
 
     @JsonProperty("description")
     private String description;

@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class GrapeDTO {
+public class ShopDTO {
     private String id;
-    private String name;
+    private String site;
 }

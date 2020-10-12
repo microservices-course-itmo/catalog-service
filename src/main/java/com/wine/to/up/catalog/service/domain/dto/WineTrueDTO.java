@@ -1,5 +1,6 @@
 package com.wine.to.up.catalog.service.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -9,18 +10,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class WineDTO {
-    private String id;
+public class WineTrueDTO {
+    private String wine_id;
 
     private String name;
 
-    private String producer_id;
+    private ProducerDTO producerDTO;
 
-    private String brand_id;
+    private BrandDTO brandDTO;
 
-    private String region_id;
+    private RegionDTO regionDTO;
 
-    private String grape_id;
+    private GrapeDTO grapeDTO;
 
     private float avg;
 

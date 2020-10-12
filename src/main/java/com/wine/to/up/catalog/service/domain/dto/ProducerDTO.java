@@ -1,20 +1,15 @@
 package com.wine.to.up.catalog.service.domain.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+@RequiredArgsConstructor
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-public class DiscountDTO {
+public class ProducerDTO {
     private String id;
-
-    private String size;
-
-    private String wine_position_id;
-
-    private String source;
+    private String name;
 }

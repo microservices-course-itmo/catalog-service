@@ -20,16 +20,16 @@ public class WinePositionRequest {
     private int shop_id;
 
     @JsonProperty("price")
-    private double price;
+    private float price;
 
     @JsonProperty("actual_price")
-    private double actual_price;
+    private float actual_price;
 
     @JsonProperty("link_to_wine")
     private String link_to_wine;
 
     @JsonProperty("volume")
-    private double volume;
+    private float volume;
 
     @JsonProperty("description")
     private String description;

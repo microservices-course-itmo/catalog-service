@@ -4,7 +4,6 @@ package com.wine.to.up.catalog.service.controller;
 import com.wine.to.up.catalog.service.domain.request.GrapeRequest;
 import com.wine.to.up.catalog.service.domain.response.GrapeResponse;
 import com.wine.to.up.catalog.service.mapper.controller2service.GrapeControllerToGrapeService;
-import com.wine.to.up.catalog.service.service.GrapeManagerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ import javax.validation.Valid;
 @Api(value = "GrapeController", description = "Grape controller")
 public class GrapeController {
 
-    private final GrapeManagerService grapeManagerService;
     private final GrapeControllerToGrapeService converter;
 
     @ApiOperation(value = "Get grape position by id",

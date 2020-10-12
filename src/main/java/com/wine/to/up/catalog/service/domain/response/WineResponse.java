@@ -12,23 +12,26 @@ import lombok.Setter;
 @NoArgsConstructor
 public class WineResponse {
 
+    @JsonProperty("wine_id")
+    private String wine_id;
+
     @JsonProperty("name")
     private String name;
 
     @JsonProperty("producer_id")
-    private int producer_id;
+    private String producer_id;
 
     @JsonProperty("brand_id")
-    private int brand_id;
+    private String brand_id;
 
     @JsonProperty("region_id")
-    private int region_id;
+    private String region_id;
 
     @JsonProperty("grape_id")
-    private int grape_id;
+    private String grape_id;
 
     @JsonProperty("avg")
-    private double avg;
+    private float avg;
 
     @JsonProperty("color")
     private String color;

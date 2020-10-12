@@ -19,7 +19,7 @@ public class WineTrueRequest {
     private GrapeRequest grapeRequest;
 
     @JsonProperty("avg")
-    private double avg;
+    private float avg;
 
     @JsonProperty("color")
     private String color;

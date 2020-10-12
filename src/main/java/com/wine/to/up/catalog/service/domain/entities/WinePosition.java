@@ -30,7 +30,7 @@ public class WinePosition {
     private String linkToWine;
 
     @Column(name = "volume")
-    private String volume;
+    private float volume;
 
     @Column(name = "description")
     private String description;
