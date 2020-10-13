@@ -1,11 +1,14 @@
-package com.wine.to.up.demo.service.controller;
+package com.wine.to.up.catalog.service.controller;
 
 import com.google.protobuf.ByteString;
+import com.wine.to.up.commonlib.annotations.InjectEventLogger;
+import com.wine.to.up.commonlib.logging.CommonNotableEvents;
+import com.wine.to.up.commonlib.logging.EventLogger;
 import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
 import com.wine.to.up.demo.service.api.dto.DemoServiceMessage;
 import com.wine.to.up.demo.service.api.message.KafkaMessageHeaderOuterClass;
 import com.wine.to.up.demo.service.api.message.KafkaMessageSentEventOuterClass.KafkaMessageSentEvent;
-import lombok.RequiredArgsConstructor;
+import com.wine.to.up.catalog.service.logging.CatalogServiceNotableEvents;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +30,6 @@ import static java.util.stream.Collectors.toList;
  * REST controller of the service
  */
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/kafka")
 @Validated
 @Slf4j
@@ -36,10 +38,13 @@ public class KafkaController {
     /**
      * Service for sending messages
      */
-    private KafkaMessageSender<KafkaMessageSentEvent> kafkaSendMessageService;
+    private final KafkaMessageSender<KafkaMessageSentEvent> kafkaSendMessageService;
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(3);
 
+    @SuppressWarnings("unused")
+    @InjectEventLogger
+    private EventLogger eventLogger;
 
     @Autowired
     public KafkaController(KafkaMessageSender<KafkaMessageSentEvent> kafkaSendMessageService) {
@@ -52,6 +57,7 @@ public class KafkaController {
      */
     @PostMapping(value = "/send")
     public void sendMessage(@RequestBody String message) {
+        eventLogger.info(CatalogServiceNotableEvents.I_CONTROLLER_RECEIVED_MESSAGE, message);
         sendMessageWithHeaders(new DemoServiceMessage(Collections.emptyMap(), message));
     }
 
@@ -80,6 +86,7 @@ public class KafkaController {
                     for (int j = 0; j < numOfMessages; j++) {
                         kafkaSendMessageService.sendMessage(event);
                         counter.incrementAndGet();
+                        eventLogger.info(CatalogServiceNotableEvents.I_KAFKA_SEND_MESSAGE_SUCCESS, message);
                     }
                     return numOfMessages;
                 }))
@@ -88,6 +95,7 @@ public class KafkaController {
                         return f.get();
                     } catch (InterruptedException | ExecutionException e) {
                         log.error("Error while sending in Kafka ", e);
+                        eventLogger.warn(CommonNotableEvents.W_KAFKA_SEND_MESSAGE_FAILED, e);
                         return 0;
                     }
                 })
