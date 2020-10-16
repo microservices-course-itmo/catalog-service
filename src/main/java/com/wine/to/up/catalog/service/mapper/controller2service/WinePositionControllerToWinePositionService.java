@@ -34,7 +34,7 @@ public class WinePositionControllerToWinePositionService {
         winePositionResponse.setShop_id(winePositionDTO.getShop_id());
         winePositionResponse.setVolume(winePositionDTO.getVolume());
         winePositionResponse.setWine_id(winePositionDTO.getWine_id());
-        winePositionDTO.setWine_position_id(winePositionDTO.getWine_position_id());
+        winePositionResponse.setWine_position_id(winePositionDTO.getWine_position_id());
         return winePositionResponse;
     }
 }
