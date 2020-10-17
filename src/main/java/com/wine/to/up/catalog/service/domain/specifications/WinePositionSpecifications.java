@@ -36,4 +36,13 @@ public class WinePositionSpecifications {
             }
         };
     }
+
+    public static Specification<WinePosition> winePositionVolumeIsGreaterThan(float requestVolume){
+        return new Specification<WinePosition>() {
+            @Override
+            public Predicate toPredicate(Root<WinePosition> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.greaterThan(root.get("volume"), requestVolume);
+            }
+        };
+    }
 }
