@@ -5,12 +5,14 @@ import com.wine.to.up.catalog.service.domain.dto.WinePositionDTO;
 import com.wine.to.up.catalog.service.domain.entities.WinePosition;
 import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
 import com.wine.to.up.catalog.service.domain.request.SortByRequest;
+import com.wine.to.up.catalog.service.domain.specifications.WinePositionSpecifications;
 import com.wine.to.up.catalog.service.repository.ShopRepository;
 import com.wine.to.up.catalog.service.repository.WinePositionRepository;
 import com.wine.to.up.catalog.service.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,6 +61,17 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
                     }
                 })
                 .collect(Collectors.toList());
+    }
+
+    public List<WinePositionDTO> readAllWinePositionsWithinPriceRange(String lowerPriceBound, String upperPriceBound){
+
+        float lower_bound = Float.parseFloat(lowerPriceBound);
+        float upper_bound = Float.parseFloat(upperPriceBound);
+
+
+        return winePositionRepository.findAll(Specification
+                .where(WinePositionSpecifications.winePositionActualPriceLessThan(upper_bound)
+                .and(WinePositionSpecifications.winePositionActualPriceGreaterThan(lower_bound))));
     }
 
     @Override

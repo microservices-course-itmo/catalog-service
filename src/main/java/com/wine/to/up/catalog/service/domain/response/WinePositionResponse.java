@@ -43,5 +43,4 @@ public class WinePositionResponse {
 
     @JsonProperty("image")
     private List<Byte> image;
-
 }

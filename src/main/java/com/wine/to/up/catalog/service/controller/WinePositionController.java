@@ -1,5 +1,6 @@
 package com.wine.to.up.catalog.service.controller;
 
+import com.wine.to.up.catalog.service.domain.entities.WinePosition;
 import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
 import com.wine.to.up.catalog.service.domain.request.WinePositionRequest;
 import com.wine.to.up.catalog.service.domain.response.WinePositionResponse;
@@ -32,6 +33,19 @@ public class WinePositionController {
     @GetMapping("/{id}")
     public WinePositionResponse getWineById(@Valid @PathVariable(name = "id") String winePositionId) {
         return converter.convert(winePositionService.read(winePositionId));
+    }
+
+
+    @ApiOperation(value = "Get all wine positions within a price range",
+            nickname = "getAllWinePositionsWithinPriceRange", notes = "",
+            tags = {"wine-position-controller",})
+    @GetMapping("/{lower_price_bound}/{upper_price_bound}")
+    public List<WinePositionResponse> getAllWinePositionsWithinPriceRange(@Valid @PathVariable(name = "lower_price_bound") String lowerPriceBound,
+                                                                  @Valid @PathVariable(name = "upper_price_bound") String upperPriceBound){
+        return winePositionService.readAllWinePositionsWithinPriceRange(lowerPriceBound, upperPriceBound)
+                .stream()
+                .map(converter::convert)
+                .collect(Collectors.toList());
     }
 
 
