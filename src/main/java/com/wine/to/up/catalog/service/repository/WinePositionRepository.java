@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface WinePositionRepository extends PagingAndSortingRepository<WinePosition, String>, JpaSpecificationExecutor {
+public interface WinePositionRepository extends PagingAndSortingRepository<WinePosition, String>, JpaSpecificationExecutor<WinePosition> {
     List<WinePosition> findAllByShop(Shop shop, Pageable pageable);
     List<WinePosition> findAllByWpWine(Wine wine, Pageable pageable);
 }

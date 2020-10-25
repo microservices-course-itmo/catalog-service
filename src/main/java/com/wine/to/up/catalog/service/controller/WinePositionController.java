@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.Response;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,16 +37,20 @@ public class WinePositionController {
     }
 
 
-    @ApiOperation(value = "Get all wine positions within a price range",
-            nickname = "getAllWinePositionsWithinPriceRange", notes = "",
+    @ApiOperation(value = "Get all wine positions with given specifications",
+            nickname = "getAllWinePositionsWithParameters", notes = "",
             tags = {"wine-position-controller",})
-    @GetMapping("/{lower_price_bound}/{upper_price_bound}")
-    public List<WinePositionResponse> getAllWinePositionsWithinPriceRange(@Valid @PathVariable(name = "lower_price_bound") String lowerPriceBound,
-                                                                  @Valid @PathVariable(name = "upper_price_bound") String upperPriceBound){
-        return winePositionService.readAllWinePositionsWithinPriceRange(lowerPriceBound, upperPriceBound)
+    @RequestMapping(method = RequestMethod.GET, value = "/getAllWinePositionsWithParameters")
+    @ResponseBody
+    public List<WinePositionResponse> getAllWinePositionsWithParameters(@RequestParam(value = "search") String searchParameters){
+        if (!searchParameters.equals(""))
+        return winePositionService.readAllWinePositionsWithParameters(searchParameters)
                 .stream()
                 .map(converter::convert)
                 .collect(Collectors.toList());
+        else {
+            return null;
+        }
     }
 
 
