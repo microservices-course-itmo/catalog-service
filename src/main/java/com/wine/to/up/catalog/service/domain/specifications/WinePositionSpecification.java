@@ -38,6 +38,10 @@ public class WinePositionSpecification implements Specification<WinePosition> {
             this.criteria.setOrPredicate(true);
             return criteriaBuilder.or();
         }
+        else if (criteria.getOperation().equalsIgnoreCase("*")) {
+            this.criteria.setOrPredicate(false);
+            return criteriaBuilder.and();
+        }
         return null;
     }
 }

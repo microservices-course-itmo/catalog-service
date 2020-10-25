@@ -37,10 +37,10 @@ public class WinePositionController {
     }
 
 
-    @ApiOperation(value = "Get all wine positions within a price range",
-            nickname = "getAllWinePositionsWithinPriceRange", notes = "",
+    @ApiOperation(value = "Get all wine positions with given specifications",
+            nickname = "getAllWinePositionsWithParameters", notes = "",
             tags = {"wine-position-controller",})
-    @RequestMapping(method = RequestMethod.GET, value = "/winePosition")
+    @RequestMapping(method = RequestMethod.GET, value = "/getAllWinePositionsWithParameters")
     @ResponseBody
     public List<WinePositionResponse> getAllWinePositionsWithParameters(@RequestParam(value = "search") String searchParameters){
         if (!searchParameters.equals(""))
