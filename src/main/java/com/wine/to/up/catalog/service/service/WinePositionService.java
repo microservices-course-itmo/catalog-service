@@ -1,6 +1,10 @@
 package com.wine.to.up.catalog.service.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.primitives.Bytes;
+import com.wine.to.up.catalog.service.api.domain.NotificationServiceMessage;
+import com.wine.to.up.catalog.service.domain.dto.WineDTO;
 import com.wine.to.up.catalog.service.domain.dto.WinePositionDTO;
 import com.wine.to.up.catalog.service.domain.entities.WinePosition;
 import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
@@ -9,7 +13,11 @@ import com.wine.to.up.catalog.service.domain.specifications.WinePositionSpecific
 import com.wine.to.up.catalog.service.repository.ShopRepository;
 import com.wine.to.up.catalog.service.repository.WinePositionRepository;
 import com.wine.to.up.catalog.service.repository.WineRepository;
+import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
+import com.wine.to.up.commonlib.metrics.CommonMetricsCollector;
+import com.wine.to.up.demo.service.api.message.KafkaMessageSentEventOuterClass.KafkaMessageSentEvent;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,7 +38,7 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
     private final WinePositionRepository winePositionRepository;
     private final WineRepository wineRepository;
     private final ShopRepository shopRepository;
-
+    private final KafkaMessageSender<KafkaMessageSentEvent> kafkaSendMessageService;
 
     public List<WinePositionDTO> readAllWithSettings(SettingsRequest settingsRequest) {
         Sort sort = null;
@@ -133,7 +141,33 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
 
     @Override
     public void update(String id, WinePositionDTO winePositionDTO) {
+
+        WinePositionDTO oldWinePositionDTO = read(id);
+        System.out.println(oldWinePositionDTO.getPrice());
+
         WinePosition winePosition = new WinePosition();
+
+        if (oldWinePositionDTO.getActual_price() != winePositionDTO.getActual_price()) {
+            NotificationServiceMessage notificationServiceMessage = new NotificationServiceMessage();
+
+            notificationServiceMessage.setId(id);
+            String wineID = winePositionDTO.getWine_id();
+            notificationServiceMessage.setName(wineRepository.findWineByWineID(wineID).getWineName());
+            notificationServiceMessage.setPrice(winePositionDTO.getActual_price());
+
+            KafkaMessageSentEvent event;
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                event = KafkaMessageSentEvent.newBuilder()
+                        .setMessage(objectMapper.writeValueAsString(notificationServiceMessage))
+                        .build();
+
+                kafkaSendMessageService.sendMessage(event);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
+
         winePosition.setId(id);
         winePosition.setWpWine(wineRepository.findWineByWineID(winePositionDTO.getWine_id()));
         winePosition.setShop(shopRepository.findByShopID(winePositionDTO.getShop_id()));

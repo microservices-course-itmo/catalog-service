@@ -21,6 +21,8 @@
         <!--        TODO create-service: set version to initial (0.1.0)-->
         <current-version>0.2.0</current-version>
 
+        <kafka-clients.version>2.5.0</kafka-clients.version>
+
         <lombok.version>1.18.10</lombok.version>
         <modelmapper.version>2.3.5</modelmapper.version>
         <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
@@ -37,6 +39,18 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.wine.to.up</groupId>
+            <artifactId>catalog-service-api</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>${kafka-clients.version}</version>
+        </dependency>
+
         <!-- Required: Spring-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

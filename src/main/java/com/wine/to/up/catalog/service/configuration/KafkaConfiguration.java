@@ -1,5 +1,7 @@
 package com.wine.to.up.catalog.service.configuration;
 
+import com.wine.to.up.catalog.service.api.CatalogServiceApiProperties;
+import com.wine.to.up.catalog.service.api.domain.NotificationServiceMessage;
 import com.wine.to.up.catalog.service.messaging.serialization.EventDeserializer;
 import com.wine.to.up.commonlib.messaging.BaseKafkaHandler;
 import com.wine.to.up.commonlib.messaging.KafkaMessageHandler;
@@ -66,7 +68,6 @@ public class KafkaConfiguration {
         return properties;
     }
 
-
     /**
      * Creates consumer based on general properties.
      * <p>
@@ -107,11 +108,12 @@ public class KafkaConfiguration {
     //TODO create-service: rename to reflect your topic name
     @Bean
     KafkaMessageSender<KafkaMessageSentEvent> testTopicKafkaMessageSender(Properties producerProperties,
-                                                                          DemoServiceApiProperties catalogServiceApiProperties,
+                                                                          CatalogServiceApiProperties catalogServiceApiProperties,
                                                                           CatalogServiceMetricsCollector metricsCollector) {
         // set appropriate serializer for value
         producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EventSerializer.class.getName());
 
-        return new KafkaMessageSender<>(new KafkaProducer<>(producerProperties), catalogServiceApiProperties.getMessageSentEventsTopicName(), metricsCollector);
+        String notificationTopic = catalogServiceApiProperties.getNotificationTopic();
+        return new KafkaMessageSender<>(new KafkaProducer<>(producerProperties), notificationTopic, metricsCollector);
     }
 }
