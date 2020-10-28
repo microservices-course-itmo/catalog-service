@@ -85,13 +85,13 @@ public class KafkaConfiguration {
     //TODO create-service: use your DemoServiceApiProperties, rename to reflect your topic name
     @Bean
     BaseKafkaHandler<KafkaMessageSentEvent> testTopicMessagesHandler(Properties consumerProperties,
-                                                                     DemoServiceApiProperties catalogServiceApiProperties,
+                                                                     CatalogServiceApiProperties catalogServiceApiProperties,
                                                                      TestTopicKafkaMessageHandler handler) {
         // set appropriate deserializer for value
         consumerProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EventDeserializer.class.getName());
 
         // bind consumer with topic name and with appropriate handler
-        return new BaseKafkaHandler<>(catalogServiceApiProperties.getMessageSentEventsTopicName(), new KafkaConsumer<>(consumerProperties), handler);
+        return new BaseKafkaHandler<>(catalogServiceApiProperties.getEventTopic(), new KafkaConsumer<>(consumerProperties), handler);
     }
 
     /**
