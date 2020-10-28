@@ -65,7 +65,7 @@ public class SugarConverter implements UserType {
     @Override
     public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
         if (value != null) {
-            String v = ((Sugar) value).name().toLowerCase();
+            String v = ((Sugar) value).name().toUpperCase();
             st.setObject(
                     index,
                     v,

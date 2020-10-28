@@ -43,8 +43,8 @@ public class WineService implements BaseCrudService<WineDTO> {
                         wineDTO.setGrape_id(wine.getWineGrape().getGrapeID());
                         wineDTO.setAvg(wine.getStrength());
                         wineDTO.setYear(wine.getProduction_year());
-                        wineDTO.setColor(wine.getWineColor().name());
-                        wineDTO.setSugar(wine.getWineSugar().name());
+                        wineDTO.setColor(wine.getWineColor().name().toUpperCase());
+                        wineDTO.setSugar(wine.getWineSugar().name().toUpperCase());
                         return wineDTO;
                     }
                 })
@@ -79,8 +79,8 @@ public class WineService implements BaseCrudService<WineDTO> {
         wineDTO.setGrape_id(wineByWineID.getWineGrape().getGrapeID());
         wineDTO.setAvg(wineByWineID.getStrength());
         wineDTO.setYear(wineByWineID.getProduction_year());
-        wineDTO.setColor(wineByWineID.getWineColor().name());
-        wineDTO.setSugar(wineByWineID.getWineSugar().name());
+        wineDTO.setColor(wineByWineID.getWineColor().name().toUpperCase());
+        wineDTO.setSugar(wineByWineID.getWineSugar().name().toUpperCase());
         return wineDTO;
     }
 

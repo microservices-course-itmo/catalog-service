@@ -143,7 +143,6 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
     public void update(String id, WinePositionDTO winePositionDTO) {
 
         WinePositionDTO oldWinePositionDTO = read(id);
-        System.out.println(oldWinePositionDTO.getPrice());
 
         WinePosition winePosition = new WinePosition();
 
