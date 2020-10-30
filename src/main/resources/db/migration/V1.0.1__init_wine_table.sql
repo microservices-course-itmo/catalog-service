@@ -1,5 +1,5 @@
 CREATE TYPE Color AS ENUM('red', 'white', 'rose');
-CREATE TYPE Sugar AS ENUM('dry', 'medium dry', 'medium', 'sweet');
+CREATE TYPE Sugar AS ENUM('dry', 'semi_dry', 'semi_sweet', 'sweet');
 
 CREATE TABLE grape
 (
