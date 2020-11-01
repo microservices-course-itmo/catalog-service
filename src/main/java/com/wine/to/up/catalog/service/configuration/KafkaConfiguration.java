@@ -10,6 +10,7 @@ import com.wine.to.up.demo.service.api.message.KafkaMessageSentEventOuterClass.K
 import com.wine.to.up.catalog.service.components.CatalogServiceMetricsCollector;
 import com.wine.to.up.catalog.service.messaging.TestTopicKafkaMessageHandler;
 import com.wine.to.up.catalog.service.messaging.serialization.EventSerializer;
+import com.wine.to.up.parser.common.api.ParserCommonApiProperties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
@@ -85,13 +86,13 @@ public class KafkaConfiguration {
     //TODO create-service: use your DemoServiceApiProperties, rename to reflect your topic name
     @Bean
     BaseKafkaHandler<KafkaMessageSentEvent> testTopicMessagesHandler(Properties consumerProperties,
-                                                                     CatalogServiceApiProperties catalogServiceApiProperties,
+                                                                     ParserCommonApiProperties parserCommonApiProperties,
                                                                      TestTopicKafkaMessageHandler handler) {
         // set appropriate deserializer for value
         consumerProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EventDeserializer.class.getName());
 
         // bind consumer with topic name and with appropriate handler
-        return new BaseKafkaHandler<>(catalogServiceApiProperties.getEventTopic(), new KafkaConsumer<>(consumerProperties), handler);
+        return new BaseKafkaHandler<>(parserCommonApiProperties.getWineParsedEventsTopicName(), new KafkaConsumer<>(consumerProperties), handler);
     }
 
     /**
