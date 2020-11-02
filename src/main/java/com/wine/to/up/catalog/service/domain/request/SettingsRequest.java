@@ -1,7 +1,5 @@
 package com.wine.to.up.catalog.service.domain.request;
 
-
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -27,4 +24,7 @@ public class SettingsRequest {
 
     @JsonProperty("sortBy")
     private List<SortByRequest> sortBy;
+
+    @JsonProperty("searchParameters")
+    private String searchParameters;
 }

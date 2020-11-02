@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,23 +38,6 @@ public class WinePositionController {
     }
 
 
-    @ApiOperation(value = "Get all wine positions with given specifications",
-            nickname = "getAllWinePositionsWithParameters", notes = "",
-            tags = {"wine-position-controller",})
-    @RequestMapping(method = RequestMethod.GET, value = "/getAllWinePositionsWithParameters")
-    @ResponseBody
-    public List<WinePositionResponse> getAllWinePositionsWithParameters(@RequestParam(value = "search") String searchParameters){
-        if (!searchParameters.equals(""))
-        return winePositionService.readAllWinePositionsWithParameters(searchParameters)
-                .stream()
-                .map(converter::convert)
-                .collect(Collectors.toList());
-        else {
-            return null;
-        }
-    }
-
-
     @ApiOperation(value = "Get all wine positions",
             nickname = "getAllWinePositions", notes = "",
             tags = {"wine-position-controller",})
@@ -69,7 +53,7 @@ public class WinePositionController {
             nickname = "getAllWinePositions", notes = "",
             tags = {"wine-position-controller",})
     @PostMapping("/getAllWithSettings")
-    public List<WinePositionResponse> getAllWinePositionsWithSettingsg(@RequestBody(required = false) SettingsRequest settingsRequest) {
+    public List<WinePositionResponse> getAllWinePositionsWithSettings(@RequestBody(required = false) SettingsRequest settingsRequest){
         return winePositionService.readAllWithSettings(settingsRequest)
                 .stream()
                 .map(converter::convert)
