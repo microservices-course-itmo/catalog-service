@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface RegionRepository extends CrudRepository<Region, String> {
     Region findByRegionID(String regionID);
+    Region findByRegionName(String regionName);
     List<Region> findAllByRegionCountry(String regionCountry);
 }

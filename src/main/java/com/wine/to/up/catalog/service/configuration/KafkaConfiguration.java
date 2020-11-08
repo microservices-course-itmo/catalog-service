@@ -94,7 +94,6 @@ public class KafkaConfiguration {
         // bind consumer with topic name and with appropriate handler
         return new BaseKafkaHandler<>(parserCommonApiProperties.getWineParsedEventsTopicName(), new KafkaConsumer<>(consumerProperties), handler);
     }
-
     /**
      * Creates sender based on general properties. It helps to send single message to designated topic.
      * <p>
