@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ShopRepository extends CrudRepository<Shop, String> {
     Shop findByShopID(String shopId);
+    Shop findByShopSite(String shopSite);
 }
