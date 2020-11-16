@@ -19,9 +19,6 @@ public class SettingsRequest {
     @JsonProperty("to")
     private int to;
 
-    @JsonProperty("filterBy")
-    private List<FilterByRequest> filterBy;
-
     @JsonProperty("sortBy")
     private List<SortByRequest> sortBy;
 

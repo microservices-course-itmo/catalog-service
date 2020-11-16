@@ -2,15 +2,23 @@ package com.wine.to.up.catalog.service.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wine.to.up.catalog.service.domain.request.WineTrueRequest;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class WinePositionTrueResponse {
     @JsonProperty("wine_position_id")
     private String wine_position_id;
 
-    @JsonProperty("shop_id")
-    private int shop_id;
+    @JsonProperty("shop")
+    private ShopResponse shop;
 
     @JsonProperty("wine")
     private WineTrueResponse wineTrueResponse;

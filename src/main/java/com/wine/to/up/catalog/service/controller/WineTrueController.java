@@ -1,9 +1,8 @@
 package com.wine.to.up.catalog.service.controller;
 
 
-import com.wine.to.up.catalog.service.domain.request.WineTrueRequest;
+import com.wine.to.up.catalog.service.domain.response.WineResponse;
 import com.wine.to.up.catalog.service.domain.response.WineTrueResponse;
-import com.wine.to.up.catalog.service.mapper.controller2service.WineTrueControllerToWineTrueService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -12,52 +11,55 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/wine/true")
 @Validated
 @Slf4j
-//@Api(value = "WineTrueController", description = "Wine true controller")
+@Api(value = "WineTrueController", description = "Wine true controller")
 public class WineTrueController {
-    private final WineTrueControllerToWineTrueService converter;
 
-    @ApiOperation(value = "Get wine by id",
-            nickname = "getWineById", notes = "",
-            tags = {"wine-controller",})
-    @GetMapping("/{id}")
-    public WineTrueResponse getWineById(@Valid @PathVariable(name = "id") String wineId) {
-        return new WineTrueResponse();
-    }
-
+    private final WineController wineController;
+    private final BrandController brandController;
+    private final GrapeController grapeController;
+    private final ProducerController producerController;
+    private final RegionController regionController;
 
     @ApiOperation(value = "Get all wine",
             nickname = "getAllWines", notes = "",
-            tags = {"wine-controller",})
+            tags = {"wine-true-controller",})
     @GetMapping("/")
-    public void getAllWines() {
+    public List<WineTrueResponse> getAllWines() {
+        return wineController.getAllWines().stream().map(this::getWineTrueResponse).collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Create wine",
-            nickname = "createWine", notes = "",
-            tags = {"wine-controller",})
-    @PostMapping("/")
-    public void createWine(@Valid @RequestBody WineTrueRequest wineTrueRequest) {
-
+    @ApiOperation(value = "Get wine by id",
+            nickname = "getWineById", notes = "",
+            tags = {"wine-true-controller",})
+    @GetMapping("/{id}")
+    public WineTrueResponse getWineById(@Valid @PathVariable(name = "id") String wineId) {
+        WineResponse wineById = wineController.getWineById(wineId);
+        return getWineTrueResponse(wineById);
     }
 
-    @ApiOperation(value = "Update wine",
-            nickname = "updateWine", notes = "",
-            tags = {"wine-controller",})
-    @PutMapping("/{id}")
-    public void updateWine(@Valid @PathVariable(name = "id") String wineId,
-                           @Valid @RequestBody WineTrueRequest wineTrueRequest) {
+    private WineTrueResponse getWineTrueResponse(WineResponse wineById) {
+        WineTrueResponse wineTrueResponse = new WineTrueResponse();
+
+        wineTrueResponse.setAvg(wineById.getAvg());
+        wineTrueResponse.setYear(wineById.getYear());
+        wineTrueResponse.setName(wineById.getName());
+        wineTrueResponse.setSugar(wineById.getSugar());
+        wineTrueResponse.setColor(wineById.getColor());
+        wineTrueResponse.setBrandResponse(brandController.getBrandById(wineById.getBrand_id()));
+        wineTrueResponse.setGrapeResponse(grapeController.getGrapeById(wineById.getGrape_id()));
+        wineTrueResponse.setProducerResponse(producerController.getProducerById(wineById.getProducer_id()));
+        wineTrueResponse.setRegionResponse(regionController.getRegionById(wineById.getRegion_id()));
+        wineTrueResponse.setWine_id(wineById.getWine_id());
+        return wineTrueResponse;
     }
 
-    @ApiOperation(value = "Delete wine",
-            nickname = "deleteWine", notes = "",
-            tags = {"wine-controller",})
-    @DeleteMapping("/{id}")
-    public void deleteWine(@Valid @PathVariable(name = "id") String wineId) {
-    }
+
 }

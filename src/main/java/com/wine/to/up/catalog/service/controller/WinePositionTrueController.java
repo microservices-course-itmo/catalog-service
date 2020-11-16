@@ -1,9 +1,9 @@
 package com.wine.to.up.catalog.service.controller;
 
 import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
-import com.wine.to.up.catalog.service.domain.request.WinePositionTrueRequest;
+import com.wine.to.up.catalog.service.domain.response.WinePositionResponse;
 import com.wine.to.up.catalog.service.domain.response.WinePositionTrueResponse;
-import com.wine.to.up.catalog.service.mapper.controller2service.WinePositionTrueControllerToWinePositionTrueService;
+import com.wine.to.up.catalog.service.utils.CompareChain;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -12,52 +12,58 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/position/true")
 @Validated
 @Slf4j
-//@Api(value = "WinePositionTrueController", description = "Wine position true controller")
+@Api(value = "WinePositionTrueController", description = "Wine position true controller")
 public class WinePositionTrueController {
-    private final WinePositionTrueControllerToWinePositionTrueService converter;
+    private final WinePositionController winePositionController;
+    private final ShopController shopController;
+    private final WineTrueController wineTrueController;
 
     @ApiOperation(value = "Get wine position by id",
             nickname = "getWinePositionById", notes = "",
             tags = {"wine-position-true-controller",})
     @GetMapping("/{id}")
     public WinePositionTrueResponse getWineById(@Valid @PathVariable(name = "id") String winePositionId) {
-        return new WinePositionTrueResponse();
+        WinePositionResponse wineById = winePositionController.getWineById(winePositionId);
+        return getWinePositionTrueResponse(wineById);
     }
-
 
     @ApiOperation(value = "Get all wine positions",
             nickname = "getAllWinePositions", notes = "",
             tags = {"wine-position-true-controller",})
-    @GetMapping("/")
-    public void getAllWinePositions(@RequestBody(required=false) SettingsRequest settingsRequest) {
-    }
-
-    @ApiOperation(value = "Create wine position",
-            nickname = "createWinePosition", notes = "",
-            tags = {"wine-position-true-controller",})
     @PostMapping("/")
-    public void createWinePosition(@Valid @RequestBody WinePositionTrueRequest winePositionTrueRequest) {
-
+    public List<WinePositionTrueResponse> getAllWinePositions(@RequestBody(required = false) SettingsRequest settingsRequest) {
+        CompareChain processedChain = new CompareChain().process(settingsRequest.getSearchParameters(), settingsRequest.getSortBy());
+        return winePositionController.getAllWinePositions()
+                .stream()
+                .map(this::getWinePositionTrueResponse)
+                .filter(processedChain)
+                .sorted(processedChain)
+                .skip(settingsRequest.getFrom())
+                .limit(settingsRequest.getTo() - settingsRequest.getFrom())
+                .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Update wine position",
-            nickname = "updateWinePosition", notes = "",
-            tags = {"wine-position-true-controller",})
-    @PutMapping("/{id}")
-    public void updateWinePosition(@Valid @PathVariable(name = "id") String winePositionId,
-                                   @Valid @RequestBody WinePositionTrueRequest winePositionTrueRequest) {
-    }
+    private WinePositionTrueResponse getWinePositionTrueResponse(WinePositionResponse wineById) {
+        WinePositionTrueResponse winePositionTrueResponse = new WinePositionTrueResponse();
 
-    @ApiOperation(value = "Delete wine position",
-            nickname = "deleteWinePosition", notes = "",
-            tags = {"wine-position-true-controller",})
-    @DeleteMapping("/{id}")
-    public void deleteWinePosition(@Valid @PathVariable(name = "id") String winePositionId) {
+        winePositionTrueResponse.setWine_position_id(wineById.getWine_position_id());
+        winePositionTrueResponse.setActual_price(wineById.getActual_price());
+        winePositionTrueResponse.setDescription(wineById.getDescription());
+        winePositionTrueResponse.setGastronomy(wineById.getGastronomy());
+        winePositionTrueResponse.setImage(wineById.getImage());
+        winePositionTrueResponse.setLink_to_wine(wineById.getLink_to_wine());
+        winePositionTrueResponse.setPrice(wineById.getPrice());
+        winePositionTrueResponse.setShop(shopController.getShopById(wineById.getShop_id()));
+        winePositionTrueResponse.setVolume(wineById.getVolume());
+        winePositionTrueResponse.setWineTrueResponse(wineTrueController.getWineById(wineById.getWine_id()));
+        return winePositionTrueResponse;
     }
 }

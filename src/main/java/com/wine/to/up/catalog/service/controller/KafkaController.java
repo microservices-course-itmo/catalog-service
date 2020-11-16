@@ -29,7 +29,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * REST controller of the service
  */
-@RestController
+//@RestController
 @RequestMapping("/kafka")
 @Validated
 @Slf4j
