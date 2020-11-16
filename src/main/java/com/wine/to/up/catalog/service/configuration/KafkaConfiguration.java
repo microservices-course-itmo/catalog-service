@@ -1,7 +1,9 @@
 package com.wine.to.up.catalog.service.configuration;
 
 import com.wine.to.up.catalog.service.api.CatalogServiceApiProperties;
+import com.wine.to.up.catalog.service.messaging.ParserTopicKafkaMessageHandler;
 import com.wine.to.up.catalog.service.messaging.serialization.EventDeserializer;
+import com.wine.to.up.catalog.service.messaging.serialization.WineParsedEventDeserializer;
 import com.wine.to.up.commonlib.messaging.BaseKafkaHandler;
 import com.wine.to.up.commonlib.messaging.KafkaMessageHandler;
 import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
@@ -10,6 +12,8 @@ import com.wine.to.up.demo.service.api.message.KafkaMessageSentEventOuterClass.K
 import com.wine.to.up.catalog.service.components.CatalogServiceMetricsCollector;
 import com.wine.to.up.catalog.service.messaging.TestTopicKafkaMessageHandler;
 import com.wine.to.up.catalog.service.messaging.serialization.EventSerializer;
+import com.wine.to.up.parser.common.api.ParserCommonApiProperties;
+import com.wine.to.up.parser.common.api.schema.ParserApi;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
@@ -85,15 +89,32 @@ public class KafkaConfiguration {
     //TODO create-service: use your DemoServiceApiProperties, rename to reflect your topic name
     @Bean
     BaseKafkaHandler<KafkaMessageSentEvent> testTopicMessagesHandler(Properties consumerProperties,
-                                                                     CatalogServiceApiProperties catalogServiceApiProperties,
+                                                                     ParserCommonApiProperties parserCommonApiProperties,
                                                                      TestTopicKafkaMessageHandler handler) {
         // set appropriate deserializer for value
         consumerProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EventDeserializer.class.getName());
 
         // bind consumer with topic name and with appropriate handler
-        return new BaseKafkaHandler<>(catalogServiceApiProperties.getEventTopic(), new KafkaConsumer<>(consumerProperties), handler);
+        return new BaseKafkaHandler<>(parserCommonApiProperties.getWineParsedEventsTopicName(), new KafkaConsumer<>(consumerProperties), handler);
     }
 
+    @Bean
+    BaseKafkaHandler<ParserApi.WineParsedEvent> wineParsedEventBaseKafkaHandler(
+        Properties consumerProperties,
+        CatalogServiceApiProperties catalogServiceApiProperties,
+        ParserTopicKafkaMessageHandler parserTopicKafkaMessageHandler
+        ) {
+        consumerProperties.setProperty(
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                WineParsedEventDeserializer.class.getName()
+        );
+
+        return new BaseKafkaHandler<>(
+                catalogServiceApiProperties.getEventTopic(),
+                new KafkaConsumer<>(consumerProperties),
+                parserTopicKafkaMessageHandler
+        );
+    }
     /**
      * Creates sender based on general properties. It helps to send single message to designated topic.
      * <p>

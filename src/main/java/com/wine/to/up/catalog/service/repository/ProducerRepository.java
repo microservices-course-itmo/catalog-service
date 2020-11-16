@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProducerRepository extends CrudRepository<Producer, String> {
     Producer findByProducerID(String producerID);
+    Producer findByProducerName(String name);
 }

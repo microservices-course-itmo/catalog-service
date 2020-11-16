@@ -51,6 +51,12 @@
             <version>${kafka-clients.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.wine.to.up</groupId>
+            <artifactId>parser-common-api</artifactId>
+            <version>0.2.2-SNAPSHOT</version>
+        </dependency>
+
         <!-- Required: Spring-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
