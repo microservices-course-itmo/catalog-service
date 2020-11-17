@@ -27,6 +27,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
 
     @Override
     public void handle(WineParsedEvent wineParsedEvent) {
+        log.info("Message received");
         wineParsedEvent.getWinesList()
                 .stream()
                 .map(parserWine -> {
