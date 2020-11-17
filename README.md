@@ -2,7 +2,7 @@
 
 Для того чтобы запустить сервис на локальной машине вам понадобятся kafka и postgres.
 
-Чтобы запустить kafka и postgres на локальной машине в Docker:
+Чтобы запустить Kafka и postgres на локальной машине в Docker:
  - выполните `minimal-Infrastructure.yml` файл, используя Ide или с помощью команды `docker-compose -f profiles/minimal-Infrastructure.yml up` после чего запустить приложение через IDEA
 
 Если вы хотите запустить сервис в составе docker-compose выполните следующее:
