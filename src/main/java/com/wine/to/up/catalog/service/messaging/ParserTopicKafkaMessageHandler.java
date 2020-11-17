@@ -146,6 +146,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                                     return entitiesCreatedCounter;
                                 }catch (Exception e){
                                     log.error(e.getMessage());
+                                    log.error(Arrays.stream(e.getStackTrace()).map(x->x.toString()+"\n").reduce("", (x,y)->x+y));
+
                                     return 0;
                                 }
                             }
