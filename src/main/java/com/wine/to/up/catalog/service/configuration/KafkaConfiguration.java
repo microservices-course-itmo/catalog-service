@@ -97,7 +97,7 @@ public class KafkaConfiguration {
         consumerProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EventDeserializer.class.getName());
 
         // bind consumer with topic name and with appropriate handler
-        return new BaseKafkaHandler<>(parserCommonApiProperties.getWineParsedEventsTopicName(), new KafkaConsumer<>(consumerProperties), handler);
+        return new BaseKafkaHandler<>("test_topic", new KafkaConsumer<>(consumerProperties), handler);
     }
 
     @Bean
