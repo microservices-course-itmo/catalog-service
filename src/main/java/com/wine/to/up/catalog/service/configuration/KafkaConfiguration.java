@@ -14,6 +14,7 @@ import com.wine.to.up.catalog.service.messaging.TestTopicKafkaMessageHandler;
 import com.wine.to.up.catalog.service.messaging.serialization.EventSerializer;
 import com.wine.to.up.parser.common.api.ParserCommonApiProperties;
 import com.wine.to.up.parser.common.api.schema.ParserApi;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
@@ -30,6 +31,7 @@ import org.springframework.context.annotation.Scope;
 import java.util.Properties;
 
 @Configuration
+@Slf4j
 public class KafkaConfiguration {
     /**
      * List of kafka servers
@@ -108,6 +110,7 @@ public class KafkaConfiguration {
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 WineParsedEventDeserializer.class.getName()
         );
+        log.info("PARSER TOPIC" + parserCommonApiProperties.getWineParsedEventsTopicName());
 
         return new BaseKafkaHandler<>(
                 parserCommonApiProperties.getWineParsedEventsTopicName(),
