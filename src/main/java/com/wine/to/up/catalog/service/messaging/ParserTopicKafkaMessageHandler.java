@@ -138,6 +138,6 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                     entitiesCreatedCounter++;
 
                     return entitiesCreatedCounter;
-                });
+                }).collect(Collectors.toList());
     }
 }
