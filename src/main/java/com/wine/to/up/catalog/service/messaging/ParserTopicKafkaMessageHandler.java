@@ -36,7 +36,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
             public void run() {
                 wineParsedEvent.getWinesList()
                         .stream()
-                        .map(parserWine -> {
+                        .forEach(parserWine -> {
                             synchronized (this) {
                                 try {
                                     log.info(parserWine.getName() + " received");
@@ -143,15 +143,13 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                                     log.info(parserWine.getName() + " saved");
                                     entitiesCreatedCounter++;
 
-                                    return entitiesCreatedCounter;
                                 }catch (Exception e){
                                     log.error(e.getMessage());
                                     log.error(Arrays.stream(e.getStackTrace()).map(x->x.toString()+"\n").reduce("", (x,y)->x+y));
 
-                                    return 0;
                                 }
                             }
-                        }).collect(Collectors.toList());
+                        });
             }
         }).start();
 
