@@ -101,7 +101,7 @@ public class KafkaConfiguration {
     @Bean
     BaseKafkaHandler<ParserApi.WineParsedEvent> wineParsedEventBaseKafkaHandler(
             Properties consumerProperties,
-            CatalogServiceApiProperties catalogServiceApiProperties,
+            ParserCommonApiProperties parserCommonApiProperties,
             ParserTopicKafkaMessageHandler parserTopicKafkaMessageHandler
     ) {
         consumerProperties.setProperty(
@@ -110,7 +110,7 @@ public class KafkaConfiguration {
         );
 
         return new BaseKafkaHandler<>(
-                catalogServiceApiProperties.getEventTopic(),
+                parserCommonApiProperties.getWineParsedEventsTopicName(),
                 new KafkaConsumer<>(consumerProperties),
                 parserTopicKafkaMessageHandler
         );
