@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -81,7 +82,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                         }
 
                         if (grapeCount > 0) {
-                            wine.setWineGrape(grapeRepository.findByGrapeName(parserWine.getGrapeSort(0)));
+                            wine.setWineGrape(parserWine.getGrapeSortList().stream().map(x -> grapeRepository.findByGrapeID(x)).collect(Collectors.toList()));
                         }
 
                         int regionCount = parserWine.getRegionCount();
@@ -99,7 +100,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                         }
 
                         if (regionCount > 0) {
-                            wine.setWineRegion(regionRepository.findByRegionID(parserWine.getRegion(0)));
+                            wine.setWineRegion(parserWine.getRegionList().stream().map(x -> regionRepository.findByRegionID(x)).collect(Collectors.toList()));
                         }
 
                         wineRepository.save(wine);
@@ -108,7 +109,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                     Wine wine = wineRepository.findByWineName(parserWine.getName());
 
 
-                    if (shopRepository.findByShopSite(wineParsedEvent.getShopLink()) == null){
+                    if (shopRepository.findByShopSite(wineParsedEvent.getShopLink()) == null) {
                         Shop shop = new Shop();
                         shop.setShopID(UUID.randomUUID().toString());
                         shop.setShopSite(wineParsedEvent.getShopLink());
@@ -125,7 +126,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                     winePosition.setImage(parserWine.getImage().getBytes());
                     winePosition.setVolume(parserWine.getCapacity());
                     winePosition.setPrice(parserWine.getOldPrice());
-                    winePosition.setActual_price(parserWine.getNewPrice());
+                    winePosition.setActualPrice(parserWine.getNewPrice());
                     winePosition.setGastronomy(parserWine.getGastronomy());
 
                     winePositionRepository.save(winePosition);

@@ -20,6 +20,6 @@ public class Region {
     @Column(name = "country")
     private String regionCountry;
 
-    @OneToMany(mappedBy = "wineRegion")
+    @ManyToMany(mappedBy = "wineRegion")
     private List<Wine> regionWines;
 }

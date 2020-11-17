@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @NoArgsConstructor
 @Getter
@@ -18,9 +20,9 @@ public class WineDTO {
 
     private String brand_id;
 
-    private String region_id;
+    private List<String> region_id;
 
-    private String grape_id;
+    private List<String> grape_id;
 
     private float avg;
 

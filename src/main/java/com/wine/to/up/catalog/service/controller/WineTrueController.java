@@ -54,9 +54,11 @@ public class WineTrueController {
         wineTrueResponse.setSugar(wineById.getSugar());
         wineTrueResponse.setColor(wineById.getColor());
         wineTrueResponse.setBrandResponse(brandController.getBrandById(wineById.getBrand_id()));
-        wineTrueResponse.setGrapeResponse(grapeController.getGrapeById(wineById.getGrape_id()));
+
+        wineTrueResponse.setGrapeResponse(wineById.getGrape_id().stream().map(grapeController::getGrapeById).collect(Collectors.toList()));
         wineTrueResponse.setProducerResponse(producerController.getProducerById(wineById.getProducer_id()));
-        wineTrueResponse.setRegionResponse(regionController.getRegionById(wineById.getRegion_id()));
+
+        wineTrueResponse.setRegionResponse(wineById.getRegion_id().stream().map(regionController::getRegionById).collect(Collectors.toList()));
         wineTrueResponse.setWine_id(wineById.getWine_id());
         return wineTrueResponse;
     }

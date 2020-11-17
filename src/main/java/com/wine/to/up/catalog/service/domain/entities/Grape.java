@@ -16,6 +16,6 @@ public class Grape {
     @Column(name = "name")
     private String grapeName;
 
-    @OneToMany(mappedBy = "wineGrape")
+    @ManyToMany(mappedBy = "wineGrape")
     private List<Wine> grapeWines;
 }

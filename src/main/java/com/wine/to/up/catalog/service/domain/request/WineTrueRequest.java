@@ -2,6 +2,8 @@ package com.wine.to.up.catalog.service.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 public class WineTrueRequest {
     @JsonProperty("name")
     private String name;
@@ -13,10 +15,10 @@ public class WineTrueRequest {
     private BrandRequest brandRequest;
 
     @JsonProperty("region")
-    private RegionRequest regionRequest;
+    private List<RegionRequest> regionRequest;
 
     @JsonProperty("grape")
-    private GrapeRequest grapeRequest;
+    private List<GrapeRequest> grapeRequest;
 
     @JsonProperty("avg")
     private float avg;

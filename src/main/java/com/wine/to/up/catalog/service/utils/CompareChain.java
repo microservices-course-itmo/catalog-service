@@ -1,6 +1,8 @@
 package com.wine.to.up.catalog.service.utils;
 
 import com.wine.to.up.catalog.service.domain.request.SortByRequest;
+import com.wine.to.up.catalog.service.domain.response.GrapeResponse;
+import com.wine.to.up.catalog.service.domain.response.RegionResponse;
 import com.wine.to.up.catalog.service.domain.response.WinePositionTrueResponse;
 
 import java.util.Comparator;
@@ -11,6 +13,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CompareChain implements Predicate<WinePositionTrueResponse>, Comparator<WinePositionTrueResponse> {
 
@@ -32,9 +35,9 @@ public class CompareChain implements Predicate<WinePositionTrueResponse>, Compar
             put("shopSite", (WinePositionTrueResponse wptr) -> wptr.getShop().getSite());
             put("producerName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getProducerResponse().getName());
             put("brandName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getBrandResponse().getName());
-            put("regionName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getRegionResponse().getName());
-            put("countryName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getRegionResponse().getCountry());
-            put("grapeName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getGrapeResponse().getName());
+            put("regionName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getRegionResponse());
+            put("countryName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getRegionResponse());
+            put("grapeName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getGrapeResponse());
 
             put("avg", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getAvg());
 
@@ -59,6 +62,15 @@ public class CompareChain implements Predicate<WinePositionTrueResponse>, Compar
                     chainedPredicate = chainedPredicate.and(new Predicate<WinePositionTrueResponse>() {
                         @Override
                         public boolean test(WinePositionTrueResponse winePositionTrueResponse) {
+                            if(value.equals("regionName")){
+                                return ((List<RegionResponse>)matrixArguments.get(value).apply(winePositionTrueResponse)).stream().map(x->x.getName()).collect(Collectors.toList()).contains(testValue);
+                            }
+                            if(value.equals("countryName")){
+                                return ((List<RegionResponse>)matrixArguments.get(value).apply(winePositionTrueResponse)).stream().map(x->x.getCountry()).collect(Collectors.toList()).contains(testValue);
+                            }
+                            if(value.equals("grapeName")){
+                                return ((List<GrapeResponse>)matrixArguments.get(value).apply(winePositionTrueResponse)).stream().map(x->x.getName()).collect(Collectors.toList()).contains(testValue);
+                            }
                             return matrixArguments.get(value).apply(winePositionTrueResponse).equals(testValue);
                         }
                     });
@@ -86,18 +98,20 @@ public class CompareChain implements Predicate<WinePositionTrueResponse>, Compar
                 }
             }
         }
-        sortBy.forEach(x -> cmp = cmp.thenComparing(new Comparator<WinePositionTrueResponse>() {
-            @Override
-            public int compare(WinePositionTrueResponse winePositionTrueResponse, WinePositionTrueResponse t1) {
-                if(!x.getOrder().equals("ASC")) {
-                    return -1 * String.valueOf(matrixArguments.get(x.getAttribute()).apply(winePositionTrueResponse)).compareTo(
-                            String.valueOf(matrixArguments.get(x.getAttribute()).apply(t1)));
-                } else {
-                    return String.valueOf(matrixArguments.get(x.getAttribute()).apply(winePositionTrueResponse)).compareTo(
-                            String.valueOf(matrixArguments.get(x.getAttribute()).apply(t1)));
+        if (sortBy!= null && sortBy.size() != 0) {
+            sortBy.forEach(x -> cmp = cmp.thenComparing(new Comparator<WinePositionTrueResponse>() {
+                @Override
+                public int compare(WinePositionTrueResponse winePositionTrueResponse, WinePositionTrueResponse t1) {
+                    if (!x.getOrder().equals("ASC")) {
+                        return -1 * String.valueOf(matrixArguments.get(x.getAttribute()).apply(winePositionTrueResponse)).compareTo(
+                                String.valueOf(matrixArguments.get(x.getAttribute()).apply(t1)));
+                    } else {
+                        return String.valueOf(matrixArguments.get(x.getAttribute()).apply(winePositionTrueResponse)).compareTo(
+                                String.valueOf(matrixArguments.get(x.getAttribute()).apply(t1)));
+                    }
                 }
-            }
-        }));
+            }));
+        }
         return this;
     }
 

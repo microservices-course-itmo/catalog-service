@@ -100,10 +100,10 @@ public class KafkaConfiguration {
 
     @Bean
     BaseKafkaHandler<ParserApi.WineParsedEvent> wineParsedEventBaseKafkaHandler(
-        Properties consumerProperties,
-        CatalogServiceApiProperties catalogServiceApiProperties,
-        ParserTopicKafkaMessageHandler parserTopicKafkaMessageHandler
-        ) {
+            Properties consumerProperties,
+            CatalogServiceApiProperties catalogServiceApiProperties,
+            ParserTopicKafkaMessageHandler parserTopicKafkaMessageHandler
+    ) {
         consumerProperties.setProperty(
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 WineParsedEventDeserializer.class.getName()
@@ -115,15 +115,16 @@ public class KafkaConfiguration {
                 parserTopicKafkaMessageHandler
         );
     }
+
     /**
      * Creates sender based on general properties. It helps to send single message to designated topic.
      * <p>
      * Uses custom serializer as the messages within single topic should be the same type. And
      * the messages in different topics can have different types and require different serializers
      *
-     * @param producerProperties       is the general producer properties. {@link #producerProperties()}
+     * @param producerProperties          is the general producer properties. {@link #producerProperties()}
      * @param catalogServiceApiProperties class containing the values of the given service's API properties (in this particular case topic name)
-     * @param metricsCollector         class encapsulating the logic of the metrics collecting and publishing
+     * @param metricsCollector            class encapsulating the logic of the metrics collecting and publishing
      */
     //TODO create-service: rename to reflect your topic name
     @Bean

@@ -47,7 +47,7 @@ public class WinePositionTrueController {
                 .filter(processedChain)
                 .sorted(processedChain)
                 .skip(settingsRequest.getFrom())
-                .limit(settingsRequest.getTo() - settingsRequest.getFrom())
+                .limit((settingsRequest.getTo() - settingsRequest.getFrom())==0?Integer.MAX_VALUE:(settingsRequest.getTo() - settingsRequest.getFrom()))
                 .collect(Collectors.toList());
     }
 

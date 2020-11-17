@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -22,10 +24,10 @@ public class WineRequest {
     private String brand_id;
 
     @JsonProperty("region_id")
-    private String region_id;
+    private List<String> region_id;
 
     @JsonProperty("grape_id")
-    private String grape_id;
+    private List<String> grape_id;
 
     @JsonProperty("avg")
     private float avg;

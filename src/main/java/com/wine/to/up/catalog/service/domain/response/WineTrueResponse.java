@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -25,10 +27,10 @@ public class WineTrueResponse {
     private BrandResponse brandResponse;
 
     @JsonProperty("region")
-    private RegionResponse regionResponse;
+    private List<RegionResponse> regionResponse;
 
     @JsonProperty("grape")
-    private GrapeResponse grapeResponse;
+    private List<GrapeResponse> grapeResponse;
 
     @JsonProperty("avg")
     private float avg;

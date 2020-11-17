@@ -5,6 +5,7 @@ import com.wine.to.up.catalog.service.domain.enums.Sugar;
 import com.wine.to.up.catalog.service.converters.ColorConverter;
 import com.wine.to.up.catalog.service.converters.SugarConverter;
 import lombok.Data;
+import org.hibernate.annotations.ManyToAny;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -32,13 +33,19 @@ public class Wine {
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand wineBrand;
 
-    @ManyToOne
-    @JoinColumn(name = "region_id", nullable = false)
-    private Region wineRegion;
+    @ManyToMany
+    @JoinTable(
+            name = "wineRegion",
+            joinColumns = @JoinColumn(name = "wine_id"),
+            inverseJoinColumns = @JoinColumn(name = "region_id"))
+    private List<Region> wineRegion;
 
-    @ManyToOne
-    @JoinColumn(name = "grape_id", nullable = false)
-    private Grape wineGrape;
+    @ManyToMany
+    @JoinTable(
+            name = "wineGrape",
+            joinColumns = @JoinColumn(name = "wine_id"),
+            inverseJoinColumns = @JoinColumn(name = "grape_id"))
+    private List<Grape> wineGrape;
 
     @Column(name = "avg", nullable = false)
     private float strength;

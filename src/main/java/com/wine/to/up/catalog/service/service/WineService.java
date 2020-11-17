@@ -3,6 +3,8 @@ package com.wine.to.up.catalog.service.service;
 import com.google.common.primitives.Bytes;
 import com.wine.to.up.catalog.service.domain.dto.WineDTO;
 import com.wine.to.up.catalog.service.domain.dto.WinePositionDTO;
+import com.wine.to.up.catalog.service.domain.entities.Grape;
+import com.wine.to.up.catalog.service.domain.entities.Region;
 import com.wine.to.up.catalog.service.domain.entities.Wine;
 import com.wine.to.up.catalog.service.domain.entities.WinePosition;
 import com.wine.to.up.catalog.service.domain.enums.Color;
@@ -39,8 +41,8 @@ public class WineService implements BaseCrudService<WineDTO> {
                         wineDTO.setName(wine.getWineName());
                         wineDTO.setProducer_id(wine.getWineProducer().getProducerID());
                         wineDTO.setBrand_id(wine.getWineBrand().getBrandID());
-                        wineDTO.setRegion_id(wine.getWineRegion().getRegionID());
-                        wineDTO.setGrape_id(wine.getWineGrape().getGrapeID());
+                        wineDTO.setRegion_id(wine.getWineRegion().stream().map(Region::getRegionID).collect(Collectors.toList()));
+                        wineDTO.setGrape_id(wine.getWineGrape().stream().map(Grape::getGrapeID).collect(Collectors.toList()));
                         wineDTO.setAvg(wine.getStrength());
                         wineDTO.setYear(wine.getProduction_year());
                         wineDTO.setColor(wine.getWineColor().name().toUpperCase());
@@ -58,8 +60,9 @@ public class WineService implements BaseCrudService<WineDTO> {
         wine.setWineName(wineDTO.getName());
         wine.setWineProducer(producerRepository.findByProducerID(wineDTO.getProducer_id()));
         wine.setWineBrand(brandRepository.findBrandsByBrandID(wineDTO.getBrand_id()));
-        wine.setWineRegion(regionRepository.findByRegionID(wineDTO.getRegion_id()));
-        wine.setWineGrape(grapeRepository.findByGrapeID(wineDTO.getGrape_id()));
+
+        wine.setWineRegion(wineDTO.getRegion_id().stream().map(regionRepository::findByRegionID).collect(Collectors.toList()));
+        wine.setWineGrape(wineDTO.getGrape_id().stream().map(grapeRepository::findByGrapeID).collect(Collectors.toList()));
         wine.setStrength(wineDTO.getAvg());
         wine.setProduction_year(wineDTO.getYear());
         wine.setWineColor(Color.valueOf(wineDTO.getColor()));
@@ -75,8 +78,8 @@ public class WineService implements BaseCrudService<WineDTO> {
         wineDTO.setName(wineByWineID.getWineName());
         wineDTO.setProducer_id(wineByWineID.getWineProducer().getProducerID());
         wineDTO.setBrand_id(wineByWineID.getWineBrand().getBrandID());
-        wineDTO.setRegion_id(wineByWineID.getWineRegion().getRegionID());
-        wineDTO.setGrape_id(wineByWineID.getWineGrape().getGrapeID());
+        wineDTO.setRegion_id(wineByWineID.getWineRegion().stream().map(Region::getRegionID).collect(Collectors.toList()));
+        wineDTO.setGrape_id(wineByWineID.getWineGrape().stream().map(Grape::getGrapeID).collect(Collectors.toList()));
         wineDTO.setAvg(wineByWineID.getStrength());
         wineDTO.setYear(wineByWineID.getProduction_year());
         wineDTO.setColor(wineByWineID.getWineColor().name().toUpperCase());
@@ -91,8 +94,8 @@ public class WineService implements BaseCrudService<WineDTO> {
         wine.setWineName(wineDTO.getName());
         wine.setWineProducer(producerRepository.findByProducerID(wineDTO.getProducer_id()));
         wine.setWineBrand(brandRepository.findBrandsByBrandID(wineDTO.getBrand_id()));
-        wine.setWineRegion(regionRepository.findByRegionID(wineDTO.getRegion_id()));
-        wine.setWineGrape(grapeRepository.findByGrapeID(wineDTO.getGrape_id()));
+        wine.setWineRegion(wineDTO.getRegion_id().stream().map(regionRepository::findByRegionID).collect(Collectors.toList()));
+        wine.setWineGrape(wineDTO.getGrape_id().stream().map(grapeRepository::findByGrapeID).collect(Collectors.toList()));
         wine.setStrength(wineDTO.getAvg());
         wine.setProduction_year(wineDTO.getYear());
         wine.setWineColor(Color.valueOf(wineDTO.getColor()));
