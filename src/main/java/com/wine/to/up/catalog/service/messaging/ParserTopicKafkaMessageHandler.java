@@ -143,6 +143,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                     }catch (Exception e){
                         log.error(e.getMessage());
                         log.error(e.getCause().getMessage());
+                        e.printStackTrace();
                     }
                 });
 
