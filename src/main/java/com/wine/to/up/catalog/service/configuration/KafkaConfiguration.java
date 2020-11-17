@@ -111,7 +111,7 @@ public class KafkaConfiguration {
                 WineParsedEventDeserializer.class.getName()
         );
         log.info("PARSER TOPIC" + parserCommonApiProperties.getWineParsedEventsTopicName());
-
+        log.info("KAFKA_BOOTSTRAP_SERVER "+ brokers);
         return new BaseKafkaHandler<>(
                 parserCommonApiProperties.getWineParsedEventsTopicName(),
                 new KafkaConsumer<>(consumerProperties),
