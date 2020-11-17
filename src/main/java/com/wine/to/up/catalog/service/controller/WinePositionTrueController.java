@@ -40,6 +40,12 @@ public class WinePositionTrueController {
             tags = {"wine-position-true-controller",})
     @PostMapping("/")
     public List<WinePositionTrueResponse> getAllWinePositions(@RequestBody(required = false) SettingsRequest settingsRequest) {
+        if(settingsRequest==null){
+            return winePositionController.getAllWinePositions()
+                    .stream()
+                    .map(this::getWinePositionTrueResponse)
+                    .collect(Collectors.toList());
+        }
         CompareChain processedChain = new CompareChain().process(settingsRequest.getSearchParameters(), settingsRequest.getSortBy());
         return winePositionController.getAllWinePositions()
                 .stream()
