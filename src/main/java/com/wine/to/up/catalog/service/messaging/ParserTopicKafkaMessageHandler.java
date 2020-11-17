@@ -31,6 +31,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         wineParsedEvent.getWinesList()
                 .stream()
                 .map(parserWine -> {
+                    log.info(parserWine.getName() + " received");
                     int entitiesCreatedCounter = 0;
 
                     if (wineRepository.findByWineName(parserWine.getName()) == null) {
@@ -131,6 +132,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                     winePosition.setGastronomy(parserWine.getGastronomy());
 
                     winePositionRepository.save(winePosition);
+                    log.info(parserWine.getName() + " saved");
                     entitiesCreatedCounter++;
 
                     return entitiesCreatedCounter;
