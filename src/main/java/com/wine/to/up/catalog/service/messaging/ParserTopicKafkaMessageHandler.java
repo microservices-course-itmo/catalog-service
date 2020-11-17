@@ -47,13 +47,15 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                             wine.setProduction_year(parserWine.getYear());
                             wine.setStrength(parserWine.getStrength());
 
+                            log.info(parserWine.getColor().name());
                             Optional<Color> firstColour = Arrays.stream(Color.values()).filter(x -> x.name().toLowerCase()
                                     .equals(parserWine.getColor().name().toLowerCase())).findFirst();
-                            wine.setWineColor(firstColour.get());
+                            wine.setWineColor(firstColour.orElse(Color.RED));
 
+                            log.info(parserWine.getSugar().name());
                             Optional<Sugar> firstSugar = Arrays.stream(Sugar.values()).filter(x -> x.name().toLowerCase()
                                     .equals(parserWine.getSugar().name().toLowerCase())).findFirst();
-                            wine.setWineSugar(firstSugar.get());
+                            wine.setWineSugar(firstSugar.orElse(Sugar.DRY));
 
                             if (producerRepository.findByProducerName(parserWine.getManufacturer()) == null) {
                                 Producer producer = new Producer();
@@ -145,7 +147,6 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                         log.error(e.getCause().getMessage());
                         log.error(e.getLocalizedMessage());
                         log.error(e.getClass().getName());
-                        e.printStackTrace();
                     }
                 });
 
