@@ -158,15 +158,15 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                             brandRepository.save(brandByBrandName);
                             log.info("Brand with id {} saved", brandByBrandName.getBrandID());
 
-                            wine.getWineGrape().forEach(x -> {
-                                Grape byId = grapeRepository.findByGrapeID(x.getGrapeID());
+                            parserWine.getGrapeSortList().forEach(x -> {
+                                Grape byId = grapeRepository.findByGrapeName(x);
                                 log.info(byId.getGrapeName());
                                 byId.getGrapeWines().add(wine);
                                 grapeRepository.save(byId);
                                 log.info("Grape with id {} saved", byId.getGrapeID());
                             });
-                            wine.getWineRegion().forEach(x -> {
-                                Region byRegionID = regionRepository.findByRegionID(x.getRegionID());
+                            parserWine.getRegionList().forEach(x -> {
+                                Region byRegionID = regionRepository.findByRegionName(x);
                                 log.info(byRegionID.getRegionName());
                                 byRegionID.getRegionWines().add(wine);
                                 regionRepository.save(byRegionID);
