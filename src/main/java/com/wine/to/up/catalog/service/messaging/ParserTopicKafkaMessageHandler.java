@@ -88,17 +88,28 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                             wine.setWineBrand(brandRepository.findBrandByBrandName(parserWine.getBrand()));
                             log.info("brand with id {} setted", brandRepository.findBrandByBrandName(parserWine.getBrand()).getBrandID());
 
-                            int grapeCount = parserWine.getGrapeSortList().size();
+                            wineRepository.save(wine);
+                            entitiesCreatedCounter++;
 
+                            int grapeCount = parserWine.getGrapeSortList().size();
                             for (int i = 0; i < grapeCount; i++) {
+                                log.info(parserWine.getGrapeSort(i) + " start processing");
                                 if (grapeRepository.findByGrapeName(parserWine.getGrapeSort(i)) == null) {
                                     Grape grape = new Grape();
                                     grape.setGrapeID(UUID.randomUUID().toString());
                                     grape.setGrapeName(parserWine.getGrapeSort(i));
-                                    grape.setGrapeWines(new ArrayList<Wine>());
+
+                                    ArrayList<Wine> grapeWines = new ArrayList<>();
+                                    grapeWines.add(wine);
+
+                                    grape.setGrapeWines(grapeWines);
                                     grapeRepository.save(grape);
                                     entitiesCreatedCounter++;
                                     log.info("grape with id {} and name {} saved", grape.getGrapeID(), grape.getGrapeName());
+                                } else {
+                                    Grape byGrapeName = grapeRepository.findByGrapeName(parserWine.getGrapeSort(i));
+                                    byGrapeName.getGrapeWines().add(wine);
+                                    grapeRepository.save(byGrapeName);
                                 }
                             }
 
@@ -110,14 +121,23 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                             int regionCount = parserWine.getRegionList().size();
 
                             for (int i = 0; i < regionCount; i++) {
+                                log.info(parserWine.getRegion(i) + " start processing");
                                 if (regionRepository.findByRegionName(parserWine.getRegion(i)) == null) {
                                     Region region = new Region();
                                     region.setRegionID(UUID.randomUUID().toString());
                                     region.setRegionCountry(parserWine.getCountry());
                                     region.setRegionName(parserWine.getRegion(i));
-                                    region.setRegionWines(new ArrayList<Wine>());
+
+                                    ArrayList<Wine> regionWines = new ArrayList<>();
+                                    regionWines.add(wine);
+
+                                    region.setRegionWines(regionWines);
                                     regionRepository.save(region);
                                     entitiesCreatedCounter++;
+                                } else {
+                                    Region byRegionName = regionRepository.findByRegionName(parserWine.getRegion(i));
+                                    byRegionName.getRegionWines().add(wine);
+                                    regionRepository.save(byRegionName);
                                 }
                             }
 
@@ -127,7 +147,6 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                             log.info("Regions with ids {} setted", wine.getWineRegion().stream().map(Region::getRegionName).reduce((x, y) -> x + " " + y));
 
                             wineRepository.save(wine);
-                            entitiesCreatedCounter++;
 
                             Producer byProducerName = producerRepository.findByProducerName(parserWine.getManufacturer());
                             byProducerName.getProducerWines().add(wine);
@@ -193,6 +212,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                     } catch (Exception e) {
                         log.error(e.getMessage());
                         log.error(e.toString());
+                        log.error((Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).reduce((x, y) -> x + "\n" + y).get()));
                         log.error(e.getCause().getMessage());
                         log.error(e.getLocalizedMessage());
                         log.error(e.getClass().getName());
