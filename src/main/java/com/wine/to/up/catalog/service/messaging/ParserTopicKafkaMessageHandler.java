@@ -40,12 +40,16 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                         int entitiesCreatedCounter = 0;
 
                         if (wineRepository.findByWineName(parserWine.getName()) == null) {
-
+                            log.info("Wine not found");
                             Wine wine = new Wine();
                             wine.setWineID(UUID.randomUUID().toString());
+                            log.info("New wine created with id {}", wine.getWineID());
                             wine.setWineName(parserWine.getName());
+                            log.info("New wine created with name {}", parserWine.getName());
                             wine.setProduction_year(parserWine.getYear());
+                            log.info("New wine created with year {}", parserWine.getYear());
                             wine.setStrength(parserWine.getStrength());
+                            log.info("New wine created with strength {}", parserWine.getStrength());
 
                             log.info(parserWine.getColor().name());
                             Optional<Color> firstColour = Arrays.stream(Color.values()).filter(x -> x.name().toLowerCase()
