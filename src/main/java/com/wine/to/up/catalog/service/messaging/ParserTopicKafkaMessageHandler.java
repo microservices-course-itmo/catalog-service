@@ -70,7 +70,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                                 Producer producer = new Producer();
                                 producer.setProducerID(UUID.randomUUID().toString());
                                 producer.setProducerName(parserWine.getManufacturer());
-                                producer.setProducerWines(null);
+                                producer.setProducerWines(new ArrayList<Wine>());
                                 producerRepository.save(producer);
                                 entitiesCreatedCounter++;
                             }
@@ -80,7 +80,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                                 Brand brand = new Brand();
                                 brand.setBrandID(UUID.randomUUID().toString());
                                 brand.setBrandName(parserWine.getBrand());
-                                brand.setBrandWines(null);
+                                brand.setBrandWines(new ArrayList<Wine>());
                                 brandRepository.save(brand);
                                 entitiesCreatedCounter++;
                             }
