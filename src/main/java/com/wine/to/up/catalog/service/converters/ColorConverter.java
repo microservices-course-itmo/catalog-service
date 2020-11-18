@@ -63,7 +63,7 @@ public class ColorConverter implements UserType {
     @Override
     public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
         if (value != null) {
-            String v = ((Color) value).name().toUpperCase();
+            String v = ((Color) value).name().toLowerCase();
             st.setObject(
                     index,
                     v,
