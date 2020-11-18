@@ -6,6 +6,7 @@ import com.wine.to.up.catalog.service.domain.enums.Sugar;
 import com.wine.to.up.catalog.service.repository.*;
 import com.wine.to.up.commonlib.messaging.KafkaMessageHandler;
 import com.wine.to.up.parser.common.api.schema.ParserApi.WineParsedEvent;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -14,15 +15,16 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineParsedEvent> {
 
-    private ShopRepository shopRepository;
-    private WineRepository wineRepository;
-    private WinePositionRepository winePositionRepository;
-    private BrandRepository brandRepository;
-    private GrapeRepository grapeRepository;
-    private ProducerRepository producerRepository;
-    private RegionRepository regionRepository;
+    private final ShopRepository shopRepository;
+    private final WineRepository wineRepository;
+    private final WinePositionRepository winePositionRepository;
+    private final BrandRepository brandRepository;
+    private final GrapeRepository grapeRepository;
+    private final ProducerRepository producerRepository;
+    private final RegionRepository regionRepository;
 
 
     @Override
