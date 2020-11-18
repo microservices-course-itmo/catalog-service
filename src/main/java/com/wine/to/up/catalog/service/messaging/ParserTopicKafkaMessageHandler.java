@@ -176,27 +176,33 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                         Wine wine = wineRepository.findByWineName(parserWine.getName());
 
 
-                        if (shopRepository.findByShopSite(wineParsedEvent.getShopLink()) == null) {
-                            Shop shop = new Shop();
-                            shop.setShopID(UUID.randomUUID().toString());
-                            shop.setShopSite(wineParsedEvent.getShopLink());
-                            shop.setWinePositions(new ArrayList<WinePosition>());
-                            shopRepository.save(shop);
-                            entitiesCreatedCounter++;
-                        }
 
                         WinePosition winePosition = new WinePosition();
                         winePosition.setWpWine(wineRepository.findWineByWineID(wine.getWineID()));
                         winePosition.setId(UUID.randomUUID().toString());
                         winePosition.setDescription(parserWine.getDescription());
-                        winePosition.setShop(shopRepository.findByShopSite(parserWine.getLink()));
-                        log.info("Shop with id {} setted", shopRepository.findByShopSite(parserWine.getLink()).getShopID());
                         winePosition.setImage(parserWine.getImage().getBytes());
                         winePosition.setVolume(parserWine.getCapacity());
                         winePosition.setPrice(parserWine.getOldPrice());
                         winePosition.setActualPrice(parserWine.getNewPrice());
                         winePosition.setGastronomy(parserWine.getGastronomy());
 
+                        winePositionRepository.save(winePosition);
+
+                        if (shopRepository.findByShopSite(wineParsedEvent.getShopLink()) == null) {
+                            Shop shop = new Shop();
+                            shop.setShopID(UUID.randomUUID().toString());
+                            shop.setShopSite(wineParsedEvent.getShopLink());
+
+                            ArrayList<WinePosition> winePositions = new ArrayList<>();
+                            winePositions.add(winePosition);
+
+                            shop.setWinePositions(winePositions);
+                            shopRepository.save(shop);
+                            entitiesCreatedCounter++;
+                        }
+                        winePosition.setShop(shopRepository.findByShopSite(parserWine.getLink()));
+                        log.info("Shop with id {} setted", shopRepository.findByShopSite(parserWine.getLink()).getShopID());
                         winePositionRepository.save(winePosition);
 
                         Shop byShopSite = shopRepository.findByShopSite(wineParsedEvent.getShopLink());
