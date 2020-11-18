@@ -40,6 +40,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                 .stream()
                 .forEach(parserWine -> {
                     try {
+                        log.info(parserWine.toString());
+
                         log.info(parserWine.getName() + " received");
                         int entitiesCreatedCounter = 0;
                         log.info(parserWine.getName() + " start processing");
@@ -151,7 +153,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                             Producer byProducerName = producerRepository.findByProducerName(parserWine.getManufacturer());
                             byProducerName.getProducerWines().add(wine);
                             producerRepository.save(byProducerName);
-                            log.info("Produces with id {} saved", byProducerName.getProducerID());
+                            log.info("Producer with id {} saved", byProducerName.getProducerID());
 
                             Brand brandByBrandName = brandRepository.findBrandByBrandName(parserWine.getBrand());
                             brandByBrandName.getBrandWines().add(wine);
