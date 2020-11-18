@@ -121,6 +121,23 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
 
                             wineRepository.save(wine);
                             entitiesCreatedCounter++;
+
+                            Producer byProducerName = producerRepository.findByProducerName(parserWine.getManufacturer());
+                            byProducerName.getProducerWines().add(wine);
+                            producerRepository.save(byProducerName);
+
+                            Brand brandByBrandName = brandRepository.findBrandByBrandName(parserWine.getBrand());
+                            brandByBrandName.getBrandWines().add(wine);
+                            brandRepository.save(brandByBrandName);
+
+                            wine.getWineGrape().forEach(x -> {
+                                x.getGrapeWines().add(wine);
+                                grapeRepository.save(x);
+                            });
+                            wine.getWineRegion().forEach(x -> {
+                                x.getRegionWines().add(wine);
+                                regionRepository.save(x);
+                            });
                         }
                         Wine wine = wineRepository.findByWineName(parserWine.getName());
 
@@ -146,10 +163,15 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                         winePosition.setGastronomy(parserWine.getGastronomy());
 
                         winePositionRepository.save(winePosition);
+
+                        Shop byShopSite = shopRepository.findByShopSite(wineParsedEvent.getShopLink());
+                        byShopSite.getWinePositions().add(winePosition);
+                        shopRepository.save(byShopSite);
+
                         log.info(parserWine.getName() + " saved");
                         entitiesCreatedCounter++;
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         log.error(e.getMessage());
                         log.error(e.toString());
                         log.error(e.getCause().getMessage());
