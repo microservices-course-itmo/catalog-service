@@ -9,6 +9,7 @@ import com.wine.to.up.parser.common.api.schema.ParserApi.WineParsedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineParsedEvent> {
 
     private final ShopRepository shopRepository;
