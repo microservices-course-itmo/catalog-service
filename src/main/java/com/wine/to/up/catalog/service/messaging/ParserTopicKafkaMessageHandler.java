@@ -245,9 +245,9 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                                 shopRepository.save(byShopSite);
 
                             }
-                            winePosition.setShop(shopRepository.findByShopSite(parserWine.getLink()));
+                            winePosition.setShop(shopRepository.findByShopSite(wineParsedEvent.getShopLink()));
                             winePositionRepository.save(winePosition);
-                            log.info("Shop with name {} and id {} setted", parserWine.getLink(), winePosition.getShop().getShopID());
+                            log.info("Shop with name {} setted", shopRepository.findByShopSite(wineParsedEvent.getShopLink()).getShopID());
                         } else {
                             if (shopRepository.findByShopSite("") == null) {
                                 Shop shop = new Shop();
