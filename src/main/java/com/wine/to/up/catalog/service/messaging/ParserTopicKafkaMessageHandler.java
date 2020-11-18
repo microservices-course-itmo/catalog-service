@@ -116,7 +116,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                             if (grapeCount > 0) {
                                 wine.setWineGrape(parserWine.getGrapeSortList().stream().map(grapeRepository::findByGrapeName).collect(Collectors.toList()));
                             }
-                            log.info("Grapes with ids {} setted", wine.getWineGrape().stream().map(Grape::getGrapeName).reduce((x, y) -> x + " " + y));
+                            log.info("Grapes with ids {} setted", parserWine.getGrapeSortList().stream().reduce((x, y) -> x + " " + y));
 
                             int regionCount = parserWine.getRegionList().size();
 
@@ -144,7 +144,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                             if (regionCount > 0) {
                                 wine.setWineRegion(parserWine.getRegionList().stream().map(regionRepository::findByRegionName).collect(Collectors.toList()));
                             }
-                            log.info("Regions with ids {} setted", wine.getWineRegion().stream().map(Region::getRegionName).reduce((x, y) -> x + " " + y));
+                            log.info("Regions with ids {} setted", parserWine.getRegionList().stream().reduce((x, y) -> x + " " + y));
 
                             wineRepository.save(wine);
 
