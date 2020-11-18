@@ -93,7 +93,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                                     Grape grape = new Grape();
                                     grape.setGrapeID(UUID.randomUUID().toString());
                                     grape.setGrapeName(parserWine.getGrapeSort(i));
-                                    grape.setGrapeWines(null);
+                                    grape.setGrapeWines(new ArrayList<Wine>());
                                     grapeRepository.save(grape);
                                     entitiesCreatedCounter++;
                                 }
@@ -111,7 +111,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                                     region.setRegionID(UUID.randomUUID().toString());
                                     region.setRegionCountry(parserWine.getCountry());
                                     region.setRegionName(parserWine.getRegion(i));
-                                    region.setRegionWines(null);
+                                    region.setRegionWines(new ArrayList<Wine>());
                                     regionRepository.save(region);
                                     entitiesCreatedCounter++;
                                 }
@@ -150,7 +150,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                             Shop shop = new Shop();
                             shop.setShopID(UUID.randomUUID().toString());
                             shop.setShopSite(wineParsedEvent.getShopLink());
-                            shop.setWinePositions(null);
+                            shop.setWinePositions(new ArrayList<WinePosition>());
                             shopRepository.save(shop);
                             entitiesCreatedCounter++;
                         }
