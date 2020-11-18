@@ -38,7 +38,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                     try {
                         log.info(parserWine.getName() + " received");
                         int entitiesCreatedCounter = 0;
-
+                        log.info(parserWine.getName() + " start processing");
                         if (wineRepository.findByWineName(parserWine.getName()) == null) {
                             log.info("Wine not found");
                             Wine wine = new Wine();
