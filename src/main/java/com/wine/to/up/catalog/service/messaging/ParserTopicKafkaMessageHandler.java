@@ -86,9 +86,9 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                                 entitiesCreatedCounter++;
                             }
                             wine.setWineBrand(brandRepository.findBrandByBrandName(parserWine.getBrand()));
-                            log.info(brandRepository.findBrandByBrandName(parserWine.getBrand()).getBrandID());
+                            log.info("brand with id {} setted", brandRepository.findBrandByBrandName(parserWine.getBrand()).getBrandID());
 
-                            int grapeCount = parserWine.getGrapeSortCount();
+                            int grapeCount = parserWine.getGrapeSortList().size();
 
                             for (int i = 0; i < grapeCount; i++) {
                                 if (grapeRepository.findByGrapeName(parserWine.getGrapeSort(i)) == null) {
@@ -98,6 +98,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                                     grape.setGrapeWines(new ArrayList<Wine>());
                                     grapeRepository.save(grape);
                                     entitiesCreatedCounter++;
+                                    log.info("grape with id {} and name {} saved", grape.getGrapeID(), grape.getGrapeName());
                                 }
                             }
 
@@ -106,7 +107,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                             }
                             log.info("Grapes with ids {} setted", wine.getWineGrape().stream().map(Grape::getGrapeName).reduce((x, y) -> x + " " + y));
 
-                            int regionCount = parserWine.getRegionCount();
+                            int regionCount = parserWine.getRegionList().size();
 
                             for (int i = 0; i < regionCount; i++) {
                                 if (regionRepository.findByRegionName(parserWine.getRegion(i)) == null) {
