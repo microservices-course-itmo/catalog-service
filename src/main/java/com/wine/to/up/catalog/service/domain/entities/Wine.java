@@ -45,11 +45,11 @@ public class Wine {
     private int production_year;
 
     @ManyToOne
-    @Column(name = "color", nullable = false)
+    @Column(name = "color_id", nullable = false)
     private Color wineColor;
 
     @ManyToOne
-    @Column(name = "sugar", nullable = false)
+    @Column(name = "sugar_id", nullable = false)
     private Sugar wineSugar;
 
     @OneToMany(mappedBy = "wpWine")
