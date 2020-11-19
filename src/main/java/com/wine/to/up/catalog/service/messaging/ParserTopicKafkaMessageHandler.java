@@ -36,6 +36,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
     private final String GRAPE_NOT_PRESENTED = "GRAPE_NOT_PRESENTED";
     private final String REGION_NOT_PRESENTED = "REGION_NOT_PRESENTED";
     private final String SHOP_NOT_PRESENTED = "SHOP_NOT_PRESENTED";
+    private final String COUNTRY_NOT_PRESENTED = "COUNTRY_NOT_PRESENTED";
 
     @Override
     public void handle(WineParsedEvent wineParsedEvent) {
@@ -157,10 +158,10 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         if (isRegionListPresented) {
             boolean isRegionListEmpty = parserWine.getRegionList().isEmpty();
             if (!isRegionListEmpty) {
-                parserWine.getRegionList().forEach(x -> regions.add(getRegionAssociatedWithWine(x, wine)));
+                parserWine.getRegionList().forEach(x -> regions.add(getRegionAssociatedWithWine(x, parserWine.getCountry(), wine)));
             }
         } else {
-            regions.add(getRegionAssociatedWithWine(REGION_NOT_PRESENTED, wine));
+            regions.add(getRegionAssociatedWithWine(REGION_NOT_PRESENTED, COUNTRY_NOT_PRESENTED, wine));
         }
         wine.setWineRegion(regions);
     }
@@ -228,6 +229,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         Brand brand = new Brand();
         brand.setBrandName(brandName);
         brand.setBrandID(UUID.randomUUID().toString());
+        brand.setBrandWines(new ArrayList<>());
         log.info("Бренд с названием {} создан", brandName);
         return brand;
     }
@@ -249,6 +251,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         Grape grape = new Grape();
         grape.setGrapeName(grapeName);
         grape.setGrapeID(UUID.randomUUID().toString());
+        grape.setGrapeWines(new ArrayList<>());
         log.info("Сорт с названием {} создан", grapeName);
         return grape;
     }
@@ -270,6 +273,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         Producer producer = new Producer();
         producer.setProducerName(producerName);
         producer.setProducerID(UUID.randomUUID().toString());
+        producer.setProducerWines(new ArrayList<>());
         log.info("Производитель с названием {} создан", producerName);
         return producer;
     }
@@ -287,18 +291,20 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return regionRepository.findByRegionName(regionName) != null;
     }
 
-    private Region createRegion(String regionName) {
+    private Region createRegion(String regionName, String countryName) {
         Region region = new Region();
         region.setRegionName(regionName);
         region.setRegionID(UUID.randomUUID().toString());
+        region.setRegionCountry(countryName);
+        region.setRegionWines(new ArrayList<>());
         log.info("Регион с названием {} создан", regionName);
         return region;
     }
 
-    private Region getRegionAssociatedWithWine(String regionName, Wine wine) {
+    private Region getRegionAssociatedWithWine(String regionName, String countryName, Wine wine) {
         boolean isRegionExists = isRegionExists(regionName);
         log.info("Регион с названием " + regionName + (isRegionExists ? " " : " не ") + "существует");
-        Region byRegionName = isRegionExists ? regionRepository.findByRegionName(regionName) : createRegion(regionName);
+        Region byRegionName = isRegionExists ? regionRepository.findByRegionName(regionName) : createRegion(regionName, countryName);
         byRegionName.getRegionWines().add(wine);
         regionRepository.save(byRegionName);
         return byRegionName;
@@ -312,6 +318,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         Color color = new Color();
         color.setColorName(colorName);
         color.setColorID(UUID.randomUUID().toString());
+        color.setColorWines(new ArrayList<>());
         log.info("Цвет с названием {} создан", colorName);
         return color;
     }
@@ -333,6 +340,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         Sugar sugar = new Sugar();
         sugar.setSugarName(sugarName);
         sugar.setSugarID(UUID.randomUUID().toString());
+        sugar.setSugarWines(new ArrayList<>());
         log.info("Сахар с названием {} создан", sugarName);
         return sugar;
     }
