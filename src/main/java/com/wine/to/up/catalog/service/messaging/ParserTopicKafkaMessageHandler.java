@@ -183,6 +183,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         Wine wine = new Wine();
         wine.setWineID(UUID.randomUUID().toString());
         wine.setWineName(wineName);
+        wine.setWinePositions(new ArrayList<>());
         log.info("Вино с названием {} создан", wineName);
         return wine;
     }
