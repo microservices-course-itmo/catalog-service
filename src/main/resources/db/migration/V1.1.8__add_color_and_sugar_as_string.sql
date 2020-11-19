@@ -1,3 +1,5 @@
+DROP TYPE Color;
+DROP TYPE Sugar;
 
 CREATE TABLE color
 (
