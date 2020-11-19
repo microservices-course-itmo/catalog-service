@@ -51,10 +51,10 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                         winePosition.setId(UUID.randomUUID().toString());
 
                         boolean isWineExists = isWineExists(parserWine.getName());
-                        log.info(isWineExists ? "Wine not found" : "Wine exists");
+                        log.info(isWineExists ? "Wine exists" : "Wine not found");
 
                         Wine wine = getWineAssociatedWithWinePosition(parserWine.getName(), winePosition);
-                        if (isWineExists) {
+                        if (!isWineExists) {
                             associateWineWithProducer(wine, parserWine);
                             associateWineWithBrand(wine, parserWine);
                             associateWineWithColor(wine, parserWine);
