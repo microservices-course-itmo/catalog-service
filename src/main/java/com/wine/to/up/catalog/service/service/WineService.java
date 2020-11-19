@@ -1,14 +1,9 @@
 package com.wine.to.up.catalog.service.service;
 
-import com.google.common.primitives.Bytes;
 import com.wine.to.up.catalog.service.domain.dto.WineDTO;
-import com.wine.to.up.catalog.service.domain.dto.WinePositionDTO;
 import com.wine.to.up.catalog.service.domain.entities.Grape;
 import com.wine.to.up.catalog.service.domain.entities.Region;
 import com.wine.to.up.catalog.service.domain.entities.Wine;
-import com.wine.to.up.catalog.service.domain.entities.WinePosition;
-import com.wine.to.up.catalog.service.domain.enums.Color;
-import com.wine.to.up.catalog.service.domain.enums.Sugar;
 import com.wine.to.up.catalog.service.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +23,8 @@ public class WineService implements BaseCrudService<WineDTO> {
     private final BrandRepository brandRepository;
     private final RegionRepository regionRepository;
     private final GrapeRepository grapeRepository;
+    private final ColorRepository colorRepository;
+    private final SugarRepository sugarRepository;
 
     @Override
     public List<WineDTO> readAll() {
@@ -45,8 +42,8 @@ public class WineService implements BaseCrudService<WineDTO> {
                         wineDTO.setGrape_id(wine.getWineGrape().stream().map(Grape::getGrapeID).collect(Collectors.toList()));
                         wineDTO.setAvg(wine.getStrength());
                         wineDTO.setYear(wine.getProduction_year());
-                        wineDTO.setColor(wine.getWineColor().name().toUpperCase());
-                        wineDTO.setSugar(wine.getWineSugar().name().toUpperCase());
+                        wineDTO.setColor(wine.getWineColor().getColorName().toUpperCase());
+                        wineDTO.setSugar(wine.getWineSugar().getSugarName().toUpperCase());
                         return wineDTO;
                     }
                 })
@@ -65,8 +62,8 @@ public class WineService implements BaseCrudService<WineDTO> {
         wine.setWineGrape(wineDTO.getGrape_id().stream().map(grapeRepository::findByGrapeID).collect(Collectors.toList()));
         wine.setStrength(wineDTO.getAvg());
         wine.setProduction_year(wineDTO.getYear());
-        wine.setWineColor(Color.valueOf(wineDTO.getColor()));
-        wine.setWineSugar(Sugar.valueOf(wineDTO.getSugar()));
+        wine.setWineColor(colorRepository.findByColorName(wineDTO.getColor()));
+        wine.setWineSugar(sugarRepository.findBySugarName(wineDTO.getSugar()));
         wineRepository.save(wine);
     }
 
@@ -82,8 +79,8 @@ public class WineService implements BaseCrudService<WineDTO> {
         wineDTO.setGrape_id(wineByWineID.getWineGrape().stream().map(Grape::getGrapeID).collect(Collectors.toList()));
         wineDTO.setAvg(wineByWineID.getStrength());
         wineDTO.setYear(wineByWineID.getProduction_year());
-        wineDTO.setColor(wineByWineID.getWineColor().name().toUpperCase());
-        wineDTO.setSugar(wineByWineID.getWineSugar().name().toUpperCase());
+        wineDTO.setColor(wineByWineID.getWineColor().getColorName().toUpperCase());
+        wineDTO.setSugar(wineByWineID.getWineSugar().getSugarName().toUpperCase());
         return wineDTO;
     }
 
@@ -98,8 +95,8 @@ public class WineService implements BaseCrudService<WineDTO> {
         wine.setWineGrape(wineDTO.getGrape_id().stream().map(grapeRepository::findByGrapeID).collect(Collectors.toList()));
         wine.setStrength(wineDTO.getAvg());
         wine.setProduction_year(wineDTO.getYear());
-        wine.setWineColor(Color.valueOf(wineDTO.getColor()));
-        wine.setWineSugar(Sugar.valueOf(wineDTO.getSugar()));
+        wine.setWineColor(colorRepository.findByColorName(wineDTO.getColor()));
+        wine.setWineSugar(sugarRepository.findBySugarName(wineDTO.getSugar()));
         wineRepository.save(wine);
     }
 

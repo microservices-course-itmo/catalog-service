@@ -1,10 +1,9 @@
 package com.wine.to.up.catalog.service.messaging;
 
 import com.wine.to.up.catalog.service.domain.entities.*;
-import com.wine.to.up.catalog.service.domain.enums.Color;
-import com.wine.to.up.catalog.service.domain.enums.Sugar;
 import com.wine.to.up.catalog.service.repository.*;
 import com.wine.to.up.commonlib.messaging.KafkaMessageHandler;
+import com.wine.to.up.parser.common.api.schema.ParserApi;
 import com.wine.to.up.parser.common.api.schema.ParserApi.WineParsedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,269 +26,323 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
     private final GrapeRepository grapeRepository;
     private final ProducerRepository producerRepository;
     private final RegionRepository regionRepository;
+    private final ColorRepository colorRepository;
+    private final SugarRepository sugarRepository;
 
+    private final String PRODUCER_NOT_PRESENTED = "PRODUCER_BOT_PRESENTED";
+    private final String BRAND_NOT_PRESENTED = "BRAND_NOT_PRESENTED";
+    private final String COLOR_NOT_PRESENTED = "COLOR_NOT_PRESENTED";
+    private final String SUGAR_NOT_PRESENTED = "SUGAR_NOT_PRESENTED";
+    private final String GRAPE_NOT_PRESENTED = "GRAPE_NOT_PRESENTED";
+    private final String REGION_NOT_PRESENTED = "REGION_NOT_PRESENTED";
+    private final String SHOP_NOT_PRESENTED = "SHOP_NOT_PRESENTED";
 
     @Override
     public void handle(WineParsedEvent wineParsedEvent) {
-        log.info("Message received");
-        log.info(wineParsedEvent.getParserName());
-        log.info(String.valueOf(wineParsedEvent.getWinesList().size()));
-        log.info(wineParsedEvent.toString());
+        log.info("Message received from " + wineParsedEvent.getParserName() + " and site " + wineParsedEvent.getShopLink());
+        log.info("Received " + wineParsedEvent.getWinesList().size() + " wines");
+        log.info("Wine parsed event: " + wineParsedEvent.toString());
         wineParsedEvent.getWinesList()
                 .stream()
                 .forEach(parserWine -> {
                     try {
-                        //log.info(parserWine.toString());
-
                         log.info(parserWine.getName() + " received");
-                        int entitiesCreatedCounter = 0;
-                        log.info(parserWine.getName() + " start processing");
-                        log.info((wineRepository.findByWineName(parserWine.getName()) == null) ? "wine not found" : "wine exists");
-                        if (wineRepository.findByWineName(parserWine.getName()) == null) {
-                            log.info("Wine not found");
-                            Wine wine = new Wine();
-                            wine.setWineID(UUID.randomUUID().toString());
-                            log.info("New wine created with id {}", wine.getWineID());
-                            wine.setWineName(parserWine.getName() == null ? "" : parserWine.getName());
-                            log.info("New wine created with name {}", parserWine.getName());
+                        WinePosition winePosition = new WinePosition();
+                        winePosition.setId(UUID.randomUUID().toString());
+
+                        boolean isWineExists = isWineExists(parserWine.getName());
+                        log.info(isWineExists ? "Wine not found" : "Wine exists");
+
+                        Wine wine = getWineAssociatedWithWinePosition(parserWine.getName(), winePosition);
+                        if (isWineExists) {
+                            associateWineWithProducer(wine, parserWine);
+                            associateWineWithBrand(wine, parserWine);
+                            associateWineWithColor(wine, parserWine);
+                            associateWineWithSugar(wine, parserWine);
+
+                            associateWineWithGrapes(wine, parserWine);
+                            associateWineWithRegions(wine, parserWine);
+
                             wine.setProduction_year(parserWine.getYear());
                             log.info("New wine created with year {}", parserWine.getYear());
                             wine.setStrength(parserWine.getStrength());
                             log.info("New wine created with strength {}", parserWine.getStrength());
 
-                            log.info(parserWine.getColor().name());
-                            Optional<Color> firstColour = Arrays.stream(Color.values()).filter(x -> x.name().toLowerCase()
-                                    .equals(parserWine.getColor().name().toLowerCase())).findFirst();
-                            wine.setWineColor(firstColour.orElse(Color.RED));
-
-                            log.info(parserWine.getSugar().name());
-                            Optional<Sugar> firstSugar = Arrays.stream(Sugar.values()).filter(x -> x.name().toLowerCase()
-                                    .equals(parserWine.getSugar().name().toLowerCase())).findFirst();
-                            wine.setWineSugar(firstSugar.orElse(Sugar.DRY));
-
-                            if (parserWine.getManufacturer() != null) {
-                                if (producerRepository.findByProducerName(parserWine.getManufacturer()) == null) {
-                                    Producer producer = new Producer();
-                                    producer.setProducerID(UUID.randomUUID().toString());
-                                    producer.setProducerName(parserWine.getManufacturer());
-                                    producer.setProducerWines(new ArrayList<Wine>());
-                                    producerRepository.save(producer);
-                                    entitiesCreatedCounter++;
-                                }
-                                wine.setWineProducer(producerRepository.findByProducerName(parserWine.getManufacturer()));
-                                log.info("producer with id {} setted", producerRepository.findByProducerName(parserWine.getManufacturer()).getProducerID());
-                            } else {
-                                if (producerRepository.findByProducerName("") == null) {
-                                    Producer producer = new Producer();
-                                    producer.setProducerID(UUID.randomUUID().toString());
-                                    producer.setProducerName(parserWine.getManufacturer());
-                                    producer.setProducerWines(new ArrayList<Wine>());
-                                    producerRepository.save(producer);
-                                    entitiesCreatedCounter++;
-                                }
-                                wine.setWineProducer(producerRepository.findByProducerName(""));
-                                log.info("producer with id {} setted", producerRepository.findByProducerName("").getProducerID());
-                            }
-
-
-                            if (parserWine.getBrand() != null) {
-                                if (brandRepository.findBrandByBrandName(parserWine.getBrand()) == null) {
-                                    Brand brand = new Brand();
-                                    brand.setBrandID(UUID.randomUUID().toString());
-                                    brand.setBrandName(parserWine.getBrand());
-                                    brand.setBrandWines(new ArrayList<Wine>());
-                                    brandRepository.save(brand);
-                                    entitiesCreatedCounter++;
-                                }
-                                wine.setWineBrand(brandRepository.findBrandByBrandName(parserWine.getBrand()));
-                                log.info("brand with id {} setted", brandRepository.findBrandByBrandName(parserWine.getBrand()).getBrandID());
-                            } else {
-                                if (brandRepository.findBrandByBrandName("") == null) {
-                                    Brand brand = new Brand();
-                                    brand.setBrandID(UUID.randomUUID().toString());
-                                    brand.setBrandName("");
-                                    brand.setBrandWines(new ArrayList<Wine>());
-                                    brandRepository.save(brand);
-                                    entitiesCreatedCounter++;
-                                }
-                                wine.setWineBrand(brandRepository.findBrandByBrandName(""));
-                                log.info("brand with id {} setted", brandRepository.findBrandByBrandName("").getBrandID());
-                            }
                             wineRepository.save(wine);
-                            entitiesCreatedCounter++;
-
-                            if (!parserWine.getGrapeSortList().isEmpty() && parserWine.getGrapeSortList() != null) {
-                                int grapeCount = parserWine.getGrapeSortList().size();
-                                for (int i = 0; i < grapeCount; i++) {
-                                    log.info(parserWine.getGrapeSort(i) + " start processing");
-                                    if (grapeRepository.findByGrapeName(parserWine.getGrapeSort(i)) == null) {
-                                        Grape grape = new Grape();
-                                        grape.setGrapeID(UUID.randomUUID().toString());
-                                        grape.setGrapeName(parserWine.getGrapeSort(i));
-
-                                        ArrayList<Wine> grapeWines = new ArrayList<>();
-                                        grapeWines.add(wine);
-
-                                        grape.setGrapeWines(grapeWines);
-                                        grapeRepository.save(grape);
-                                        entitiesCreatedCounter++;
-                                        log.info("grape with id {} and name {} saved", grape.getGrapeID(), grape.getGrapeName());
-                                    } else {
-                                        Grape byGrapeName = grapeRepository.findByGrapeName(parserWine.getGrapeSort(i));
-                                        byGrapeName.getGrapeWines().add(wine);
-                                        grapeRepository.save(byGrapeName);
-                                    }
-                                }
-
-                                if (grapeCount > 0) {
-                                    wine.setWineGrape(parserWine.getGrapeSortList().stream().map(grapeRepository::findByGrapeName).collect(Collectors.toList()));
-                                }
-                                log.info("Grapes with ids {} setted", parserWine.getGrapeSortList().stream().reduce((x, y) -> x + " " + y));
-                            } else {
-                                wine.setWineGrape(new ArrayList<>());
-                            }
-
-                            if (!parserWine.getRegionList().isEmpty() && parserWine != null) {
-                                int regionCount = parserWine.getRegionList().size();
-
-                                for (int i = 0; i < regionCount; i++) {
-                                    log.info(parserWine.getRegion(i) + " start processing");
-                                    if (regionRepository.findByRegionName(parserWine.getRegion(i)) == null) {
-                                        Region region = new Region();
-                                        region.setRegionID(UUID.randomUUID().toString());
-                                        region.setRegionCountry(parserWine.getCountry());
-                                        region.setRegionName(parserWine.getRegion(i));
-
-                                        ArrayList<Wine> regionWines = new ArrayList<>();
-                                        regionWines.add(wine);
-
-                                        region.setRegionWines(regionWines);
-                                        regionRepository.save(region);
-                                        entitiesCreatedCounter++;
-                                    } else {
-                                        Region byRegionName = regionRepository.findByRegionName(parserWine.getRegion(i));
-                                        byRegionName.getRegionWines().add(wine);
-                                        regionRepository.save(byRegionName);
-                                    }
-                                }
-
-                                if (regionCount > 0) {
-                                    wine.setWineRegion(parserWine.getRegionList().stream().map(regionRepository::findByRegionName).collect(Collectors.toList()));
-                                }
-                                log.info("Regions with ids {} setted", parserWine.getRegionList().stream().reduce((x, y) -> x + " " + y));
-                            } else {
-                                wine.setWineRegion(new ArrayList<>());
-                            }
-                            wineRepository.save(wine);
-
-                            if (parserWine.getManufacturer() != null) {
-                                Producer byProducerName = producerRepository.findByProducerName(parserWine.getManufacturer());
-                                byProducerName.getProducerWines().add(wine);
-                                producerRepository.save(byProducerName);
-                                log.info("Producer with id {} saved", byProducerName.getProducerID());
-                            }
-                            if (parserWine.getBrand() != null) {
-                                Brand brandByBrandName = brandRepository.findBrandByBrandName(parserWine.getBrand());
-                                brandByBrandName.getBrandWines().add(wine);
-                                brandRepository.save(brandByBrandName);
-                                log.info("Brand with id {} saved", brandByBrandName.getBrandID());
-                            }
-                            if (parserWine.getGrapeSortList() != null && !parserWine.getGrapeSortList().isEmpty()) {
-                                parserWine.getGrapeSortList().forEach(x -> {
-                                    Grape byId = grapeRepository.findByGrapeName(x);
-                                    log.info(byId.getGrapeName());
-                                    byId.getGrapeWines().add(wine);
-                                    grapeRepository.save(byId);
-                                    log.info("Grape with id {} saved", byId.getGrapeID());
-                                });
-                            }
-                            if (parserWine.getRegionList() != null && !parserWine.getRegionList().isEmpty()) {
-                                parserWine.getRegionList().forEach(x -> {
-                                    Region byRegionID = regionRepository.findByRegionName(x);
-                                    log.info(byRegionID.getRegionName());
-                                    byRegionID.getRegionWines().add(wine);
-                                    regionRepository.save(byRegionID);
-                                    log.info("Region with id {} saved", byRegionID.getRegionID());
-                                });
-                            }
                         }
-                        Wine wine = wineRepository.findByWineName(parserWine.getName());
 
-
-                        WinePosition winePosition = new WinePosition();
                         winePosition.setWpWine(wineRepository.findWineByWineID(wine.getWineID()));
-                        winePosition.setId(UUID.randomUUID().toString());
                         winePosition.setDescription(parserWine.getDescription());
                         winePosition.setImage(parserWine.getImage().getBytes());
                         winePosition.setVolume(parserWine.getCapacity());
                         winePosition.setPrice(parserWine.getOldPrice());
                         winePosition.setActualPrice(parserWine.getNewPrice());
                         winePosition.setGastronomy(parserWine.getGastronomy());
+                        winePosition.setLinkToWine(parserWine.getLink());
+
+                        associateWinePositionWithShop(winePosition, wineParsedEvent);
 
                         winePositionRepository.save(winePosition);
-                        if (wineParsedEvent.getShopLink() != null) {
-                            if (shopRepository.findByShopSite(wineParsedEvent.getShopLink()) == null) {
-                                Shop shop = new Shop();
-                                shop.setShopID(UUID.randomUUID().toString());
-                                shop.setShopSite(wineParsedEvent.getShopLink());
-
-                                ArrayList<WinePosition> winePositions = new ArrayList<>();
-                                winePositions.add(winePosition);
-
-                                shop.setWinePositions(winePositions);
-                                shopRepository.save(shop);
-                                entitiesCreatedCounter++;
-                            } else {
-                                Shop byShopSite = shopRepository.findByShopSite(wineParsedEvent.getShopLink());
-                                byShopSite.getWinePositions().add(winePosition);
-                                shopRepository.save(byShopSite);
-
-                            }
-                            winePosition.setShop(shopRepository.findByShopSite(wineParsedEvent.getShopLink()));
-                            winePositionRepository.save(winePosition);
-                            log.info("Shop with name {} setted", shopRepository.findByShopSite(wineParsedEvent.getShopLink()).getShopID());
-                        } else {
-                            if (shopRepository.findByShopSite("") == null) {
-                                Shop shop = new Shop();
-                                shop.setShopID(UUID.randomUUID().toString());
-                                shop.setShopSite("");
-
-                                ArrayList<WinePosition> winePositions = new ArrayList<>();
-                                winePositions.add(winePosition);
-
-                                shop.setWinePositions(winePositions);
-                                shopRepository.save(shop);
-                                entitiesCreatedCounter++;
-                            }else {
-                                Shop byShopSite = shopRepository.findByShopSite("");
-                                byShopSite.getWinePositions().add(winePosition);
-                                shopRepository.save(byShopSite);
-                            }
-                            winePosition.setShop(shopRepository.findByShopSite(parserWine.getLink()));
-                            winePositionRepository.save(winePosition);
-                            log.info("Shop with id {} setted", shopRepository.findByShopSite(parserWine.getLink()).getShopID());
-                        }
-                        if (wineParsedEvent.getShopLink() != null) {
-                            Shop byShopSite = shopRepository.findByShopSite(wineParsedEvent.getShopLink());
-                            log.info(byShopSite.getShopSite());
-                            log.info(byShopSite.getShopID());
-                            byShopSite.getWinePositions().add(winePositionRepository.findById(winePosition.getId()).get());
-                            shopRepository.save(byShopSite);
-                            log.info("Shop with id {} saved", byShopSite.getShopID());
-                        }
                         log.info(parserWine.getName() + " saved");
-                        entitiesCreatedCounter++;
-
                     } catch (Exception e) {
                         log.error(e.getMessage());
                         log.error(e.toString());
                         log.error((Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).reduce((x, y) -> x + "\n" + y).get()));
-                        log.error(e.getCause().getMessage());
-                        log.error(e.getLocalizedMessage());
-                        log.error(e.getClass().getName());
                     }
                 });
-
-
     }
+
+    private void associateWineWithProducer(Wine wine, ParserApi.Wine parserWine) {
+        boolean isProducerPresented = parserWine.getManufacturer() != null;
+        Producer producer;
+        if (isProducerPresented) {
+            producer = getProducerAssociatedWithWine(parserWine.getManufacturer(), wine);
+        } else {
+            producer = getProducerAssociatedWithWine(PRODUCER_NOT_PRESENTED, wine);
+        }
+        wine.setWineProducer(producer);
+    }
+
+    private void associateWineWithBrand(Wine wine, ParserApi.Wine parserWine) {
+        boolean isBrandPresented = parserWine.getBrand() != null;
+        Brand brand;
+        if (isBrandPresented) {
+            brand = getBrandAssociatedWithWine(parserWine.getBrand(), wine);
+        } else {
+            brand = getBrandAssociatedWithWine(BRAND_NOT_PRESENTED, wine);
+        }
+        wine.setWineBrand(brand);
+    }
+
+    private void associateWineWithColor(Wine wine, ParserApi.Wine parserWine) {
+        boolean isColorPresented = parserWine.getColor() != null;
+        Color color;
+        if (isColorPresented) {
+            color = getColorAssociatedWithWine(parserWine.getColor().name(), wine);
+        } else {
+            color = getColorAssociatedWithWine(COLOR_NOT_PRESENTED, wine);
+        }
+        wine.setWineColor(color);
+    }
+
+    private void associateWineWithSugar(Wine wine, ParserApi.Wine parserWine) {
+        boolean isSugarPresented = parserWine.getSugar() != null;
+        Sugar sugar;
+        if (isSugarPresented) {
+            sugar = getSugarAssociatedWithWine(parserWine.getSugar().name(), wine);
+        } else {
+            sugar = getSugarAssociatedWithWine(SUGAR_NOT_PRESENTED, wine);
+        }
+        wine.setWineSugar(sugar);
+    }
+
+
+    private void associateWineWithGrapes(Wine wine, ParserApi.Wine parserWine) {
+        boolean isGrapeListPresented = parserWine.getGrapeSortList() != null;
+        List<Grape> grapes = new ArrayList<>();
+        if (isGrapeListPresented) {
+            boolean isGrapeListEmpty = parserWine.getGrapeSortList().isEmpty();
+            if (!isGrapeListEmpty) {
+                parserWine.getGrapeSortList().forEach(x -> grapes.add(getGrapeAssociatedWithWine(x, wine)));
+            }
+        } else {
+            grapes.add(getGrapeAssociatedWithWine(GRAPE_NOT_PRESENTED, wine));
+        }
+        wine.setWineGrape(grapes);
+    }
+
+    private void associateWineWithRegions(Wine wine, ParserApi.Wine parserWine) {
+        boolean isRegionListPresented = parserWine.getRegionList() != null;
+        List<Region> regions = new ArrayList<>();
+        if (isRegionListPresented) {
+            boolean isRegionListEmpty = parserWine.getRegionList().isEmpty();
+            if (!isRegionListEmpty) {
+                parserWine.getRegionList().forEach(x -> regions.add(getRegionAssociatedWithWine(x, wine)));
+            }
+        } else {
+            regions.add(getRegionAssociatedWithWine(REGION_NOT_PRESENTED, wine));
+        }
+        wine.setWineRegion(regions);
+    }
+
+    private void associateWinePositionWithShop(WinePosition winePosition, ParserApi.WineParsedEvent wineParsedEvent) {
+        boolean isShopPresented = wineParsedEvent.getShopLink() != null;
+        Shop shop;
+        if (isShopPresented) {
+            shop = getShopAssociatedWithWinePosition(wineParsedEvent.getShopLink(), winePosition);
+        } else {
+            shop = getShopAssociatedWithWinePosition(SHOP_NOT_PRESENTED, winePosition);
+        }
+        winePosition.setShop(shop);
+    }
+
+    private boolean isWineExists(String wineName) {
+        return wineRepository.findByWineName(wineName) == null;
+    }
+
+    private Wine createWine(String wineName) {
+        Wine wine = new Wine();
+        wine.setWineID(UUID.randomUUID().toString());
+        wine.setWineName(wineName);
+        log.info("Вино с названием {} создан", wineName);
+        return wine;
+    }
+
+    private Wine getWineAssociatedWithWinePosition(String wineName, WinePosition winePosition) {
+        boolean isWineExists = isWineExists(wineName);
+        log.info("Вино с названием " + wineName + (isWineExists ? " " : " не ") + "существует");
+        Wine byWineName = isWineExists ? wineRepository.findByWineName(wineName) : createWine(wineName);
+        byWineName.getWinePositions().add(winePosition);
+        wineRepository.save(byWineName);
+        return byWineName;
+    }
+
+    private boolean isShopExists(String shopSite) {
+        return shopRepository.findByShopSite(shopSite) != null;
+    }
+
+    private Shop createShop(String shopSite) {
+        Shop shop = new Shop();
+        shop.setShopSite(shopSite);
+        shop.setShopID(UUID.randomUUID().toString());
+        shop.setWinePositions(new ArrayList<>());
+        log.info("Магазин с ссылкой {} создан", shopSite);
+        return shop;
+    }
+
+    private Shop getShopAssociatedWithWinePosition(String shopSite, WinePosition winePosition) {
+        boolean isShopExists = isShopExists(shopSite);
+        log.info("Магазин с ссылкой " + shopSite + (isShopExists ? " " : " не ") + "существует");
+        Shop byShopSite = isShopExists ? shopRepository.findByShopSite(shopSite) : createShop(shopSite);
+        byShopSite.getWinePositions().add(winePosition);
+        shopRepository.save(byShopSite);
+        return byShopSite;
+    }
+
+    private boolean isBrandExists(String brandName) {
+        return brandRepository.findBrandByBrandName(brandName) == null;
+    }
+
+    private Brand createBrand(String brandName) {
+        Brand brand = new Brand();
+        brand.setBrandName(brandName);
+        brand.setBrandID(UUID.randomUUID().toString());
+        log.info("Бренд с названием {} создан", brandName);
+        return brand;
+    }
+
+    private Brand getBrandAssociatedWithWine(String brandName, Wine wine) {
+        boolean isBrandExists = isBrandExists(brandName);
+        log.info("Бренд с названием " + brandName + (isBrandExists ? " " : " не ") + "существует");
+        Brand byBrandName = isBrandExists ? brandRepository.findBrandByBrandName(brandName) : createBrand(brandName);
+        byBrandName.getBrandWines().add(wine);
+        brandRepository.save(byBrandName);
+        return byBrandName;
+    }
+
+    private boolean isGrapeExists(String grapeName) {
+        return grapeRepository.findByGrapeName(grapeName) == null;
+    }
+
+    private Grape createGrape(String grapeName) {
+        Grape grape = new Grape();
+        grape.setGrapeName(grapeName);
+        grape.setGrapeID(UUID.randomUUID().toString());
+        log.info("Сорт с названием {} создан", grapeName);
+        return grape;
+    }
+
+    private Grape getGrapeAssociatedWithWine(String grapeName, Wine wine) {
+        boolean isGrapeExists = isGrapeExists(grapeName);
+        log.info("Сорт с названием " + grapeName + (isGrapeExists ? " " : " не ") + "существует");
+        Grape byGrapeName = isGrapeExists ? grapeRepository.findByGrapeName(grapeName) : createGrape(grapeName);
+        byGrapeName.getGrapeWines().add(wine);
+        grapeRepository.save(byGrapeName);
+        return byGrapeName;
+    }
+
+    private boolean isProducerExists(String producerName) {
+        return producerRepository.findByProducerName(producerName) == null;
+    }
+
+    private Producer createProducer(String producerName) {
+        Producer producer = new Producer();
+        producer.setProducerName(producerName);
+        producer.setProducerID(UUID.randomUUID().toString());
+        log.info("Производитель с названием {} создан", producerName);
+        return producer;
+    }
+
+    private Producer getProducerAssociatedWithWine(String producerName, Wine wine) {
+        boolean isProducerExists = isProducerExists(producerName);
+        log.info("Производитель с названием " + producerName + (isProducerExists ? " " : " не ") + "существует");
+        Producer byProducerName = isProducerExists ? producerRepository.findByProducerName(producerName) : createProducer(producerName);
+        byProducerName.getProducerWines().add(wine);
+        producerRepository.save(byProducerName);
+        return byProducerName;
+    }
+
+    private boolean isRegionExists(String regionName) {
+        return regionRepository.findByRegionName(regionName) == null;
+    }
+
+    private Region createRegion(String regionName) {
+        Region region = new Region();
+        region.setRegionName(regionName);
+        region.setRegionID(UUID.randomUUID().toString());
+        log.info("Регион с названием {} создан", regionName);
+        return region;
+    }
+
+    private Region getRegionAssociatedWithWine(String regionName, Wine wine) {
+        boolean isRegionExists = isRegionExists(regionName);
+        log.info("Регион с названием " + regionName + (isRegionExists ? " " : " не ") + "существует");
+        Region byRegionName = isRegionExists ? regionRepository.findByRegionName(regionName) : createRegion(regionName);
+        byRegionName.getRegionWines().add(wine);
+        regionRepository.save(byRegionName);
+        return byRegionName;
+    }
+
+    private boolean isColorExists(String colorName) {
+        return colorRepository.findByColorName(colorName) == null;
+    }
+
+    private Color createColor(String colorName) {
+        Color color = new Color();
+        color.setColorName(colorName);
+        color.setColorID(UUID.randomUUID().toString());
+        log.info("Цвет с названием {} создан", colorName);
+        return color;
+    }
+
+    private Color getColorAssociatedWithWine(String colorName, Wine wine) {
+        boolean isColorExists = isColorExists(colorName);
+        log.info("Цвета с названием " + colorName + (isColorExists ? " " : " не ") + "существует");
+        Color byColorName = isColorExists ? colorRepository.findByColorName(colorName) : createColor(colorName);
+        byColorName.getColorWines().add(wine);
+        colorRepository.save(byColorName);
+        return byColorName;
+    }
+
+    private boolean isSugarExists(String sugarName) {
+        return sugarRepository.findBySugarName(sugarName) == null;
+    }
+
+    private Sugar createSugar(String sugarName) {
+        Sugar sugar = new Sugar();
+        sugar.setSugarName(sugarName);
+        sugar.setSugarID(UUID.randomUUID().toString());
+        log.info("Сахар с названием {} создан", sugarName);
+        return sugar;
+    }
+
+    private Sugar getSugarAssociatedWithWine(String sugarName, Wine wine) {
+        boolean isSugarExists = isSugarExists(sugarName);
+        log.info("Сахар с названием " + sugarName + (isSugarExists ? " " : " не ") + "существует");
+        Sugar bySugarName = isSugarExists ? sugarRepository.findBySugarName(sugarName) : createSugar(sugarName);
+        bySugarName.getSugarWines().add(wine);
+        sugarRepository.save(bySugarName);
+        return bySugarName;
+    }
+
 }
