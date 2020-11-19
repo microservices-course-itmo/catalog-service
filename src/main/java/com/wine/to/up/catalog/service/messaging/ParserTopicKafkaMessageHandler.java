@@ -136,7 +136,6 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         wine.setWineSugar(sugar);
     }
 
-
     private void associateWineWithGrapes(Wine wine, ParserApi.Wine parserWine) {
         boolean isGrapeListPresented = parserWine.getGrapeSortList() != null;
         List<Grape> grapes = new ArrayList<>();
@@ -177,7 +176,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
     }
 
     private boolean isWineExists(String wineName) {
-        return wineRepository.findByWineName(wineName) == null;
+        return wineRepository.findByWineName(wineName) != null;
     }
 
     private Wine createWine(String wineName) {
@@ -220,7 +219,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
     }
 
     private boolean isBrandExists(String brandName) {
-        return brandRepository.findBrandByBrandName(brandName) == null;
+        return brandRepository.findBrandByBrandName(brandName) != null;
     }
 
     private Brand createBrand(String brandName) {
@@ -241,7 +240,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
     }
 
     private boolean isGrapeExists(String grapeName) {
-        return grapeRepository.findByGrapeName(grapeName) == null;
+        return grapeRepository.findByGrapeName(grapeName) != null;
     }
 
     private Grape createGrape(String grapeName) {
@@ -262,7 +261,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
     }
 
     private boolean isProducerExists(String producerName) {
-        return producerRepository.findByProducerName(producerName) == null;
+        return producerRepository.findByProducerName(producerName) != null;
     }
 
     private Producer createProducer(String producerName) {
@@ -283,7 +282,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
     }
 
     private boolean isRegionExists(String regionName) {
-        return regionRepository.findByRegionName(regionName) == null;
+        return regionRepository.findByRegionName(regionName) != null;
     }
 
     private Region createRegion(String regionName) {
@@ -304,7 +303,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
     }
 
     private boolean isColorExists(String colorName) {
-        return colorRepository.findByColorName(colorName) == null;
+        return colorRepository.findByColorName(colorName) != null;
     }
 
     private Color createColor(String colorName) {
@@ -325,7 +324,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
     }
 
     private boolean isSugarExists(String sugarName) {
-        return sugarRepository.findBySugarName(sugarName) == null;
+        return sugarRepository.findBySugarName(sugarName) != null;
     }
 
     private Sugar createSugar(String sugarName) {
@@ -344,5 +343,4 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         sugarRepository.save(bySugarName);
         return bySugarName;
     }
-
 }
