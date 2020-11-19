@@ -1,0 +1,15 @@
+
+CREATE TABLE color
+(
+    id   VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+CREATE TABLE sugar
+(
+    id   VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+ALTER TABLE Wine ADD COLUMN color_id VARCHAR(255);
+ALTER TABLE Wine ADD COLUMN sugar_id VARCHAR(255);
