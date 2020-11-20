@@ -43,58 +43,61 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         log.info("Message received from " + wineParsedEvent.getParserName() + " and site " + wineParsedEvent.getShopLink());
         log.info("Received " + wineParsedEvent.getWinesList().size() + " wines");
         log.info("Wine parsed event: " + wineParsedEvent.toString());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                wineParsedEvent.getWinesList()
+                        .stream()
+                        .forEach(parserWine -> {
+                            try {
+                                log.info(parserWine.getName() + " received");
+                                WinePosition winePosition = new WinePosition();
+                                winePosition.setId(UUID.randomUUID().toString());
+                                winePositionRepository.save(winePosition);
 
-        wineParsedEvent.getWinesList()
-                .stream()
-                .forEach(parserWine -> {
+                                boolean isWineExists = isWineExists(parserWine.getName());
+                                log.info(isWineExists ? "Wine exists" : "Wine not found");
 
-                    try {
-                        log.info(parserWine.getName() + " received");
-                        WinePosition winePosition = new WinePosition();
-                        winePosition.setId(UUID.randomUUID().toString());
-                        winePositionRepository.save(winePosition);
+                                Wine wine = getWineAssociatedWithWinePosition(parserWine.getName(), winePosition);
+                                if (!isWineExists) {
+                                    associateWineWithProducer(wine, parserWine);
+                                    associateWineWithBrand(wine, parserWine);
+                                    associateWineWithColor(wine, parserWine);
+                                    associateWineWithSugar(wine, parserWine);
 
-                        boolean isWineExists = isWineExists(parserWine.getName());
-                        log.info(isWineExists ? "Wine exists" : "Wine not found");
+                                    associateWineWithGrapes(wine, parserWine);
+                                    associateWineWithRegions(wine, parserWine);
 
-                        Wine wine = getWineAssociatedWithWinePosition(parserWine.getName(), winePosition);
-                        if (!isWineExists) {
-                            associateWineWithProducer(wine, parserWine);
-                            associateWineWithBrand(wine, parserWine);
-                            associateWineWithColor(wine, parserWine);
-                            associateWineWithSugar(wine, parserWine);
+                                    wine.setProduction_year(parserWine.getYear());
+                                    log.info("New wine created with year {}", parserWine.getYear());
+                                    wine.setStrength(parserWine.getStrength());
+                                    log.info("New wine created with strength {}", parserWine.getStrength());
 
-                            associateWineWithGrapes(wine, parserWine);
-                            associateWineWithRegions(wine, parserWine);
+                                    wineRepository.save(wine);
+                                }
 
-                            wine.setProduction_year(parserWine.getYear());
-                            log.info("New wine created with year {}", parserWine.getYear());
-                            wine.setStrength(parserWine.getStrength());
-                            log.info("New wine created with strength {}", parserWine.getStrength());
+                                winePosition.setWpWine(wineRepository.findWineByWineID(wine.getWineID()));
+                                winePosition.setDescription(parserWine.getDescription());
+                                winePosition.setImage(parserWine.getImage().getBytes());
+                                winePosition.setVolume(parserWine.getCapacity());
+                                winePosition.setPrice(parserWine.getOldPrice());
+                                winePosition.setActualPrice(parserWine.getNewPrice());
+                                winePosition.setGastronomy(parserWine.getGastronomy());
+                                winePosition.setLinkToWine(parserWine.getLink());
 
-                            wineRepository.save(wine);
-                        }
+                                associateWinePositionWithShop(winePosition, wineParsedEvent);
 
-                        winePosition.setWpWine(wineRepository.findWineByWineID(wine.getWineID()));
-                        winePosition.setDescription(parserWine.getDescription());
-                        winePosition.setImage(parserWine.getImage().getBytes());
-                        winePosition.setVolume(parserWine.getCapacity());
-                        winePosition.setPrice(parserWine.getOldPrice());
-                        winePosition.setActualPrice(parserWine.getNewPrice());
-                        winePosition.setGastronomy(parserWine.getGastronomy());
-                        winePosition.setLinkToWine(parserWine.getLink());
+                                winePositionRepository.save(winePosition);
+                                log.info(parserWine.getName() + " saved");
+                            } catch (Exception e) {
+                                log.error(e.getMessage());
+                                log.error(e.toString());
+                                log.error((Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).reduce((x, y) -> x + "\n" + y).get()));
+                            }
 
-                        associateWinePositionWithShop(winePosition, wineParsedEvent);
-
-                        winePositionRepository.save(winePosition);
-                        log.info(parserWine.getName() + " saved");
-                    } catch (Exception e) {
-                        log.error(e.getMessage());
-                        log.error(e.toString());
-                        log.error((Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).reduce((x, y) -> x + "\n" + y).get()));
-                    }
-
-                });
+                        });
+            }
+        }).start();
     }
 
     private void associateWineWithProducer(Wine wine, ParserApi.Wine parserWine) {
