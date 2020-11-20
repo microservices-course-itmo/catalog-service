@@ -200,6 +200,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         log.info("Вино с названием " + wineName + (isWineExists ? " " : " не ") + "существует");
         Wine byWineName = isWineExists ? wineRepository.findByWineName(wineName) : createWine(wineName);
         byWineName.getWinePositions().add(winePosition);
+        winePosition.setWpWine(byWineName);
         wineRepository.save(byWineName);
         return byWineName;
     }
