@@ -53,7 +53,6 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                                 log.info(parserWine.getName() + " received");
                                 WinePosition winePosition = new WinePosition();
                                 winePosition.setId(UUID.randomUUID().toString());
-                                winePositionRepository.save(winePosition);
 
                                 boolean isWineExists = isWineExists(parserWine.getName());
                                 log.info(isWineExists ? "Wine exists" : "Wine not found");
