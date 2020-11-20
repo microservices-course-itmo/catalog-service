@@ -203,8 +203,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         Wine byWineName = isWineExists ? wineRepository.findByWineName(wineName) : createWine(wineName);
         byWineName.getWinePositions().add(winePosition);
         winePosition.setWpWine(byWineName);
-        winePositionRepository.save(winePosition);
         wineRepository.save(byWineName);
+        winePositionRepository.save(winePosition);
         return byWineName;
     }
 
