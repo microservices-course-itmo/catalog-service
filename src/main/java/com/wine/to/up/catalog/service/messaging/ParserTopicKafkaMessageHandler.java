@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineParsedEvent> {
 
     private final ShopRepository shopRepository;
@@ -48,6 +47,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
     }
 
     @Async
+    @Transactional
     public void save(WineParsedEvent wineParsedEvent){
         wineParsedEvent.getWinesList()
                 .stream()
@@ -56,7 +56,6 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                         log.info(parserWine.getName() + " received");
                         WinePosition winePosition = new WinePosition();
                         winePosition.setId(UUID.randomUUID().toString());
-                        winePositionRepository.save(winePosition);
 
                         boolean isWineExists = isWineExists(parserWine.getName());
                         log.info(isWineExists ? "Wine exists" : "Wine not found");
@@ -101,7 +100,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                 });
     }
 
-    private void associateWineWithProducer(Wine wine, ParserApi.Wine parserWine) {
+    @Transactional
+    public void associateWineWithProducer(Wine wine, ParserApi.Wine parserWine) {
         boolean isProducerPresented = parserWine.getManufacturer() != null;
         Producer producer;
         if (isProducerPresented) {
@@ -112,7 +112,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         wine.setWineProducer(producer);
     }
 
-    private void associateWineWithBrand(Wine wine, ParserApi.Wine parserWine) {
+    @Transactional
+    public void associateWineWithBrand(Wine wine, ParserApi.Wine parserWine) {
         boolean isBrandPresented = parserWine.getBrand() != null;
         Brand brand;
         if (isBrandPresented) {
@@ -123,7 +124,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         wine.setWineBrand(brand);
     }
 
-    private void associateWineWithColor(Wine wine, ParserApi.Wine parserWine) {
+    @Transactional
+    public void associateWineWithColor(Wine wine, ParserApi.Wine parserWine) {
         boolean isColorPresented = parserWine.getColor() != null;
         Color color;
         if (isColorPresented) {
@@ -134,7 +136,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         wine.setWineColor(color);
     }
 
-    private void associateWineWithSugar(Wine wine, ParserApi.Wine parserWine) {
+    @Transactional
+    public void associateWineWithSugar(Wine wine, ParserApi.Wine parserWine) {
         boolean isSugarPresented = parserWine.getSugar() != null;
         Sugar sugar;
         if (isSugarPresented) {
@@ -145,7 +148,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         wine.setWineSugar(sugar);
     }
 
-    private void associateWineWithGrapes(Wine wine, ParserApi.Wine parserWine) {
+    @Transactional
+    public void associateWineWithGrapes(Wine wine, ParserApi.Wine parserWine) {
         boolean isGrapeListPresented = parserWine.getGrapeSortList() != null;
         List<Grape> grapes = new ArrayList<>();
         if (isGrapeListPresented) {
@@ -159,7 +163,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         wine.setWineGrape(grapes);
     }
 
-    private void associateWineWithRegions(Wine wine, ParserApi.Wine parserWine) {
+    @Transactional
+    public void associateWineWithRegions(Wine wine, ParserApi.Wine parserWine) {
         boolean isRegionListPresented = parserWine.getRegionList() != null;
         List<Region> regions = new ArrayList<>();
         if (isRegionListPresented) {
@@ -173,7 +178,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         wine.setWineRegion(regions);
     }
 
-    private void associateWinePositionWithShop(WinePosition winePosition, ParserApi.WineParsedEvent wineParsedEvent) {
+    @Transactional
+    public void associateWinePositionWithShop(WinePosition winePosition, ParserApi.WineParsedEvent wineParsedEvent) {
         boolean isShopPresented = wineParsedEvent.getShopLink() != null;
         Shop shop;
         if (isShopPresented) {
@@ -184,11 +190,13 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         winePosition.setShop(shop);
     }
 
-    private boolean isWineExists(String wineName) {
+    @Transactional
+    public boolean isWineExists(String wineName) {
         return wineRepository.findByWineName(wineName) != null;
     }
 
-    private Wine createWine(String wineName) {
+    @Transactional
+    public Wine createWine(String wineName) {
         Wine wine = new Wine();
         wine.setWineID(UUID.randomUUID().toString());
         wine.setWineName(wineName);
@@ -197,7 +205,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return wine;
     }
 
-    private Wine getWineAssociatedWithWinePosition(String wineName, WinePosition winePosition) {
+    @Transactional
+    public Wine getWineAssociatedWithWinePosition(String wineName, WinePosition winePosition) {
         boolean isWineExists = isWineExists(wineName);
         log.info("Вино с названием " + wineName + (isWineExists ? " " : " не ") + "существует");
         Wine byWineName = isWineExists ? wineRepository.findByWineName(wineName) : createWine(wineName);
@@ -208,11 +217,13 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return byWineName;
     }
 
-    private boolean isShopExists(String shopSite) {
+    @Transactional
+    public boolean isShopExists(String shopSite) {
         return shopRepository.findByShopSite(shopSite) != null;
     }
 
-    private Shop createShop(String shopSite) {
+    @Transactional
+    public Shop createShop(String shopSite) {
         Shop shop = new Shop();
         shop.setShopSite(shopSite);
         shop.setShopID(UUID.randomUUID().toString());
@@ -221,7 +232,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return shop;
     }
 
-    private Shop getShopAssociatedWithWinePosition(String shopSite, WinePosition winePosition) {
+    @Transactional
+    public Shop getShopAssociatedWithWinePosition(String shopSite, WinePosition winePosition) {
         boolean isShopExists = isShopExists(shopSite);
         log.info("Магазин с ссылкой " + shopSite + (isShopExists ? " " : " не ") + "существует");
         Shop byShopSite = isShopExists ? shopRepository.findByShopSite(shopSite) : createShop(shopSite);
@@ -230,11 +242,13 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return byShopSite;
     }
 
-    private boolean isBrandExists(String brandName) {
+    @Transactional
+    public boolean isBrandExists(String brandName) {
         return brandRepository.findBrandByBrandName(brandName) != null;
     }
 
-    private Brand createBrand(String brandName) {
+    @Transactional
+    public Brand createBrand(String brandName) {
         Brand brand = new Brand();
         brand.setBrandName(brandName);
         brand.setBrandID(UUID.randomUUID().toString());
@@ -243,7 +257,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return brand;
     }
 
-    private Brand getBrandAssociatedWithWine(String brandName, Wine wine) {
+    @Transactional
+    public Brand getBrandAssociatedWithWine(String brandName, Wine wine) {
         boolean isBrandExists = isBrandExists(brandName);
         log.info("Бренд с названием " + brandName + (isBrandExists ? " " : " не ") + "существует");
         Brand byBrandName = isBrandExists ? brandRepository.findBrandByBrandName(brandName) : createBrand(brandName);
@@ -252,11 +267,13 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return byBrandName;
     }
 
-    private boolean isGrapeExists(String grapeName) {
+    @Transactional
+    public boolean isGrapeExists(String grapeName) {
         return grapeRepository.findByGrapeName(grapeName) != null;
     }
 
-    private Grape createGrape(String grapeName) {
+    @Transactional
+    public Grape createGrape(String grapeName) {
         Grape grape = new Grape();
         grape.setGrapeName(grapeName);
         grape.setGrapeID(UUID.randomUUID().toString());
@@ -265,7 +282,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return grape;
     }
 
-    private Grape getGrapeAssociatedWithWine(String grapeName, Wine wine) {
+    @Transactional
+    public Grape getGrapeAssociatedWithWine(String grapeName, Wine wine) {
         boolean isGrapeExists = isGrapeExists(grapeName);
         log.info("Сорт с названием " + grapeName + (isGrapeExists ? " " : " не ") + "существует");
         Grape byGrapeName = isGrapeExists ? grapeRepository.findByGrapeName(grapeName) : createGrape(grapeName);
@@ -274,11 +292,13 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return byGrapeName;
     }
 
-    private boolean isProducerExists(String producerName) {
+    @Transactional
+    public boolean isProducerExists(String producerName) {
         return producerRepository.findByProducerName(producerName) != null;
     }
 
-    private Producer createProducer(String producerName) {
+    @Transactional
+    public Producer createProducer(String producerName) {
         Producer producer = new Producer();
         producer.setProducerName(producerName);
         producer.setProducerID(UUID.randomUUID().toString());
@@ -287,7 +307,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return producer;
     }
 
-    private Producer getProducerAssociatedWithWine(String producerName, Wine wine) {
+    @Transactional
+    public Producer getProducerAssociatedWithWine(String producerName, Wine wine) {
         boolean isProducerExists = isProducerExists(producerName);
         log.info("Производитель с названием " + producerName + (isProducerExists ? " " : " не ") + "существует");
         Producer byProducerName = isProducerExists ? producerRepository.findByProducerName(producerName) : createProducer(producerName);
@@ -296,11 +317,13 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return byProducerName;
     }
 
-    private boolean isRegionExists(String regionName) {
+    @Transactional
+    public boolean isRegionExists(String regionName) {
         return regionRepository.findByRegionName(regionName) != null;
     }
 
-    private Region createRegion(String regionName, String countryName) {
+    @Transactional
+    public Region createRegion(String regionName, String countryName) {
         Region region = new Region();
         region.setRegionName(regionName);
         region.setRegionID(UUID.randomUUID().toString());
@@ -310,7 +333,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return region;
     }
 
-    private Region getRegionAssociatedWithWine(String regionName, String countryName, Wine wine) {
+    @Transactional
+    public Region getRegionAssociatedWithWine(String regionName, String countryName, Wine wine) {
         boolean isRegionExists = isRegionExists(regionName);
         log.info("Регион с названием " + regionName + (isRegionExists ? " " : " не ") + "существует");
         Region byRegionName = isRegionExists ? regionRepository.findByRegionName(regionName) : createRegion(regionName, countryName);
@@ -319,11 +343,13 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return byRegionName;
     }
 
-    private boolean isColorExists(String colorName) {
+    @Transactional
+    public boolean isColorExists(String colorName) {
         return colorRepository.findByColorName(colorName) != null;
     }
 
-    private Color createColor(String colorName) {
+    @Transactional
+    public Color createColor(String colorName) {
         Color color = new Color();
         color.setColorName(colorName);
         color.setColorID(UUID.randomUUID().toString());
@@ -332,7 +358,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return color;
     }
 
-    private Color getColorAssociatedWithWine(String colorName, Wine wine) {
+    @Transactional
+    public Color getColorAssociatedWithWine(String colorName, Wine wine) {
         boolean isColorExists = isColorExists(colorName);
         log.info("Цвета с названием " + colorName + (isColorExists ? " " : " не ") + "существует");
         Color byColorName = isColorExists ? colorRepository.findByColorName(colorName) : createColor(colorName);
@@ -341,11 +368,13 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return byColorName;
     }
 
-    private boolean isSugarExists(String sugarName) {
+    @Transactional
+    public boolean isSugarExists(String sugarName) {
         return sugarRepository.findBySugarName(sugarName) != null;
     }
 
-    private Sugar createSugar(String sugarName) {
+    @Transactional
+    public Sugar createSugar(String sugarName) {
         Sugar sugar = new Sugar();
         sugar.setSugarName(sugarName);
         sugar.setSugarID(UUID.randomUUID().toString());
@@ -354,7 +383,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         return sugar;
     }
 
-    private Sugar getSugarAssociatedWithWine(String sugarName, Wine wine) {
+    @Transactional
+    public Sugar getSugarAssociatedWithWine(String sugarName, Wine wine) {
         boolean isSugarExists = isSugarExists(sugarName);
         log.info("Сахар с названием " + sugarName + (isSugarExists ? " " : " не ") + "существует");
         Sugar bySugarName = isSugarExists ? sugarRepository.findBySugarName(sugarName) : createSugar(sugarName);

@@ -2,6 +2,7 @@ package com.wine.to.up.catalog.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -11,7 +12,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class ServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ServiceApplication.class, args);
+        ConfigurableApplicationContext run = SpringApplication.run(ServiceApplication.class, args);
+        System.out.println();
     }
 
 }
