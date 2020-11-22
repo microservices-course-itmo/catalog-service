@@ -10,10 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.annotation.Propagation;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -50,7 +51,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
 
     @Async
     @Transactional
-    public void save(WineParsedEvent wineParsedEvent){
+    public void save(WineParsedEvent wineParsedEvent) {
         wineParsedEvent.getWinesList()
                 .stream()
                 .forEach(parserWine -> {
