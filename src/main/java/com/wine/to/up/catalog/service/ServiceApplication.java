@@ -17,14 +17,7 @@ public class ServiceApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext run = SpringApplication.run(ServiceApplication.class, args);
-        System.out.println();
-        ParserApi.WineParsedEvent defaultInstance = ParserApi.WineParsedEvent.newBuilder()
-                .setShopLink("www.www.www")
-                .addWines(ParserApi.Wine.newBuilder().build())
-                .addWines(ParserApi.Wine.newBuilder().build())
-                .addWines(ParserApi.Wine.newBuilder().build())
-                .build();
-        run.getBean(ParserTopicKafkaMessageHandler.class).handle(defaultInstance);
+
     }
 
 }

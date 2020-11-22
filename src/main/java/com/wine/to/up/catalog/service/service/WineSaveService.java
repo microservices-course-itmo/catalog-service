@@ -45,45 +45,144 @@ public class WineSaveService {
                 .stream()
                 .forEach(parserWine -> {
                     try {
-                        log.info(parserWine.getName() + " received");
+                        Wine byWineName = wineRepository.findByWineName(parserWine.getName());
+
+                        if (byWineName == null) {
+                            String brandName = parserWine.getBrand();
+                            Brand brandByBrandName = brandRepository.findBrandByBrandName(brandName);
+                            if (brandByBrandName == null) {
+                                Brand brand = new Brand();
+                                brand.setBrandName(brandName);
+                                brand.setBrandID(UUID.randomUUID().toString());
+                                brand.setBrandWines(new ArrayList<>());
+                                brandRepository.save(brand);
+                                brandByBrandName = brand;
+                            }
+
+                            String colorName = parserWine.getColor().name();
+                            Color colorByColorName = colorRepository.findByColorName(colorName);
+                            if (colorByColorName == null) {
+                                Color color = new Color();
+                                color.setColorName(colorName);
+                                color.setColorID(UUID.randomUUID().toString());
+                                color.setColorWines(new ArrayList<>());
+                                colorRepository.save(color);
+                                colorByColorName = color;
+                            }
+
+                            String producerName = parserWine.getManufacturer();
+                            Producer producerByProducerName = producerRepository.findByProducerName(producerName);
+                            if (producerByProducerName == null) {
+                                Producer producer = new Producer();
+                                producer.setProducerName(producerName);
+                                producer.setProducerID(UUID.randomUUID().toString());
+                                producer.setProducerWines(new ArrayList<>());
+                                producerRepository.save(producer);
+                                producerByProducerName = producer;
+                            }
+
+                            String sugarName = parserWine.getSugar().name();
+                            Sugar sugarBySugarName = sugarRepository.findBySugarName(sugarName);
+                            if (sugarBySugarName == null) {
+                                Sugar sugar = new Sugar();
+                                sugar.setSugarName(sugarName);
+                                sugar.setSugarID(UUID.randomUUID().toString());
+                                sugar.setSugarWines(new ArrayList<>());
+                                sugarRepository.save(sugar);
+                                sugarBySugarName = sugar;
+                            }
+
+                            List<Region> regionsOfWine = new ArrayList<>();
+                            parserWine.getRegionList().forEach(region -> {
+                                Region byRegionName = regionRepository.findByRegionName(region);
+                                if (byRegionName == null) {
+                                    Region reg = new Region();
+                                    reg.setRegionID(UUID.randomUUID().toString());
+                                    reg.setRegionCountry(parserWine.getCountry());
+                                    reg.setRegionName(region);
+                                    reg.setRegionWines(new ArrayList<>());
+                                    regionRepository.save(reg);
+                                    byRegionName = reg;
+                                }
+                                regionsOfWine.add(byRegionName);
+                            });
+
+                            List<Grape> grapesOfWine = new ArrayList<>();
+                            parserWine.getGrapeSortList().forEach(grape -> {
+                                Grape byGrapeName = grapeRepository.findByGrapeName(grape);
+                                if (byGrapeName == null) {
+                                    Grape gr = new Grape();
+                                    gr.setGrapeID(UUID.randomUUID().toString());
+                                    gr.setGrapeName(grape);
+                                    gr.setGrapeWines(new ArrayList<>());
+                                    grapeRepository.save(gr);
+                                    byGrapeName = gr;
+                                }
+                                grapesOfWine.add(byGrapeName);
+                            });
+
+                            Wine wine = new Wine();
+                            wine.setWineID(UUID.randomUUID().toString());
+                            wine.setWineName(parserWine.getName());
+                            wine.setProduction_year(parserWine.getYear());
+                            wine.setStrength(parserWine.getStrength());
+
+                            wine.setWineBrand(brandByBrandName);
+                            wine.setWineColor(colorByColorName);
+                            wine.setWineSugar(sugarBySugarName);
+                            wine.setWineProducer(producerByProducerName);
+
+                            wine.setWineRegion(regionsOfWine);
+                            wine.setWineGrape(grapesOfWine);
+
+                            wine.setWinePositions(new ArrayList<>());
+
+                            brandByBrandName.getBrandWines().add(wine);
+
+                            colorByColorName.getColorWines().add(wine);
+
+                            sugarBySugarName.getSugarWines().add(wine);
+
+                            producerByProducerName.getProducerWines().add(wine);
+
+                            regionsOfWine.forEach(region -> {
+                                region.getRegionWines().add(wine);
+                            });
+
+                            grapesOfWine.forEach(grape -> {
+                                grape.getGrapeWines().add(wine);
+                            });
+
+                            byWineName = wine;
+                            wineRepository.save(wine);
+
+                        }
+                        Shop byShopSite = shopRepository.findByShopSite(wineParsedEvent.getShopLink());
+                        if (byShopSite == null) {
+                            Shop shop = new Shop();
+                            shop.setShopID(UUID.randomUUID().toString());
+                            shop.setShopSite(wineParsedEvent.getShopLink());
+                            shop.setWinePositions(new ArrayList<>());
+                            byShopSite = shop;
+                        }
+                        shopRepository.save(byShopSite);
+
                         WinePosition winePosition = new WinePosition();
                         winePosition.setWpId(UUID.randomUUID().toString());
-                        winePositionRepository.save(winePosition);
 
-                        boolean isWineExists = isWineExists(parserWine.getName());
-                        log.info(isWineExists ? "Wine exists" : "Wine not found");
+                        winePosition.setShop(byShopSite);
+                        winePosition.setWpWine(byWineName);
 
-                        Wine wine = getWineAssociatedWithWinePosition(parserWine.getName(), winePosition);
-                        if (!isWineExists) {
-                            associateWineWithProducer(wine, parserWine);
-                            associateWineWithBrand(wine, parserWine);
-                            associateWineWithColor(wine, parserWine);
-                            associateWineWithSugar(wine, parserWine);
-
-                            associateWineWithGrapes(wine, parserWine);
-                            associateWineWithRegions(wine, parserWine);
-
-                            wine.setProduction_year(parserWine.getYear());
-                            log.info("New wine created with year {}", parserWine.getYear());
-                            wine.setStrength(parserWine.getStrength());
-                            log.info("New wine created with strength {}", parserWine.getStrength());
-
-                            wineRepository.save(wine);
-                        }
-
-                        winePosition.setWpWine(wineRepository.findWineByWineID(wine.getWineID()));
-                        winePosition.setDescription(parserWine.getDescription());
+                        winePosition.setLinkToWine(parserWine.getLink());
                         winePosition.setImage(parserWine.getImage().getBytes());
+                        winePosition.setGastronomy(parserWine.getGastronomy());
+                        winePosition.setDescription(parserWine.getDescription());
                         winePosition.setVolume(parserWine.getCapacity());
                         winePosition.setPrice(parserWine.getOldPrice());
                         winePosition.setActualPrice(parserWine.getNewPrice());
-                        winePosition.setGastronomy(parserWine.getGastronomy());
-                        winePosition.setLinkToWine(parserWine.getLink());
-
-                        associateWinePositionWithShop(winePosition, wineParsedEvent);
 
                         winePositionRepository.save(winePosition);
-                        log.info(parserWine.getName() + " saved");
+
                     } catch (Exception e) {
                         log.error(e.getMessage());
                         log.error(e.toString());
