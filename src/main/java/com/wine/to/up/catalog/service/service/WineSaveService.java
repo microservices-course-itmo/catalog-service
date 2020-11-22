@@ -29,7 +29,7 @@ public class WineSaveService {
     private final ColorRepository colorRepository;
     private final SugarRepository sugarRepository;
 
-    private final String PRODUCER_NOT_PRESENTED = "PRODUCER_BOT_PRESENTED";
+    private final String PRODUCER_NOT_PRESENTED = "PRODUCER_NOT_PRESENTED";
     private final String BRAND_NOT_PRESENTED = "BRAND_NOT_PRESENTED";
     private final String COLOR_NOT_PRESENTED = "COLOR_NOT_PRESENTED";
     private final String SUGAR_NOT_PRESENTED = "SUGAR_NOT_PRESENTED";
@@ -90,6 +90,7 @@ public class WineSaveService {
                     }
 
                 });
+        log.info("Processing finish");
     }
 
     public void associateWineWithProducer(Wine wine, ParserApi.Wine parserWine) {
