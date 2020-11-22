@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineParsedEvent> {
 
     private final ShopRepository shopRepository;
@@ -55,7 +57,8 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
                     try {
                         log.info(parserWine.getName() + " received");
                         WinePosition winePosition = new WinePosition();
-                        winePosition.setId(UUID.randomUUID().toString());
+                        winePosition.setWpId(UUID.randomUUID().toString());
+                        winePositionRepository.save(winePosition);
 
                         boolean isWineExists = isWineExists(parserWine.getName());
                         log.info(isWineExists ? "Wine exists" : "Wine not found");
@@ -210,8 +213,9 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         boolean isWineExists = isWineExists(wineName);
         log.info("Вино с названием " + wineName + (isWineExists ? " " : " не ") + "существует");
         Wine byWineName = isWineExists ? wineRepository.findByWineName(wineName) : createWine(wineName);
-        byWineName.getWinePositions().add(winePosition);
         winePosition.setWpWine(byWineName);
+        wineRepository.save(byWineName);
+        byWineName.getWinePositions().add(winePosition);
         wineRepository.save(byWineName);
         winePositionRepository.save(winePosition);
         return byWineName;

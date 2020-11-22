@@ -14,4 +14,6 @@ import java.util.List;
 public interface WinePositionRepository extends PagingAndSortingRepository<WinePosition, String>, JpaSpecificationExecutor<WinePosition> {
     List<WinePosition> findAllByShop(Shop shop, Pageable pageable);
     List<WinePosition> findAllByWpWine(Wine wine, Pageable pageable);
+    WinePosition findByWpId(String id);
+
 }

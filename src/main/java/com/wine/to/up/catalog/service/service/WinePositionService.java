@@ -70,7 +70,7 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
 
     private WinePositionDTO getWinePositionDTO(WinePosition winePosition) {
         WinePositionDTO winePositionDTO = new WinePositionDTO();
-        winePositionDTO.setWine_position_id(winePosition.getId());
+        winePositionDTO.setWine_position_id(winePosition.getWpId());
         winePositionDTO.setWine_id(winePosition.getWpWine().getWineID());
         winePositionDTO.setShop_id(winePosition.getShop().getShopID());
         winePositionDTO.setPrice(winePosition.getPrice());
@@ -99,7 +99,7 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
     @Override
     public void create(WinePositionDTO winePositionDTO) {
         WinePosition winePosition = new WinePosition();
-        winePosition.setId(UUID.randomUUID().toString());
+        winePosition.setWpId(UUID.randomUUID().toString());
         winePosition.setWpWine(wineRepository.findWineByWineID(winePositionDTO.getWine_id()));
         winePosition.setShop(shopRepository.findByShopID(winePositionDTO.getShop_id()));
         winePosition.setPrice(winePositionDTO.getPrice());
@@ -157,7 +157,7 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
             }
         }
 
-        winePosition.setId(id);
+        winePosition.setWpId(id);
         winePosition.setWpWine(wineRepository.findWineByWineID(winePositionDTO.getWine_id()));
         winePosition.setShop(shopRepository.findByShopID(winePositionDTO.getShop_id()));
         winePosition.setPrice(winePositionDTO.getPrice());

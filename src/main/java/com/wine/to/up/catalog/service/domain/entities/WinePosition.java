@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class WinePosition {
     @Id
     @Column(name = "id", nullable = false)
-    private String id;
+    private String wpId;
 
     @ManyToOne
     @JoinColumn(name = "wine_id", nullable = false)
