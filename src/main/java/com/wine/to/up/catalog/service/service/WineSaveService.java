@@ -36,8 +36,8 @@ public class WineSaveService {
     private final String SUGAR_NOT_PRESENTED = "SUGAR_NOT_PRESENTED";
     private final String GRAPE_NOT_PRESENTED = "GRAPE_NOT_PRESENTED";
     private final String REGION_NOT_PRESENTED = "REGION_NOT_PRESENTED";
-    private final String SHOP_NOT_PRESENTED = "SHOP_NOT_PRESENTED";
     private final String COUNTRY_NOT_PRESENTED = "COUNTRY_NOT_PRESENTED";
+    private final String SHOP_NOT_PRESENTED = "SHOP_NOT_PRESENTED";
 
     @Async
     public void save(ParserApi.WineParsedEvent wineParsedEvent) {
