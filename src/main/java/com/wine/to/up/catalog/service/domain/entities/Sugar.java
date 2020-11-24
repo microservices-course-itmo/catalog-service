@@ -1,6 +1,7 @@
 package com.wine.to.up.catalog.service.domain.entities;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,6 +17,7 @@ public class Sugar {
     @Column(name = "name")
     private String sugarName;
 
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "wineSugar")
     private List<Wine> sugarWines;
 }

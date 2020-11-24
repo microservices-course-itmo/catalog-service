@@ -1,6 +1,7 @@
 package com.wine.to.up.catalog.service.domain.entities;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Region {
     @Column(name = "country")
     private String regionCountry;
 
+    @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "wineRegion")
     private List<Wine> regionWines;
 }
