@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.concurrent.Future;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(isolation = Isolation.REPEATABLE_READ)
 public class WineSaveService {
     private final ShopRepository shopRepository;
     private final WineRepository wineRepository;
@@ -46,7 +47,7 @@ public class WineSaveService {
                 .forEach(parserWine -> {
                     try {
                         Wine byWineName = wineRepository.findByWineName(parserWine.getName());
-                        log.info(byWineName == null ? "Wine not exists" : "Wine exists");
+                        log.info(byWineName == null ? "Wine {}\n not exists" : "Wine {}\n exists", parserWine);
                         if (byWineName == null) {
                             String brandName = parserWine.getBrand();
                             if (brandName == null || brandName.equals("")) {
@@ -60,6 +61,7 @@ public class WineSaveService {
                                 brand.setBrandWines(new ArrayList<>());
                                 brandRepository.save(brand);
                                 brandByBrandName = brand;
+                                log.info("New brand with name {} created", brandName);
                             }
 
                             String colorName = parserWine.getColor().name();
@@ -74,6 +76,7 @@ public class WineSaveService {
                                 color.setColorWines(new ArrayList<>());
                                 colorRepository.save(color);
                                 colorByColorName = color;
+                                log.info("New color with name {} created", colorName);
                             }
 
                             String producerName = parserWine.getManufacturer();
@@ -88,6 +91,7 @@ public class WineSaveService {
                                 producer.setProducerWines(new ArrayList<>());
                                 producerRepository.save(producer);
                                 producerByProducerName = producer;
+                                log.info("New producer with name {} created", producerName);
                             }
 
                             String sugarName = parserWine.getSugar().name();
@@ -102,6 +106,7 @@ public class WineSaveService {
                                 sugar.setSugarWines(new ArrayList<>());
                                 sugarRepository.save(sugar);
                                 sugarBySugarName = sugar;
+                                log.info("New sugar with name {} created", sugarName);
                             }
 
                             List<Region> regionsOfWine = new ArrayList<>();
@@ -112,7 +117,7 @@ public class WineSaveService {
                                     Region reg = new Region();
                                     reg.setRegionID(UUID.randomUUID().toString());
                                     String country = parserWine.getCountry();
-                                    if(country == null){
+                                    if (country == null | "".equals(country)) {
                                         country = COUNTRY_NOT_PRESENTED;
                                     }
                                     reg.setRegionCountry(country);
@@ -120,6 +125,7 @@ public class WineSaveService {
                                     reg.setRegionWines(new ArrayList<>());
                                     regionRepository.save(reg);
                                     byRegionName = reg;
+                                    log.info("New region with name {} created", region);
                                 }
                                 regionsOfWine.add(byRegionName);
                             });
@@ -135,6 +141,7 @@ public class WineSaveService {
                                     gr.setGrapeWines(new ArrayList<>());
                                     grapeRepository.save(gr);
                                     byGrapeName = gr;
+                                    log.info("New grape with name {} created", grape);
                                 }
                                 grapesOfWine.add(byGrapeName);
                             });
@@ -176,7 +183,7 @@ public class WineSaveService {
 
                         }
                         String shopLink = wineParsedEvent.getShopLink();
-                        if (shopLink == null) {
+                        if (shopLink == null || shopLink.equals("")) {
                             shopLink = SHOP_NOT_PRESENTED;
                         }
                         Shop byShopSite = shopRepository.findByShopSite(shopLink);
@@ -185,9 +192,10 @@ public class WineSaveService {
                             shop.setShopID(UUID.randomUUID().toString());
                             shop.setShopSite(shopLink);
                             shop.setWinePositions(new ArrayList<>());
+                            shopRepository.save(shop);
                             byShopSite = shop;
+                            log.info("New shop with link {} created", shopLink);
                         }
-                        shopRepository.save(byShopSite);
 
                         WinePosition winePosition = new WinePosition();
                         winePosition.setWpId(UUID.randomUUID().toString());
