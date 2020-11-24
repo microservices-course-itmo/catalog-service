@@ -28,7 +28,7 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
     public void handle(WineParsedEvent wineParsedEvent) {
         log.info("Message received from " + wineParsedEvent.getParserName() + " and site " + wineParsedEvent.getShopLink());
         log.info("Received " + wineParsedEvent.getWinesList().size() + " wines");
-        log.info("Wine parsed event: " + wineParsedEvent.toString());
+        //log.info("Wine parsed event: " + wineParsedEvent.toString());
         wineSaveService.save(wineParsedEvent);
     }
 }
