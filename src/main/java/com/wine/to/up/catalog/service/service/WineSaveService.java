@@ -46,9 +46,12 @@ public class WineSaveService {
                 .forEach(parserWine -> {
                     try {
                         Wine byWineName = wineRepository.findByWineName(parserWine.getName());
-
+                        log.info(byWineName == null ? "Wine not exists" : "Wine exists");
                         if (byWineName == null) {
                             String brandName = parserWine.getBrand();
+                            if (brandName == null) {
+                                brandName = BRAND_NOT_PRESENTED;
+                            }
                             Brand brandByBrandName = brandRepository.findBrandByBrandName(brandName);
                             if (brandByBrandName == null) {
                                 Brand brand = new Brand();
@@ -60,6 +63,9 @@ public class WineSaveService {
                             }
 
                             String colorName = parserWine.getColor().name();
+                            if (colorName == null) {
+                                colorName = COLOR_NOT_PRESENTED;
+                            }
                             Color colorByColorName = colorRepository.findByColorName(colorName);
                             if (colorByColorName == null) {
                                 Color color = new Color();
@@ -71,6 +77,9 @@ public class WineSaveService {
                             }
 
                             String producerName = parserWine.getManufacturer();
+                            if (producerName == null) {
+                                producerName = PRODUCER_NOT_PRESENTED;
+                            }
                             Producer producerByProducerName = producerRepository.findByProducerName(producerName);
                             if (producerByProducerName == null) {
                                 Producer producer = new Producer();
@@ -82,6 +91,9 @@ public class WineSaveService {
                             }
 
                             String sugarName = parserWine.getSugar().name();
+                            if (sugarName == null) {
+                                sugarName = SUGAR_NOT_PRESENTED;
+                            }
                             Sugar sugarBySugarName = sugarRepository.findBySugarName(sugarName);
                             if (sugarBySugarName == null) {
                                 Sugar sugar = new Sugar();
@@ -94,12 +106,13 @@ public class WineSaveService {
 
                             List<Region> regionsOfWine = new ArrayList<>();
                             parserWine.getRegionList().forEach(region -> {
-                                Region byRegionName = regionRepository.findByRegionName(region);
+                                String regionTrue = (region == null) ? REGION_NOT_PRESENTED : region;
+                                Region byRegionName = regionRepository.findByRegionName(regionTrue);
                                 if (byRegionName == null) {
                                     Region reg = new Region();
                                     reg.setRegionID(UUID.randomUUID().toString());
                                     reg.setRegionCountry(parserWine.getCountry());
-                                    reg.setRegionName(region);
+                                    reg.setRegionName(regionTrue);
                                     reg.setRegionWines(new ArrayList<>());
                                     regionRepository.save(reg);
                                     byRegionName = reg;
@@ -109,11 +122,12 @@ public class WineSaveService {
 
                             List<Grape> grapesOfWine = new ArrayList<>();
                             parserWine.getGrapeSortList().forEach(grape -> {
-                                Grape byGrapeName = grapeRepository.findByGrapeName(grape);
+                                String grapeTrue = (grape == null) ? GRAPE_NOT_PRESENTED : grape;
+                                Grape byGrapeName = grapeRepository.findByGrapeName(grapeTrue);
                                 if (byGrapeName == null) {
                                     Grape gr = new Grape();
                                     gr.setGrapeID(UUID.randomUUID().toString());
-                                    gr.setGrapeName(grape);
+                                    gr.setGrapeName(grapeTrue);
                                     gr.setGrapeWines(new ArrayList<>());
                                     grapeRepository.save(gr);
                                     byGrapeName = gr;
@@ -157,11 +171,15 @@ public class WineSaveService {
                             wineRepository.save(wine);
 
                         }
-                        Shop byShopSite = shopRepository.findByShopSite(wineParsedEvent.getShopLink());
+                        String shopLink = wineParsedEvent.getShopLink();
+                        if (shopLink == null) {
+                            shopLink = SHOP_NOT_PRESENTED;
+                        }
+                        Shop byShopSite = shopRepository.findByShopSite(shopLink);
                         if (byShopSite == null) {
                             Shop shop = new Shop();
                             shop.setShopID(UUID.randomUUID().toString());
-                            shop.setShopSite(wineParsedEvent.getShopLink());
+                            shop.setShopSite(shopLink);
                             shop.setWinePositions(new ArrayList<>());
                             byShopSite = shop;
                         }

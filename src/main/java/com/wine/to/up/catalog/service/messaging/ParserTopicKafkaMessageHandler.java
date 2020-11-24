@@ -30,7 +30,6 @@ public class ParserTopicKafkaMessageHandler implements KafkaMessageHandler<WineP
         log.info("Received " + wineParsedEvent.getWinesList().size() + " wines");
         log.info("Wine parsed event: " + wineParsedEvent.toString());
         wineSaveService.save(wineParsedEvent);
-        log.info("what first");
     }
 }
 
