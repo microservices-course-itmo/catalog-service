@@ -1,6 +1,7 @@
 package com.wine.to.up.catalog.service.controller;
 
 import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
+import com.wine.to.up.catalog.service.domain.request.SortByRequest;
 import com.wine.to.up.catalog.service.domain.response.WinePositionResponse;
 import com.wine.to.up.catalog.service.domain.response.WinePositionTrueResponse;
 import com.wine.to.up.catalog.service.utils.CompareChain;
@@ -12,7 +13,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -40,25 +43,45 @@ public class WinePositionTrueController {
             tags = {"wine-position-true-controller",})
     @PostMapping("/")
     public List<WinePositionTrueResponse> getAllWinePositions(@RequestBody(required = false) SettingsRequest settingsRequest) {
-        if(settingsRequest==null){
+        if (settingsRequest == null) {
             return winePositionController.getAllWinePositions()
                     .stream()
                     .map(this::getWinePositionTrueResponse)
                     .collect(Collectors.toList());
         }
-        CompareChain processedChain = new CompareChain().process(settingsRequest.getSearchParameters(), settingsRequest.getSortBy());
-//        return winePositionController.getAllWinePositions()
-//                .stream()
-//                .map(this::getWinePositionTrueResponse)
-//                .filter(processedChain)
-//                .sorted(processedChain)
-//                .skip(settingsRequest.getFrom())
-//                .limit((settingsRequest.getTo() - settingsRequest.getFrom())==0?Integer.MAX_VALUE:(settingsRequest.getTo() - settingsRequest.getFrom()))
-//                .collect(Collectors.toList());
-        return  winePositionController.getAllWinePositionsWithSettings(settingsRequest)
+        return winePositionController.getAllWinePositionsWithSettings(settingsRequest)
                 .stream()
                 .map(this::getWinePositionTrueResponse)
                 .collect(Collectors.toList());
+    }
+
+    @ApiOperation(value = "Get all wine positions",
+            nickname = "getAllWinePositions", notes = "",
+            tags = {"wine-position-true-controller",})
+    @GetMapping("/")
+    public List<WinePositionTrueResponse> getAllWinePositions(
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to,
+            @RequestParam(required = false) List<String> sortByPair,
+            @RequestParam(required = false) String searchParameters
+    ) {
+        List<SortByRequest> collect = sortByPair
+                .stream()
+                .map(x -> {
+                            String[] split = x.split(",");
+                            SortByRequest sortByRequest = new SortByRequest();
+                            sortByRequest.setAttribute(split[0]);
+                            sortByRequest.setOrder(split[1]);
+                            return sortByRequest;
+                        }
+                )
+                .collect(Collectors.toList());
+        SettingsRequest settingsRequest = new SettingsRequest();
+        settingsRequest.setFrom((from == null || "".equals(from) )? 0: Integer.parseInt(from) );
+        settingsRequest.setTo((to == null || "".equals(to) )? 0: Integer.parseInt(to) );
+        settingsRequest.setSortBy(collect);
+        settingsRequest.setSearchParameters(searchParameters);
+        return getAllWinePositions(settingsRequest);
     }
 
     private WinePositionTrueResponse getWinePositionTrueResponse(WinePositionResponse wineById) {
