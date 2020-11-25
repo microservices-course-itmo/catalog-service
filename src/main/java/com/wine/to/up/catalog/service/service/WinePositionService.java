@@ -8,6 +8,7 @@ import com.wine.to.up.catalog.service.domain.dto.WinePositionDTO;
 import com.wine.to.up.catalog.service.domain.entities.WinePosition;
 import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
 import com.wine.to.up.catalog.service.domain.request.SortByRequest;
+import com.wine.to.up.catalog.service.domain.response.WinePositionTrueResponse;
 import com.wine.to.up.catalog.service.domain.specifications.WinePositionSpecificationBuilder;
 import com.wine.to.up.catalog.service.repository.ShopRepository;
 import com.wine.to.up.catalog.service.repository.WinePositionRepository;
@@ -20,7 +21,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -37,6 +40,27 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
     private final ShopRepository shopRepository;
     private final KafkaMessageSender<KafkaMessageSentEvent> kafkaSendMessageService;
 
+    private static final Map<String, String> matrixArguments = new HashMap<String, String>() {
+        {
+            put("shopSite", "shop.shopSite");
+            put("producerName", "wpWine.wineProducer.producerName");
+            put("brandName", "wpWine.wineBrand.brandName");
+//            put("regionName", "");
+//            put("countryName", "");
+//            put("grapeName", "");
+
+            put("avg", "wpWine.strength");
+
+            put("color", "wpWine.wineColor.colorName");
+            put("sugar", "wpWine.wineSugar.sugarName");
+
+            put("year", "wpWine.production_year");
+            put("price", "price");
+            put("actual_price", "actualPrice");
+            put("volume", "volume");
+        }
+    };
+
     public List<WinePositionDTO> readAllWithSettings(SettingsRequest settingsRequest) {
         Sort sort = null;
         for (SortByRequest sortByRequest : settingsRequest.getSortBy()) {
@@ -50,13 +74,14 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
         PageRequest pageRequest = PageRequest.of(settingsRequest.getFrom(), settingsRequest.getTo(), sort);
 
         WinePositionSpecificationBuilder wpSpecBuilder = new WinePositionSpecificationBuilder();
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?);", Pattern.UNICODE_CHARACTER_CLASS);
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)([\\s\\S]+?);", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcher = pattern.matcher(settingsRequest.getSearchParameters() + ";");
 
         while (matcher.find()){
             wpSpecBuilder.with(matcher.group(1), matcher.group(2), matcher.group(3));
         }
 
+        //unreachable
         if (settingsRequest.getTo() < 1){
             return null;
         }

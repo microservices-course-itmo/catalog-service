@@ -47,13 +47,17 @@ public class WinePositionTrueController {
                     .collect(Collectors.toList());
         }
         CompareChain processedChain = new CompareChain().process(settingsRequest.getSearchParameters(), settingsRequest.getSortBy());
-        return winePositionController.getAllWinePositions()
+//        return winePositionController.getAllWinePositions()
+//                .stream()
+//                .map(this::getWinePositionTrueResponse)
+//                .filter(processedChain)
+//                .sorted(processedChain)
+//                .skip(settingsRequest.getFrom())
+//                .limit((settingsRequest.getTo() - settingsRequest.getFrom())==0?Integer.MAX_VALUE:(settingsRequest.getTo() - settingsRequest.getFrom()))
+//                .collect(Collectors.toList());
+        return  winePositionController.getAllWinePositionsWithSettings(settingsRequest)
                 .stream()
                 .map(this::getWinePositionTrueResponse)
-                .filter(processedChain)
-                .sorted(processedChain)
-                .skip(settingsRequest.getFrom())
-                .limit((settingsRequest.getTo() - settingsRequest.getFrom())==0?Integer.MAX_VALUE:(settingsRequest.getTo() - settingsRequest.getFrom()))
                 .collect(Collectors.toList());
     }
 
