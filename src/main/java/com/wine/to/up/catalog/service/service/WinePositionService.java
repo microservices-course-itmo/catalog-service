@@ -66,9 +66,9 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
         if (settingsRequest.getSortBy() != null) {
             for (SortByRequest sortByRequest : settingsRequest.getSortBy()) {
                 if (sort == null) {
-                    sort = sortByRequest.getOrder().equals("desc") ? Sort.by(sortByRequest.getAttribute()).descending() : Sort.by(sortByRequest.getAttribute()).ascending();
+                    sort = sortByRequest.getOrder().equals("desc") ? Sort.by(matrixArguments.get(sortByRequest.getAttribute())).descending() : Sort.by(matrixArguments.get(sortByRequest.getAttribute())).ascending();
                 } else {
-                    sort.and(sortByRequest.getOrder().equals("desc") ? Sort.by(sortByRequest.getAttribute()).descending() : Sort.by(sortByRequest.getAttribute()).ascending());
+                    sort.and(sortByRequest.getOrder().equals("desc") ? Sort.by(matrixArguments.get(sortByRequest.getAttribute())).descending() : Sort.by(matrixArguments.get(sortByRequest.getAttribute())).ascending());
                 }
             }
         }
@@ -83,7 +83,7 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
         Matcher matcher = pattern.matcher(settingsRequest.getSearchParameters() + ";");
 
         while (matcher.find()){
-            wpSpecBuilder.with(matcher.group(1), matcher.group(2), matcher.group(3));
+            wpSpecBuilder.with(matrixArguments.get(matcher.group(1)), matcher.group(2), matcher.group(3));
         }
 
         //unreachable
