@@ -68,7 +68,7 @@ public class WinePositionTrueController {
         List<SortByRequest> collect = sortByPair
                 .stream()
                 .map(x -> {
-                            String[] split = x.split(",");
+                            String[] split = x.split("&");
                             SortByRequest sortByRequest = new SortByRequest();
                             sortByRequest.setAttribute(split[0]);
                             sortByRequest.setOrder(split[1]);
