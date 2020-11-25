@@ -63,16 +63,21 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
 
     public List<WinePositionDTO> readAllWithSettings(SettingsRequest settingsRequest) {
         Sort sort = null;
-        for (SortByRequest sortByRequest : settingsRequest.getSortBy()) {
-            if (sort == null) {
-                sort = sortByRequest.getOrder().equals("desc") ? Sort.by(sortByRequest.getAttribute()).descending() : Sort.by(sortByRequest.getAttribute()).ascending();
-            } else {
-                sort.and(sortByRequest.getOrder().equals("desc") ? Sort.by(sortByRequest.getAttribute()).descending() : Sort.by(sortByRequest.getAttribute()).ascending());
+        if (settingsRequest.getSortBy() != null) {
+            for (SortByRequest sortByRequest : settingsRequest.getSortBy()) {
+                if (sort == null) {
+                    sort = sortByRequest.getOrder().equals("desc") ? Sort.by(sortByRequest.getAttribute()).descending() : Sort.by(sortByRequest.getAttribute()).ascending();
+                } else {
+                    sort.and(sortByRequest.getOrder().equals("desc") ? Sort.by(sortByRequest.getAttribute()).descending() : Sort.by(sortByRequest.getAttribute()).ascending());
+                }
             }
         }
-
-        PageRequest pageRequest = PageRequest.of(settingsRequest.getFrom(), settingsRequest.getTo(), sort);
-
+        PageRequest pageRequest;
+        if(sort != null) {
+            pageRequest = PageRequest.of(settingsRequest.getFrom(), settingsRequest.getTo(), sort);
+        }else{
+            pageRequest = PageRequest.of(settingsRequest.getFrom(), settingsRequest.getTo());
+        }
         WinePositionSpecificationBuilder wpSpecBuilder = new WinePositionSpecificationBuilder();
         Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)([\\s\\S]+?);", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcher = pattern.matcher(settingsRequest.getSearchParameters() + ";");
