@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.util.Arrays;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,26 +17,36 @@ import javax.persistence.criteria.Root;
 public class WinePositionSpecification implements Specification<WinePosition> {
     private SearchCriteria criteria;
 
+    private Path<String> findPath(Root<WinePosition> root, String attribute) {
+        String[] split = attribute.split("\\.");
+        Path<String> result = null;
+
+        for (String s : split) {
+            if (result == null) {
+                result = root.get(s);
+            } else {
+                result = result.get(s);
+            }
+        }
+        return result;
+    }
+
     @Override
     public Predicate toPredicate(Root<WinePosition> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         if (criteria.getOperation().equalsIgnoreCase(">")) {
-            return criteriaBuilder.greaterThanOrEqualTo(root.<String> get(criteria.getKey()), criteria.getValue().toString());
-        }
-        else if (criteria.getOperation().equalsIgnoreCase("<")) {
-            return criteriaBuilder.lessThanOrEqualTo(root.<String> get(criteria.getKey()), criteria.getValue().toString());
-        }
-        else if (criteria.getOperation().equalsIgnoreCase(":")) {
-            if (root.get(criteria.getKey()).getJavaType() == String.class) {
-                return criteriaBuilder.like(root.<String>get(criteria.getKey()), "%" + criteria.getValue() + "%");
+            return criteriaBuilder.greaterThanOrEqualTo(findPath(root, criteria.getKey()), criteria.getValue().toString());
+        } else if (criteria.getOperation().equalsIgnoreCase("<")) {
+            return criteriaBuilder.lessThanOrEqualTo(findPath(root, criteria.getKey()), criteria.getValue().toString());
+        } else if (criteria.getOperation().equalsIgnoreCase(":")) {
+            if (findPath(root, criteria.getKey()).getJavaType() == String.class) {
+                return criteriaBuilder.like(findPath(root, criteria.getKey()), "%" + criteria.getValue() + "%");
             } else {
-                return criteriaBuilder.equal(root.get(criteria.getKey()), criteria.getValue());
+                return criteriaBuilder.equal(findPath(root, criteria.getKey()), criteria.getValue());
             }
-        }
-        else if (criteria.getOperation().equalsIgnoreCase("~")) {
+        } else if (criteria.getOperation().equalsIgnoreCase("~")) {
             this.criteria.setOrPredicate(true);
             return criteriaBuilder.or();
-        }
-        else if (criteria.getOperation().equalsIgnoreCase("*")) {
+        } else if (criteria.getOperation().equalsIgnoreCase("*")) {
             this.criteria.setOrPredicate(false);
             return criteriaBuilder.and();
         }
