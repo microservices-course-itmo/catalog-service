@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(isolation = Isolation.REPEATABLE_READ)
+@Transactional(isolation = Isolation.READ_UNCOMMITTED)
 public class WineSaveService {
     private final ShopRepository shopRepository;
     private final WineRepository wineRepository;
