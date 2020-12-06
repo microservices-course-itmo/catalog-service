@@ -39,6 +39,13 @@ public class WinePositionSpecification implements Specification<WinePosition> {
         if(isAndPredicate||isOrPredicate){
             key = key.substring(1);
         }
+
+        if (isOrPredicate) {
+            this.criteria.setOrPredicate(true);
+        } else if (isAndPredicate) {
+            this.criteria.setOrPredicate(false);
+        }
+
         if (criteria.getOperation().equalsIgnoreCase(">")) {
             return criteriaBuilder.greaterThanOrEqualTo(findPath(root, key), criteria.getValue().toString());
         } else if (criteria.getOperation().equalsIgnoreCase("<")) {
@@ -49,12 +56,6 @@ public class WinePositionSpecification implements Specification<WinePosition> {
             } else {
                 return criteriaBuilder.equal(findPath(root, key), criteria.getValue());
             }
-        } else if (isOrPredicate) {
-            this.criteria.setOrPredicate(true);
-            return criteriaBuilder.or();
-        } else if (isAndPredicate) {
-            this.criteria.setOrPredicate(false);
-            return criteriaBuilder.and();
         }
         return null;
     }

@@ -87,16 +87,16 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
         Matcher matcher = pattern.matcher(settingsRequest.getSearchParameters() + ";");
 
         while (matcher.find()) {
-            String keyGRoup = matcher.group(1);
-            String firstChar = keyGRoup.substring(0, 1);
+            String keyGroup = matcher.group(1);
+            String firstChar = keyGroup.substring(0, 1);
 
             String key;
             if (firstChar.equals("~")) {
-                key = "~" + matrixArguments.get(keyGRoup.substring(1));
+                key = "~" + matrixArguments.get(keyGroup.substring(1));
             } else if (firstChar.equals("*")) {
-                key = "*" + matrixArguments.get(keyGRoup.substring(1));
+                key = "*" + matrixArguments.get(keyGroup.substring(1));
             } else {
-                key = matrixArguments.get(keyGRoup);
+                key = matrixArguments.get(keyGroup);
             }
 
 

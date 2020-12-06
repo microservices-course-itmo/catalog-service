@@ -15,7 +15,11 @@ public class WinePositionSpecificationBuilder {
     }
 
     public WinePositionSpecificationBuilder with(String key, String operation, Object value){
-        parameters.add(new SearchCriteria(key, operation, value));
+        SearchCriteria criteria = new SearchCriteria(key, operation, value);
+        if ("~".equals(key.substring(0,1))){
+            criteria.setOrPredicate(true);
+        }
+        parameters.add(criteria);
         return this;
     }
 
