@@ -42,5 +42,5 @@ public class WinePositionTrueResponse {
     private String gastronomy;
 
     @JsonProperty("image")
-    private List<Byte> image;
+    private String image;
 }

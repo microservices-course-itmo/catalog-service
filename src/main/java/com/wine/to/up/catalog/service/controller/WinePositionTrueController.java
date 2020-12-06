@@ -1,5 +1,6 @@
 package com.wine.to.up.catalog.service.controller;
 
+import com.google.common.primitives.Bytes;
 import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
 import com.wine.to.up.catalog.service.domain.request.SortByRequest;
 import com.wine.to.up.catalog.service.domain.response.WinePositionResponse;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,7 @@ public class WinePositionTrueController {
     @ApiOperation(value = "Get wine position by id",
             nickname = "getWinePositionById", notes = "",
             tags = {"wine-position-true-controller",})
-    @GetMapping("/{id}")
+    @GetMapping("/byId/{id}")
     public WinePositionTrueResponse getWineById(@Valid @PathVariable(name = "id") String winePositionId) {
         WinePositionResponse wineById = winePositionController.getWineById(winePositionId);
         return getWinePositionTrueResponse(wineById);
@@ -91,7 +93,7 @@ public class WinePositionTrueController {
         winePositionTrueResponse.setActual_price(wineById.getActual_price());
         winePositionTrueResponse.setDescription(wineById.getDescription());
         winePositionTrueResponse.setGastronomy(wineById.getGastronomy());
-        winePositionTrueResponse.setImage(wineById.getImage());
+        winePositionTrueResponse.setImage(new String(Bytes.toArray(wineById.getImage())));
         winePositionTrueResponse.setLink_to_wine(wineById.getLink_to_wine());
         winePositionTrueResponse.setPrice(wineById.getPrice());
         winePositionTrueResponse.setShop(shopController.getShopById(wineById.getShop_id()));
