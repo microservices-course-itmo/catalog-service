@@ -33,20 +33,26 @@ public class WinePositionSpecification implements Specification<WinePosition> {
 
     @Override
     public Predicate toPredicate(Root<WinePosition> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+        String key = criteria.getKey();
+        boolean isOrPredicate = "~".equals(key.substring(0,1));
+        boolean isAndPredicate = "*".equals(key.substring(0,1));
+        if(isAndPredicate||isOrPredicate){
+            key = key.substring(1);
+        }
         if (criteria.getOperation().equalsIgnoreCase(">")) {
-            return criteriaBuilder.greaterThanOrEqualTo(findPath(root, criteria.getKey()), criteria.getValue().toString());
+            return criteriaBuilder.greaterThanOrEqualTo(findPath(root, key), criteria.getValue().toString());
         } else if (criteria.getOperation().equalsIgnoreCase("<")) {
-            return criteriaBuilder.lessThanOrEqualTo(findPath(root, criteria.getKey()), criteria.getValue().toString());
+            return criteriaBuilder.lessThanOrEqualTo(findPath(root, key), criteria.getValue().toString());
         } else if (criteria.getOperation().equalsIgnoreCase(":")) {
-            if (findPath(root, criteria.getKey()).getJavaType() == String.class) {
-                return criteriaBuilder.like(findPath(root, criteria.getKey()), "%" + criteria.getValue() + "%");
+            if (findPath(root, key).getJavaType() == String.class) {
+                return criteriaBuilder.like(findPath(root, key), "%" + criteria.getValue() + "%");
             } else {
-                return criteriaBuilder.equal(findPath(root, criteria.getKey()), criteria.getValue());
+                return criteriaBuilder.equal(findPath(root, key), criteria.getValue());
             }
-        } else if (criteria.getOperation().equalsIgnoreCase("~")) {
+        } else if (isOrPredicate) {
             this.criteria.setOrPredicate(true);
             return criteriaBuilder.or();
-        } else if (criteria.getOperation().equalsIgnoreCase("*")) {
+        } else if (isAndPredicate) {
             this.criteria.setOrPredicate(false);
             return criteriaBuilder.and();
         }

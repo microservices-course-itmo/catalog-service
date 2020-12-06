@@ -83,11 +83,24 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
             }
         }
         WinePositionSpecificationBuilder wpSpecBuilder = new WinePositionSpecificationBuilder();
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)([\\s\\S]+?);", Pattern.UNICODE_CHARACTER_CLASS);
+        Pattern pattern = Pattern.compile("([\\s\\S]+?)(:|<|>)([\\s\\S]+?);", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcher = pattern.matcher(settingsRequest.getSearchParameters() + ";");
 
         while (matcher.find()) {
-            wpSpecBuilder.with(matrixArguments.get(matcher.group(1)), matcher.group(2), matcher.group(3));
+            String keyGRoup = matcher.group(1);
+            String firstChar = keyGRoup.substring(0, 1);
+
+            String key;
+            if (firstChar.equals("~")) {
+                key = "~" + matrixArguments.get(keyGRoup.substring(1));
+            } else if (firstChar.equals("*")) {
+                key = "*" + matrixArguments.get(keyGRoup.substring(1));
+            } else {
+                key = matrixArguments.get(keyGRoup);
+            }
+
+
+            wpSpecBuilder.with(key, matcher.group(2), matcher.group(3));
         }
 
         //unreachable
