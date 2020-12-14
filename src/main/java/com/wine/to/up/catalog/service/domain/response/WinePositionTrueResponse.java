@@ -43,4 +43,7 @@ public class WinePositionTrueResponse {
 
     @JsonProperty("image")
     private String image;
+
+    @JsonProperty("country")
+    private String country;
 }

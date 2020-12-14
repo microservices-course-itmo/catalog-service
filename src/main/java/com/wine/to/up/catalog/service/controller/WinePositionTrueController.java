@@ -5,6 +5,7 @@ import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
 import com.wine.to.up.catalog.service.domain.request.SortByRequest;
 import com.wine.to.up.catalog.service.domain.response.WinePositionResponse;
 import com.wine.to.up.catalog.service.domain.response.WinePositionTrueResponse;
+import com.wine.to.up.catalog.service.domain.response.WineTrueResponse;
 import com.wine.to.up.catalog.service.utils.CompareChain;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -100,7 +101,9 @@ public class WinePositionTrueController {
         winePositionTrueResponse.setPrice(wineById.getPrice());
         winePositionTrueResponse.setShop(shopController.getShopById(wineById.getShop_id()));
         winePositionTrueResponse.setVolume(wineById.getVolume());
-        winePositionTrueResponse.setWineTrueResponse(wineTrueController.getWineById(wineById.getWine_id()));
+        WineTrueResponse trueWineById = wineTrueController.getWineById(wineById.getWine_id());
+        winePositionTrueResponse.setWineTrueResponse(trueWineById);
+        winePositionTrueResponse.setCountry(trueWineById.getRegionResponse().get(0).getCountry());
         return winePositionTrueResponse;
     }
 }
