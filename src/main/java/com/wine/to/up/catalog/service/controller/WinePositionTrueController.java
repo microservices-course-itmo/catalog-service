@@ -3,6 +3,7 @@ package com.wine.to.up.catalog.service.controller;
 import com.google.common.primitives.Bytes;
 import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
 import com.wine.to.up.catalog.service.domain.request.SortByRequest;
+import com.wine.to.up.catalog.service.domain.response.RegionResponse;
 import com.wine.to.up.catalog.service.domain.response.WinePositionResponse;
 import com.wine.to.up.catalog.service.domain.response.WinePositionTrueResponse;
 import com.wine.to.up.catalog.service.domain.response.WineTrueResponse;
@@ -111,7 +112,12 @@ public class WinePositionTrueController {
         winePositionTrueResponse.setVolume(wineById.getVolume());
         WineTrueResponse trueWineById = wineTrueController.getWineById(wineById.getWine_id());
         winePositionTrueResponse.setWineTrueResponse(trueWineById);
-        winePositionTrueResponse.setCountry(trueWineById.getRegionResponse().get(0).getCountry());
+        List<RegionResponse> regionResponse = trueWineById.getRegionResponse();
+        if(regionResponse.size()>0) {
+            winePositionTrueResponse.setCountry(regionResponse.get(0).getCountry());
+        }else{
+            winePositionTrueResponse.setCountry("");
+        }
         return winePositionTrueResponse;
     }
 }
