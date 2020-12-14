@@ -41,6 +41,14 @@ public class WinePositionTrueController {
         return getWinePositionTrueResponse(wineById);
     }
 
+    @ApiOperation(value = "Get favourites wine positions",
+            nickname = "getFavouritesPositions",
+            tags = {"wine-position-true-controller",})
+    @GetMapping("/favourites")
+    public List<WinePositionTrueResponse> getFavourites(@Valid @RequestParam(required = true) List<String> favouritePosition) {
+        return favouritePosition.stream().map(this::getWineById).collect(Collectors.toList());
+    }
+
     @ApiOperation(value = "Get all wine positions",
             nickname = "getAllWinePositions", notes = "",
             tags = {"wine-position-true-controller",})
