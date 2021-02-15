@@ -54,7 +54,7 @@
         <dependency>
             <groupId>com.wine.to.up</groupId>
             <artifactId>parser-common-api</artifactId>
-            <version>0.2.2-SNAPSHOT</version>
+            <version>0.2.4-SNAPSHOT</version>
         </dependency>
 
         <!-- Required: Spring-->
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>com.wine.to.up</groupId>
             <artifactId>service-common-lib</artifactId>
-            <version>${service.commonlib.version}</version>
+            <version>0.2.4-SNAPSHOT</version>
         </dependency>
 
         <!--Required: metric for monitoring-->
