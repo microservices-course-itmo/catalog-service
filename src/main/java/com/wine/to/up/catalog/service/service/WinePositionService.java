@@ -3,7 +3,7 @@ package com.wine.to.up.catalog.service.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.primitives.Bytes;
-import com.wine.to.up.catalog.service.api.domain.UpdatePriceEvent;
+//import com.wine.to.up.catalog.service.api.domain.UpdatePriceEvent;
 import com.wine.to.up.catalog.service.domain.dto.WinePositionDTO;
 import com.wine.to.up.catalog.service.domain.entities.WinePosition;
 import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
@@ -182,7 +182,7 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
         WinePositionDTO oldWinePositionDTO = read(id);
 
         WinePosition winePosition = new WinePosition();
-
+        /*
         if (oldWinePositionDTO.getActual_price() != winePositionDTO.getActual_price()) {
             UpdatePriceEvent updatePriceEvent = new UpdatePriceEvent();
 
@@ -203,7 +203,7 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
                 e.printStackTrace();
             }
         }
-
+        */
         winePosition.setWpId(id);
         winePosition.setWpWine(wineRepository.findWineByWineID(winePositionDTO.getWine_id()));
         winePosition.setShop(shopRepository.findByShopID(winePositionDTO.getShop_id()));
