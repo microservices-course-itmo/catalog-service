@@ -12,4 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CatalogServiceMetricsCollector extends CommonMetricsCollector {
+    public CatalogServiceMetricsCollector() {
+        super("catalog_service");
+    }
 }

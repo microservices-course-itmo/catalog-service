@@ -14,7 +14,6 @@ import com.wine.to.up.catalog.service.repository.ShopRepository;
 import com.wine.to.up.catalog.service.repository.WinePositionRepository;
 import com.wine.to.up.catalog.service.repository.WineRepository;
 import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
-import com.wine.to.up.demo.service.api.message.KafkaMessageSentEventOuterClass.KafkaMessageSentEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -38,7 +37,6 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
     private final WinePositionRepository winePositionRepository;
     private final WineRepository wineRepository;
     private final ShopRepository shopRepository;
-    private final KafkaMessageSender<KafkaMessageSentEvent> kafkaSendMessageService;
 
     private static final Map<String, String> matrixArguments = new HashMap<String, String>() {
         {
