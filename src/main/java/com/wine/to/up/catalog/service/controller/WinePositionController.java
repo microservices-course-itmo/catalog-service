@@ -61,24 +61,6 @@ public class WinePositionController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Get all wine positions with correct api",
-            nickname = "getAllWinePositions", notes = "",
-            tags = {"wine-position-true-controller",})
-    @PostMapping("/getAllWithTrueSettings")
-    public List<WinePositionResponse> getAllWinePositionsWithTrueSettings(@RequestBody(required = false) SettingsTrueRequest settingsTrueRequest){
-        SettingsRequest settingsRequest = new SettingsRequest();
-
-        settingsRequest.setFrom(settingsTrueRequest.getPage());
-        settingsRequest.setTo(settingsTrueRequest.getAmount());
-        settingsRequest.setSearchParameters(settingsTrueRequest.getFilterParameter());
-        settingsRequest.setSortBy(settingsTrueRequest.getSortBy());
-
-        return winePositionService.readAllWithSettings(settingsRequest)
-                .stream()
-                .map(converter::convert)
-                .collect(Collectors.toList());
-    }
-
     @ApiOperation(value = "Create wine position",
             nickname = "createWinePosition", notes = "",
             tags = {"wine-position-controller",})

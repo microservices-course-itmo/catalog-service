@@ -72,10 +72,10 @@ public class WinePositionTrueController {
             tags = {"wine-position-true-controller",})
     @GetMapping("/")
     public List<WinePositionTrueResponse> getAllWinePositions(
-            @RequestParam(required = false) String from,
-            @RequestParam(required = false) String to,
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) String amount,
             @RequestParam(required = false) List<String> sortByPair,
-            @RequestParam(required = false) String searchParameters
+            @RequestParam(required = false) String filterBy
     ) {
         SettingsRequest settingsRequest = new SettingsRequest();
         if (sortByPair != null) {
@@ -92,9 +92,9 @@ public class WinePositionTrueController {
                     .collect(Collectors.toList());
             settingsRequest.setSortBy(collect);
         }
-        settingsRequest.setFrom((from == null || "".equals(from)) ? 0 : Integer.parseInt(from));
-        settingsRequest.setTo((to == null || "".equals(to)) ? 0 : Integer.parseInt(to));
-        settingsRequest.setSearchParameters(searchParameters);
+        settingsRequest.setFrom((page == null || "".equals(page)) ? 0 : Integer.parseInt(page));
+        settingsRequest.setTo((amount == null || "".equals(amount)) ? 0 : Integer.parseInt(amount));
+        settingsRequest.setSearchParameters(filterBy);
         return getAllWinePositions(settingsRequest);
     }
 
