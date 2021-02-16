@@ -2,6 +2,7 @@ package com.wine.to.up.catalog.service.controller;
 
 import com.wine.to.up.catalog.service.domain.entities.WinePosition;
 import com.wine.to.up.catalog.service.domain.request.SettingsRequest;
+import com.wine.to.up.catalog.service.domain.request.SettingsTrueRequest;
 import com.wine.to.up.catalog.service.domain.request.WinePositionRequest;
 import com.wine.to.up.catalog.service.domain.response.WinePositionResponse;
 import com.wine.to.up.catalog.service.mapper.controller2service.WinePositionControllerToWinePositionService;
@@ -54,6 +55,24 @@ public class WinePositionController {
             tags = {"wine-position-controller",})
     @PostMapping("/getAllWithSettings")
     public List<WinePositionResponse> getAllWinePositionsWithSettings(@RequestBody(required = false) SettingsRequest settingsRequest){
+        return winePositionService.readAllWithSettings(settingsRequest)
+                .stream()
+                .map(converter::convert)
+                .collect(Collectors.toList());
+    }
+
+    @ApiOperation(value = "Get all wine positions with correct api",
+            nickname = "getAllWinePositions", notes = "",
+            tags = {"wine-position-true-controller",})
+    @PostMapping("/getAllWithTrueSettings")
+    public List<WinePositionResponse> getAllWinePositionsWithTrueSettings(@RequestBody(required = false) SettingsTrueRequest settingsTrueRequest){
+        SettingsRequest settingsRequest = new SettingsRequest();
+
+        settingsRequest.setFrom(settingsTrueRequest.getPage());
+        settingsRequest.setTo(settingsTrueRequest.getAmount());
+        settingsRequest.setSearchParameters(settingsTrueRequest.getFilterParameter());
+        settingsRequest.setSortBy(settingsTrueRequest.getSortBy());
+
         return winePositionService.readAllWithSettings(settingsRequest)
                 .stream()
                 .map(converter::convert)
