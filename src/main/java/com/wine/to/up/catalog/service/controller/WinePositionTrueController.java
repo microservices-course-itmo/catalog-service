@@ -72,6 +72,37 @@ public class WinePositionTrueController {
             tags = {"wine-position-true-controller",})
     @GetMapping("/")
     public List<WinePositionTrueResponse> getAllWinePositions(
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to,
+            @RequestParam(required = false) List<String> sortByPair,
+            @RequestParam(required = false) String searchParameters
+    ) {
+        SettingsRequest settingsRequest = new SettingsRequest();
+        if (sortByPair != null) {
+            List<SortByRequest> collect = sortByPair
+                    .stream()
+                    .map(x -> {
+                                String[] split = x.split("&");
+                                SortByRequest sortByRequest = new SortByRequest();
+                                sortByRequest.setAttribute(split[0]);
+                                sortByRequest.setOrder(split[1]);
+                                return sortByRequest;
+                            }
+                    )
+                    .collect(Collectors.toList());
+            settingsRequest.setSortBy(collect);
+        }
+        settingsRequest.setFrom((from == null || "".equals(from)) ? 0 : Integer.parseInt(from));
+        settingsRequest.setTo((to == null || "".equals(to)) ? 0 : Integer.parseInt(to));
+        settingsRequest.setSearchParameters(searchParameters);
+        return getAllWinePositions(settingsRequest);
+    }
+
+    @ApiOperation(value = "Get all wine positions true",
+            nickname = "getAllWinePositionsTrue", notes = "",
+            tags = {"wine-position-true-controller",})
+    @GetMapping("/trueSettings")
+    public List<WinePositionTrueResponse> getAllWinePositionsTrue(
             @RequestParam(required = false) String page,
             @RequestParam(required = false) String amount,
             @RequestParam(required = false) List<String> sortByPair,
