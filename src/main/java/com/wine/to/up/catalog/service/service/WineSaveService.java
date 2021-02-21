@@ -211,12 +211,17 @@ public class WineSaveService {
                         winePosition.setPrice(parserWine.getOldPrice());
                         winePosition.setActualPrice(parserWine.getNewPrice());
 
+                        log.warn("Parsing wine from " + wineParsedEvent.getShopLink() + " has been finished correctly. "
+                                +  wineParsedEvent.getParserName() + " operates as intended. Saving complete.");
+
                         winePositionRepository.save(winePosition);
 
                     } catch (Exception e) {
                         log.error(e.getMessage());
                         log.error(e.toString());
                         log.error((Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).reduce((x, y) -> x + "\n" + y).get()));
+                        log.warn(wineParsedEvent.getParserName() + " doesn't follow contract, parsing of "
+                                + wineParsedEvent.getShopLink() + " page caused an error. Saving of wine failed.");
                     }
 
                 });
