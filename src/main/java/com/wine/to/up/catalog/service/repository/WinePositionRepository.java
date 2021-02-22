@@ -15,5 +15,6 @@ public interface WinePositionRepository extends PagingAndSortingRepository<WineP
     List<WinePosition> findAllByShop(Shop shop, Pageable pageable);
     List<WinePosition> findAllByWpWine(Wine wine, Pageable pageable);
     WinePosition findByWpId(String id);
+    List<WinePosition> findAllByShopAndWpWine(Shop shop, Wine wine);
 
 }

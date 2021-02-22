@@ -1,14 +1,21 @@
 package com.wine.to.up.catalog.service.configuration;
 
+import com.wine.to.up.catalog.service.api.CatalogServiceApiProperties;
+import com.wine.to.up.catalog.service.components.CatalogServiceMetricsCollector;
 import com.wine.to.up.catalog.service.messaging.ParserTopicKafkaMessageHandler;
+import com.wine.to.up.catalog.service.messaging.serialization.UpdateWineEventSerializer;
 import com.wine.to.up.catalog.service.messaging.serialization.WineParsedEventDeserializer;
 import com.wine.to.up.commonlib.messaging.BaseKafkaHandler;
+import com.wine.to.up.commonlib.messaging.KafkaMessageHandler;
+import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
+import com.wine.to.up.demo.service.api.message.UpdateWineEventOuterClass;
 import com.wine.to.up.parser.common.api.ParserCommonApiProperties;
 import com.wine.to.up.parser.common.api.schema.ParserApi;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -81,5 +88,16 @@ public class KafkaConfiguration {
                 new KafkaConsumer<>(consumerProperties),
                 parserTopicKafkaMessageHandler
         );
+    }
+
+    @Bean
+    KafkaMessageSender<UpdateWineEventOuterClass.UpdateWineEvent> updateWineEventKafkaMessageSender(
+            Properties producerProperties,
+            CatalogServiceApiProperties serviceApiProperties,
+            CatalogServiceMetricsCollector metricsCollector){
+
+        producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, UpdateWineEventSerializer.class.getName());
+
+        return new KafkaMessageSender<>(new KafkaProducer<>(producerProperties),  serviceApiProperties.getEventTopic(), metricsCollector);
     }
 }
