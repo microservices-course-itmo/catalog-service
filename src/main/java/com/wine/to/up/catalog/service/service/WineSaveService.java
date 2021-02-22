@@ -200,47 +200,51 @@ public class WineSaveService {
                             log.info("New shop with link {} created", shopLink);
                         }
 
-                        List<WinePosition> allByShopAndWpWine = winePositionRepository.findAllByShopAndWpWine(byShopSite, byWineName);
-                        for (WinePosition winePosition : allByShopAndWpWine) {
 
-                            // TODO: add if for all fields!!!!
+                        List<WinePosition> allByShopAndWpWine = winePositionRepository.findAllByShopAndWpWine(byShopSite, byWineName);
+
+                        if (!allByShopAndWpWine.isEmpty()) {
+                            for (WinePosition winePosition : allByShopAndWpWine) {
+
+                                // TODO: add if for all fields!!!!
+                                winePosition.setLinkToWine(parserWine.getLink());
+                                winePosition.setImage(parserWine.getImage().getBytes());
+                                winePosition.setGastronomy(parserWine.getGastronomy());
+                                winePosition.setDescription(parserWine.getDescription());
+                                winePosition.setVolume(parserWine.getCapacity());
+
+                                winePosition.setPrice(parserWine.getOldPrice());
+                                winePosition.setActualPrice(parserWine.getNewPrice());
+
+                                if (winePosition.getActualPrice() != parserWine.getNewPrice() || winePosition.getPrice() != parserWine.getOldPrice()) {
+
+                                    updateWineEventKafkaMessageSender.sendMessage(UpdateWineEventOuterClass.UpdateWineEvent
+                                            .newBuilder()
+                                            .setWineId(winePosition.getWpId())
+                                            .setWineName(winePosition.getWpWine().getWineName())
+                                            .build());
+                                }
+
+                                winePositionRepository.save(winePosition);
+                            }
+                        } else {
+
+                            WinePosition winePosition = new WinePosition();
+                            winePosition.setWpId(UUID.randomUUID().toString());
+
+                            winePosition.setShop(byShopSite);
+                            winePosition.setWpWine(byWineName);
+
                             winePosition.setLinkToWine(parserWine.getLink());
                             winePosition.setImage(parserWine.getImage().getBytes());
                             winePosition.setGastronomy(parserWine.getGastronomy());
                             winePosition.setDescription(parserWine.getDescription());
                             winePosition.setVolume(parserWine.getCapacity());
-
                             winePosition.setPrice(parserWine.getOldPrice());
                             winePosition.setActualPrice(parserWine.getNewPrice());
 
-                            if (winePosition.getActualPrice() != parserWine.getNewPrice() || winePosition.getPrice() != parserWine.getOldPrice()){
-
-                                updateWineEventKafkaMessageSender.sendMessage(UpdateWineEventOuterClass.UpdateWineEvent
-                                        .newBuilder()
-                                        .setWineId(winePosition.getWpId())
-                                        .setWineName(winePosition.getWpWine().getWineName())
-                                        .build());
-                            }
-
                             winePositionRepository.save(winePosition);
                         }
-
-
-                        WinePosition winePosition = new WinePosition();
-                        winePosition.setWpId(UUID.randomUUID().toString());
-
-                        winePosition.setShop(byShopSite);
-                        winePosition.setWpWine(byWineName);
-
-                        winePosition.setLinkToWine(parserWine.getLink());
-                        winePosition.setImage(parserWine.getImage().getBytes());
-                        winePosition.setGastronomy(parserWine.getGastronomy());
-                        winePosition.setDescription(parserWine.getDescription());
-                        winePosition.setVolume(parserWine.getCapacity());
-                        winePosition.setPrice(parserWine.getOldPrice());
-                        winePosition.setActualPrice(parserWine.getNewPrice());
-
-                        winePositionRepository.save(winePosition);
 
                     } catch (Exception e) {
                         log.error(e.getMessage());
