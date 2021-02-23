@@ -218,6 +218,8 @@ public class WineSaveService {
 
                                 if (winePosition.getActualPrice() != parserWine.getNewPrice() || winePosition.getPrice() != parserWine.getOldPrice()) {
 
+                                    log.info("Wine price updated: " + winePosition.getWpWine().getWineName());
+
                                     updateWineEventKafkaMessageSender.sendMessage(UpdateWineEventOuterClass.UpdateWineEvent
                                             .newBuilder()
                                             .setWineId(winePosition.getWpId())
