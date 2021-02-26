@@ -1,9 +1,9 @@
 package com.wine.to.up.catalog.service.service;
 
+import com.wine.to.up.catalog.service.api.message.UpdatePriceMessageSentEventOuterClass;
 import com.wine.to.up.catalog.service.domain.entities.*;
 import com.wine.to.up.catalog.service.repository.*;
 import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
-import com.wine.to.up.demo.service.api.message.UpdateWineEventOuterClass;
 import com.wine.to.up.parser.common.api.schema.ParserApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class WineSaveService {
     private final RegionRepository regionRepository;
     private final ColorRepository colorRepository;
     private final SugarRepository sugarRepository;
-    private final KafkaMessageSender<UpdateWineEventOuterClass.UpdateWineEvent> updateWineEventKafkaMessageSender;
+    private final KafkaMessageSender<UpdatePriceMessageSentEventOuterClass.UpdatePriceMessageSentEvent> updateWineEventKafkaMessageSender;
 
     private final String PRODUCER_NOT_PRESENTED = "PRODUCER_NOT_PRESENTED";
     private final String BRAND_NOT_PRESENTED = "BRAND_NOT_PRESENTED";
@@ -46,7 +46,6 @@ public class WineSaveService {
     @Async
     public void save(ParserApi.WineParsedEvent wineParsedEvent) {
         wineParsedEvent.getWinesList()
-                .stream()
                 .forEach(parserWine -> {
                     try {
                         Wine byWineName = wineRepository.findByWineName(parserWine.getName());
@@ -173,13 +172,9 @@ public class WineSaveService {
 
                             producerByProducerName.getProducerWines().add(wine);
 
-                            regionsOfWine.forEach(region -> {
-                                region.getRegionWines().add(wine);
-                            });
+                            regionsOfWine.forEach(region -> region.getRegionWines().add(wine));
 
-                            grapesOfWine.forEach(grape -> {
-                                grape.getGrapeWines().add(wine);
-                            });
+                            grapesOfWine.forEach(grape -> grape.getGrapeWines().add(wine));
 
                             byWineName = wine;
                             wineRepository.save(wine);
@@ -213,19 +208,20 @@ public class WineSaveService {
                                 winePosition.setDescription(parserWine.getDescription());
                                 winePosition.setVolume(parserWine.getCapacity());
 
-                                winePosition.setPrice(parserWine.getOldPrice());
-                                winePosition.setActualPrice(parserWine.getNewPrice());
-
-                                if (winePosition.getActualPrice() != parserWine.getNewPrice() || winePosition.getPrice() != parserWine.getOldPrice()) {
+                                if (winePosition.getActualPrice() != parserWine.getNewPrice()) {
 
                                     log.info("Wine price updated: " + winePosition.getWpWine().getWineName());
 
-                                    updateWineEventKafkaMessageSender.sendMessage(UpdateWineEventOuterClass.UpdateWineEvent
+                                    updateWineEventKafkaMessageSender.sendMessage(UpdatePriceMessageSentEventOuterClass.UpdatePriceMessageSentEvent
                                             .newBuilder()
-                                            .setWineId(winePosition.getWpId())
-                                            .setWineName(winePosition.getWpWine().getWineName())
+                                            .setId(winePosition.getWpId())
+                                            .setName(winePosition.getWpWine().getWineName())
+                                            .setPrice(parserWine.getNewPrice())
                                             .build());
                                 }
+
+                                winePosition.setPrice(parserWine.getOldPrice());
+                                winePosition.setActualPrice(parserWine.getNewPrice());
 
                                 winePositionRepository.save(winePosition);
                             }

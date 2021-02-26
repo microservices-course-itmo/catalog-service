@@ -1,8 +1,8 @@
 package com.wine.to.up.catalog.service.controller;
 
+import com.wine.to.up.catalog.service.api.message.UpdatePriceMessageSentEventOuterClass;
 import com.wine.to.up.catalog.service.domain.request.KafkaWineRequest;
 import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
-import com.wine.to.up.demo.service.api.message.UpdateWineEventOuterClass;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +22,18 @@ import javax.validation.Valid;
 @Slf4j
 @Api(value = "Kafka controller", description = "Kafka controller")
 public class KafkaController {
-    private final KafkaMessageSender<UpdateWineEventOuterClass.UpdateWineEvent> updateWineEventKafkaMessageSender;
+    private final KafkaMessageSender<UpdatePriceMessageSentEventOuterClass.UpdatePriceMessageSentEvent> updateWineEventKafkaMessageSender;
 
     @ApiOperation(value = "Send kafka message",
             nickname = "update", notes = "",
             tags = {"kafka-controller",})
     @PostMapping("/update")
     public void updateWine(@Valid @RequestBody KafkaWineRequest kafkaWineRequest){
-        updateWineEventKafkaMessageSender.sendMessage(UpdateWineEventOuterClass.UpdateWineEvent
+        updateWineEventKafkaMessageSender.sendMessage(UpdatePriceMessageSentEventOuterClass.UpdatePriceMessageSentEvent
                 .newBuilder()
-                .setWineId(kafkaWineRequest.getWineId())
-                .setWineName(kafkaWineRequest.getWineName())
+                .setId(kafkaWineRequest.getWineId())
+                .setName(kafkaWineRequest.getWineName())
+                .setPrice(kafkaWineRequest.getPrice())
                 .build());
     }
 }

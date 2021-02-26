@@ -1,14 +1,13 @@
 package com.wine.to.up.catalog.service.configuration;
 
 import com.wine.to.up.catalog.service.api.CatalogServiceApiProperties;
+import com.wine.to.up.catalog.service.api.message.UpdatePriceMessageSentEventOuterClass;
 import com.wine.to.up.catalog.service.components.CatalogServiceMetricsCollector;
 import com.wine.to.up.catalog.service.messaging.ParserTopicKafkaMessageHandler;
 import com.wine.to.up.catalog.service.messaging.serialization.UpdateWineEventSerializer;
 import com.wine.to.up.catalog.service.messaging.serialization.WineParsedEventDeserializer;
 import com.wine.to.up.commonlib.messaging.BaseKafkaHandler;
-import com.wine.to.up.commonlib.messaging.KafkaMessageHandler;
 import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
-import com.wine.to.up.demo.service.api.message.UpdateWineEventOuterClass;
 import com.wine.to.up.parser.common.api.ParserCommonApiProperties;
 import com.wine.to.up.parser.common.api.schema.ParserApi;
 import lombok.extern.slf4j.Slf4j;
@@ -91,7 +90,7 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    KafkaMessageSender<UpdateWineEventOuterClass.UpdateWineEvent> updateWineEventKafkaMessageSender(
+    KafkaMessageSender<UpdatePriceMessageSentEventOuterClass.UpdatePriceMessageSentEvent> updateWineEventKafkaMessageSender(
             Properties producerProperties,
             CatalogServiceApiProperties serviceApiProperties,
             CatalogServiceMetricsCollector metricsCollector){

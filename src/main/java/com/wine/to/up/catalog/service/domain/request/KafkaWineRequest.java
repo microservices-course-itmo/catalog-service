@@ -16,4 +16,7 @@ public class KafkaWineRequest {
 
     @JsonProperty("name")
     private String wineName;
+
+    @JsonProperty("price")
+    private double price;
 }
