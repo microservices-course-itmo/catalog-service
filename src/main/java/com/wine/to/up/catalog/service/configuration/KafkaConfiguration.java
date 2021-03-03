@@ -17,9 +17,11 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.Properties;
 
+@EnableAsync
 @Configuration
 @Slf4j
 public class KafkaConfiguration {
@@ -63,7 +65,6 @@ public class KafkaConfiguration {
         return properties;
     }
 
-
     @Bean
     BaseKafkaHandler<ParserApi.WineParsedEvent> wineParsedEventBaseKafkaHandler(
             Properties consumerProperties,
@@ -74,7 +75,7 @@ public class KafkaConfiguration {
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 WineParsedEventDeserializer.class.getName()
         );
-        log.info("PARSER TOPIC" + parserCommonApiProperties.getWineParsedEventsTopicName());
+        log.info("PARSER_TOPIC " + parserCommonApiProperties.getWineParsedEventsTopicName());
         log.info("KAFKA_BOOTSTRAP_SERVER "+ brokers);
         return new BaseKafkaHandler<>(
                 parserCommonApiProperties.getWineParsedEventsTopicName(),

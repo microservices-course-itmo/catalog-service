@@ -220,7 +220,7 @@ public class WineSaveService {
                     }
 
                 });
-        log.info("Processing finish");
+        log.info("PROCESSING WINE_PARSED_EVENT STARTED FINISHED");
     }
 
     public void associateWineWithProducer(Wine wine, ParserApi.Wine parserWine) {
