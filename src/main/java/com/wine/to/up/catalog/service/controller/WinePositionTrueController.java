@@ -8,6 +8,7 @@ import com.wine.to.up.catalog.service.domain.response.WinePositionResponse;
 import com.wine.to.up.catalog.service.domain.response.WinePositionTrueResponse;
 import com.wine.to.up.catalog.service.domain.response.WineTrueResponse;
 import com.wine.to.up.catalog.service.utils.CompareChain;
+import com.wine.to.up.user.service.api.feign.FavoritesServiceClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class WinePositionTrueController {
     private final WinePositionController winePositionController;
     private final ShopController shopController;
     private final WineTrueController wineTrueController;
+    private final FavoritesServiceClient favoritesServiceClient;
 
     @ApiOperation(value = "Get wine position by id",
             nickname = "getWinePositionById", notes = "",
@@ -46,8 +48,12 @@ public class WinePositionTrueController {
             nickname = "getFavouritesPositions",
             tags = {"wine-position-true-controller",})
     @GetMapping("/favourites")
-    public List<WinePositionTrueResponse> getFavourites(@Valid @RequestParam(required = true) List<String> favouritePosition) {
-        return favouritePosition.stream().map(this::getWineById).collect(Collectors.toList());
+    public List<WinePositionTrueResponse> getFavourites(
+            @RequestHeader("Authorization") String accessToken
+    ) {
+        List<String> ids = favoritesServiceClient.findUsersFavoritesIdList(accessToken);
+
+        return ids.stream().map(this::getWineById).collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Get all wine positions",
