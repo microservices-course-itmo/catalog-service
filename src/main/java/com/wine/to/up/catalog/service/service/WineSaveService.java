@@ -7,7 +7,6 @@ import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
 import com.wine.to.up.parser.common.api.schema.ParserApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Future;
 
 @Component
 @Slf4j
@@ -43,7 +41,6 @@ public class WineSaveService {
     private final String COUNTRY_NOT_PRESENTED = "COUNTRY_NOT_PRESENTED";
     private final String SHOP_NOT_PRESENTED = "SHOP_NOT_PRESENTED";
 
-    @Async
     public void save(ParserApi.WineParsedEvent wineParsedEvent) {
         wineParsedEvent.getWinesList()
                 .forEach(parserWine -> {
