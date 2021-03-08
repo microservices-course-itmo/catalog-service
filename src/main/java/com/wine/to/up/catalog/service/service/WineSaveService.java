@@ -40,6 +40,11 @@ public class WineSaveService {
     private final String REGION_NOT_PRESENTED = "REGION_NOT_PRESENTED";
     private final String COUNTRY_NOT_PRESENTED = "COUNTRY_NOT_PRESENTED";
     private final String SHOP_NOT_PRESENTED = "SHOP_NOT_PRESENTED";
+    private final String SHOP_LINK_NOT_PRESENTED = "SHOP_LINK_NOT_PRESENTED";
+    private final byte[] IMAGE_NOT_PRESENTED = {7, 7, 7};
+    private final String GASTRONOMY_NOT_PRESENTED = "GASTRONOMY_NOT_PRESENTED";
+    private final String DESCRIPTION_NOT_PRESENTED = "DESCRIPTION_NOT_PRESENTED";
+    private final float CAPACITY_NOT_PRESENTED = (float) -1.0;
 
     public void save(ParserApi.WineParsedEvent wineParsedEvent) {
         wineParsedEvent.getWinesList()
@@ -197,13 +202,35 @@ public class WineSaveService {
 
                         if (!allByShopAndWpWine.isEmpty()) {
                             for (WinePosition winePosition : allByShopAndWpWine) {
+                                if(parserWine.getLink().isEmpty()){
+                                    winePosition.setLinkToWine(SHOP_LINK_NOT_PRESENTED);
+                                }else {
+                                    winePosition.setLinkToWine(parserWine.getLink());
+                                }
 
-                                // TODO: add if for all fields!!!!
-                                winePosition.setLinkToWine(parserWine.getLink());
-                                winePosition.setImage(parserWine.getImage().getBytes());
-                                winePosition.setGastronomy(parserWine.getGastronomy());
-                                winePosition.setDescription(parserWine.getDescription());
-                                winePosition.setVolume(parserWine.getCapacity());
+                                if(parserWine.getImage().isEmpty()){
+                                    winePosition.setImage(IMAGE_NOT_PRESENTED);
+                                }else {
+                                    winePosition.setImage(parserWine.getImage().getBytes());
+                                }
+
+                                if(parserWine.getGastronomy().isEmpty()){
+                                    winePosition.setGastronomy(GASTRONOMY_NOT_PRESENTED);
+                                }else {
+                                    winePosition.setGastronomy(parserWine.getGastronomy());
+                                }
+
+                                if(parserWine.getDescription().isEmpty()){
+                                    winePosition.setGastronomy(DESCRIPTION_NOT_PRESENTED);
+                                }else {
+                                    winePosition.setDescription(parserWine.getDescription());
+                                }
+
+                                if(parserWine.getCapacity() == (float) 0){
+                                    winePosition.setVolume(CAPACITY_NOT_PRESENTED);
+                                }else {
+                                    winePosition.setVolume(parserWine.getCapacity());
+                                }
 
                                 if (winePosition.getActualPrice() != parserWine.getNewPrice()) {
 
