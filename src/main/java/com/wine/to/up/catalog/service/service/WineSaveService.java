@@ -1,5 +1,6 @@
 package com.wine.to.up.catalog.service.service;
 
+import com.wine.to.up.catalog.service.api.message.NewWineSavedMessageSentEventOuterClass;
 import com.wine.to.up.catalog.service.api.message.UpdatePriceMessageSentEventOuterClass;
 import com.wine.to.up.catalog.service.domain.entities.*;
 import com.wine.to.up.catalog.service.repository.*;
@@ -31,6 +32,7 @@ public class WineSaveService {
     private final ColorRepository colorRepository;
     private final SugarRepository sugarRepository;
     private final KafkaMessageSender<UpdatePriceMessageSentEventOuterClass.UpdatePriceMessageSentEvent> updateWineEventKafkaMessageSender;
+    private final KafkaMessageSender<NewWineSavedMessageSentEventOuterClass.NewWineSavedMessageSentEvent> newWineSavedMessageSentEventKafkaMessageSender;
 
     private final String PRODUCER_NOT_PRESENTED = "PRODUCER_NOT_PRESENTED";
     private final String BRAND_NOT_PRESENTED = "BRAND_NOT_PRESENTED";
@@ -265,6 +267,16 @@ public class WineSaveService {
                             winePosition.setPrice(parserWine.getOldPrice());
                             winePosition.setActualPrice(parserWine.getNewPrice());
 
+                            log.info("Wine position of " + winePosition.getWpWine().getWineName()
+                                    + " of " + winePosition.getShop().getShopSite() + " shop saved");
+
+                            newWineSavedMessageSentEventKafkaMessageSender.sendMessage(NewWineSavedMessageSentEventOuterClass.NewWineSavedMessageSentEvent
+                                    .newBuilder()
+                                    .setWineName(winePosition.getWpWine().getWineName())
+                                    .setWineId(winePosition.getWpId())
+                                    .build());
+
+
                             winePositionRepository.save(winePosition);
                         }
 
@@ -275,7 +287,7 @@ public class WineSaveService {
                     }
 
                 });
-        log.info("Processing finish");
+        log.info("Processing wine finished");
     }
 
     public void associateWineWithProducer(Wine wine, ParserApi.Wine parserWine) {

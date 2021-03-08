@@ -1,9 +1,11 @@
 package com.wine.to.up.catalog.service.configuration;
 
 import com.wine.to.up.catalog.service.api.CatalogServiceApiProperties;
+import com.wine.to.up.catalog.service.api.message.NewWineSavedMessageSentEventOuterClass;
 import com.wine.to.up.catalog.service.api.message.UpdatePriceMessageSentEventOuterClass;
 import com.wine.to.up.catalog.service.components.CatalogServiceMetricsCollector;
 import com.wine.to.up.catalog.service.messaging.ParserTopicKafkaMessageHandler;
+import com.wine.to.up.catalog.service.messaging.serialization.NewWineSavedEventSerializer;
 import com.wine.to.up.catalog.service.messaging.serialization.UpdateWineEventSerializer;
 import com.wine.to.up.catalog.service.messaging.serialization.WineParsedEventDeserializer;
 import com.wine.to.up.commonlib.messaging.BaseKafkaHandler;
@@ -96,6 +98,17 @@ public class KafkaConfiguration {
             CatalogServiceMetricsCollector metricsCollector){
 
         producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, UpdateWineEventSerializer.class.getName());
+
+        return new KafkaMessageSender<>(new KafkaProducer<>(producerProperties),  serviceApiProperties.getEventTopic(), metricsCollector);
+    }
+
+    @Bean
+    KafkaMessageSender<NewWineSavedMessageSentEventOuterClass.NewWineSavedMessageSentEvent> saveNewWineEventKafkaMessageSender(
+            Properties producerProperties,
+            CatalogServiceApiProperties serviceApiProperties,
+            CatalogServiceMetricsCollector metricsCollector) {
+
+        producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, NewWineSavedEventSerializer.class.getName());
 
         return new KafkaMessageSender<>(new KafkaProducer<>(producerProperties),  serviceApiProperties.getEventTopic(), metricsCollector);
     }
