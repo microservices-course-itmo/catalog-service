@@ -1,6 +1,8 @@
 package com.wine.to.up.catalog.service.controller;
 
+import com.wine.to.up.catalog.service.api.message.NewWineSavedMessageSentEventOuterClass;
 import com.wine.to.up.catalog.service.api.message.UpdatePriceMessageSentEventOuterClass;
+import com.wine.to.up.catalog.service.domain.request.KafkaNewWineSaveRequest;
 import com.wine.to.up.catalog.service.domain.request.KafkaWineRequest;
 import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
 import io.swagger.annotations.Api;
@@ -23,6 +25,7 @@ import javax.validation.Valid;
 @Api(value = "Kafka controller", description = "Kafka controller")
 public class KafkaController {
     private final KafkaMessageSender<UpdatePriceMessageSentEventOuterClass.UpdatePriceMessageSentEvent> updateWineEventKafkaMessageSender;
+    private final KafkaMessageSender<NewWineSavedMessageSentEventOuterClass.NewWineSavedMessageSentEvent> newWineSavedMessageSentEventKafkaMessageSender;
 
     @ApiOperation(value = "Send kafka message",
             nickname = "update", notes = "",
@@ -34,6 +37,18 @@ public class KafkaController {
                 .setId(kafkaWineRequest.getWineId())
                 .setName(kafkaWineRequest.getWineName())
                 .setPrice(kafkaWineRequest.getPrice())
+                .build());
+    }
+
+    @ApiOperation(value = "Send kafka message",
+            nickname = "create", notes = "",
+            tags = {"kafka-controller",})
+    @PostMapping("/save")
+    public void saveNewWine(@Valid @RequestBody KafkaNewWineSaveRequest kafkaNewWineSaveRequest){
+        newWineSavedMessageSentEventKafkaMessageSender.sendMessage(NewWineSavedMessageSentEventOuterClass.NewWineSavedMessageSentEvent
+                .newBuilder()
+                .setWineId(kafkaNewWineSaveRequest.getWineId())
+                .setWineName(kafkaNewWineSaveRequest.getWineName())
                 .build());
     }
 }
