@@ -1,5 +1,6 @@
 package com.wine.to.up.catalog.service.service;
 
+import com.wine.to.up.catalog.service.api.message.NewWineSavedMessageSentEventOuterClass;
 import com.wine.to.up.catalog.service.api.message.UpdatePriceMessageSentEventOuterClass;
 import com.wine.to.up.catalog.service.domain.entities.*;
 import com.wine.to.up.catalog.service.repository.*;
@@ -7,7 +8,6 @@ import com.wine.to.up.commonlib.messaging.KafkaMessageSender;
 import com.wine.to.up.parser.common.api.schema.ParserApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Future;
 
 @Component
 @Slf4j
@@ -33,6 +32,7 @@ public class WineSaveService {
     private final ColorRepository colorRepository;
     private final SugarRepository sugarRepository;
     private final KafkaMessageSender<UpdatePriceMessageSentEventOuterClass.UpdatePriceMessageSentEvent> updateWineEventKafkaMessageSender;
+    private final KafkaMessageSender<NewWineSavedMessageSentEventOuterClass.NewWineSavedMessageSentEvent> newWineSavedMessageSentEventKafkaMessageSender;
 
     private final String PRODUCER_NOT_PRESENTED = "PRODUCER_NOT_PRESENTED";
     private final String BRAND_NOT_PRESENTED = "BRAND_NOT_PRESENTED";
@@ -42,8 +42,12 @@ public class WineSaveService {
     private final String REGION_NOT_PRESENTED = "REGION_NOT_PRESENTED";
     private final String COUNTRY_NOT_PRESENTED = "COUNTRY_NOT_PRESENTED";
     private final String SHOP_NOT_PRESENTED = "SHOP_NOT_PRESENTED";
+    private final String SHOP_LINK_NOT_PRESENTED = "SHOP_LINK_NOT_PRESENTED";
+    private final byte[] IMAGE_NOT_PRESENTED = {7, 7, 7};
+    private final String GASTRONOMY_NOT_PRESENTED = "GASTRONOMY_NOT_PRESENTED";
+    private final String DESCRIPTION_NOT_PRESENTED = "DESCRIPTION_NOT_PRESENTED";
+    private final float CAPACITY_NOT_PRESENTED = (float) -1.0;
 
-    @Async
     public void save(ParserApi.WineParsedEvent wineParsedEvent) {
         wineParsedEvent.getWinesList()
                 .forEach(parserWine -> {
@@ -200,13 +204,35 @@ public class WineSaveService {
 
                         if (!allByShopAndWpWine.isEmpty()) {
                             for (WinePosition winePosition : allByShopAndWpWine) {
+                                if(parserWine.getLink().isEmpty()){
+                                    winePosition.setLinkToWine(SHOP_LINK_NOT_PRESENTED);
+                                }else {
+                                    winePosition.setLinkToWine(parserWine.getLink());
+                                }
 
-                                // TODO: add if for all fields!!!!
-                                winePosition.setLinkToWine(parserWine.getLink());
-                                winePosition.setImage(parserWine.getImage().getBytes());
-                                winePosition.setGastronomy(parserWine.getGastronomy());
-                                winePosition.setDescription(parserWine.getDescription());
-                                winePosition.setVolume(parserWine.getCapacity());
+                                if(parserWine.getImage().isEmpty()){
+                                    winePosition.setImage(IMAGE_NOT_PRESENTED);
+                                }else {
+                                    winePosition.setImage(parserWine.getImage().getBytes());
+                                }
+
+                                if(parserWine.getGastronomy().isEmpty()){
+                                    winePosition.setGastronomy(GASTRONOMY_NOT_PRESENTED);
+                                }else {
+                                    winePosition.setGastronomy(parserWine.getGastronomy());
+                                }
+
+                                if(parserWine.getDescription().isEmpty()){
+                                    winePosition.setGastronomy(DESCRIPTION_NOT_PRESENTED);
+                                }else {
+                                    winePosition.setDescription(parserWine.getDescription());
+                                }
+
+                                if(parserWine.getCapacity() == (float) 0){
+                                    winePosition.setVolume(CAPACITY_NOT_PRESENTED);
+                                }else {
+                                    winePosition.setVolume(parserWine.getCapacity());
+                                }
 
                                 if (winePosition.getActualPrice() != parserWine.getNewPrice()) {
 
@@ -241,6 +267,16 @@ public class WineSaveService {
                             winePosition.setPrice(parserWine.getOldPrice());
                             winePosition.setActualPrice(parserWine.getNewPrice());
 
+                            log.info("Wine position of " + winePosition.getWpWine().getWineName()
+                                    + " of " + winePosition.getShop().getShopSite() + " shop saved");
+
+                            newWineSavedMessageSentEventKafkaMessageSender.sendMessage(NewWineSavedMessageSentEventOuterClass.NewWineSavedMessageSentEvent
+                                    .newBuilder()
+                                    .setWineName(winePosition.getWpWine().getWineName())
+                                    .setWineId(winePosition.getWpId())
+                                    .build());
+
+
                             winePositionRepository.save(winePosition);
                         }
 
@@ -251,7 +287,7 @@ public class WineSaveService {
                     }
 
                 });
-        log.info("Processing finish");
+        log.info("Processing wine finished");
     }
 
     public void associateWineWithProducer(Wine wine, ParserApi.Wine parserWine) {
