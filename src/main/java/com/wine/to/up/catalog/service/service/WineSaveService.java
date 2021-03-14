@@ -53,7 +53,7 @@ public class WineSaveService {
                 .forEach(parserWine -> {
                     try {
                         Wine byWineName = wineRepository.findByWineName(parserWine.getName());
-                        log.info(byWineName == null ? "Wine {}\n not exists" : "Wine {}\n exists", parserWine);
+                        log.info(byWineName == null ? "Wine {} does not exist" : "Wine {} exists", parserWine.getName());
                         if (byWineName == null) {
                             String brandName = parserWine.getBrand();
                             if (brandName == null || brandName.equals("")) {
@@ -184,6 +184,7 @@ public class WineSaveService {
                             wineRepository.save(wine);
 
                         }
+
                         String shopLink = wineParsedEvent.getShopLink();
                         if (shopLink == null || shopLink.equals("")) {
                             shopLink = SHOP_NOT_PRESENTED;
@@ -278,6 +279,7 @@ public class WineSaveService {
 
 
                             winePositionRepository.save(winePosition);
+                            log.info("Processing " + parserWine.getName() + " finished");
                         }
 
                     } catch (Exception e) {
@@ -287,7 +289,7 @@ public class WineSaveService {
                     }
 
                 });
-        log.info("Processing wine finished");
+        log.info("Processing wine_parsed_event finished");
     }
 
     public void associateWineWithProducer(Wine wine, ParserApi.Wine parserWine) {
