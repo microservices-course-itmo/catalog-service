@@ -46,4 +46,10 @@ public class WinePositionTrueResponse {
 
     @JsonProperty("country")
     private String country;
+
+    @JsonProperty("itemsInStock")
+    private int itemsInStock;
+
+    @JsonProperty("city")
+    private String city;
 }

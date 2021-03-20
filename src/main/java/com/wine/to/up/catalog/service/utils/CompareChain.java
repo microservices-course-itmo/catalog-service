@@ -36,7 +36,7 @@ public class CompareChain implements Predicate<WinePositionTrueResponse>, Compar
             put("producerName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getProducerResponse().getName());
             put("brandName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getBrandResponse().getName());
             put("regionName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getRegionResponse());
-            put("countryName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getRegionResponse());
+            put("countryName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getRegionResponse().get(0).getCountry());
             put("grapeName", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getGrapeResponse());
 
             put("avg", (WinePositionTrueResponse wptr) -> wptr.getWineTrueResponse().getAvg());
@@ -65,9 +65,9 @@ public class CompareChain implements Predicate<WinePositionTrueResponse>, Compar
                             if(value.equals("regionName")){
                                 return ((List<RegionResponse>)matrixArguments.get(value).apply(winePositionTrueResponse)).stream().map(x->x.getName()).collect(Collectors.toList()).contains(testValue);
                             }
-                            if(value.equals("countryName")){
-                                return ((List<RegionResponse>)matrixArguments.get(value).apply(winePositionTrueResponse)).stream().map(x->x.getCountry()).collect(Collectors.toList()).contains(testValue);
-                            }
+                            //if(value.equals("countryName")){
+                             //   return ((List<RegionResponse>)matrixArguments.get(value).apply(winePositionTrueResponse)).stream().map(x->x.getCountry()).collect(Collectors.toList()).contains(testValue);
+                            //}
                             if(value.equals("grapeName")){
                                 return ((List<GrapeResponse>)matrixArguments.get(value).apply(winePositionTrueResponse)).stream().map(x->x.getName()).collect(Collectors.toList()).contains(testValue);
                             }
