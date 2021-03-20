@@ -44,7 +44,7 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
             put("producerName", "wpWine.wineProducer.producerName");
             put("brandName", "wpWine.wineBrand.brandName");
 //            put("regionName", "");
-//            put("countryName", "");
+            put("countryName", "wpWine.wineRegion.regionCountry");
 //            put("grapeName", "");
 
             put("avg", "wpWine.strength");
@@ -56,6 +56,8 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
             put("price", "price");
             put("actual_price", "actualPrice");
             put("volume", "volume");
+            put("city", "city");
+            put("items_in_stock", "itemsInStock");
         }
     };
 
