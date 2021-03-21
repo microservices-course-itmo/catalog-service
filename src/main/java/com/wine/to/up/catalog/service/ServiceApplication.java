@@ -13,6 +13,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ComponentScan("com.wine.to.up")
 @EnableSwagger2
 @EnableAsync
+@EnableDiscoveryClient
 public class ServiceApplication {
 
     public static void main(String[] args) {
