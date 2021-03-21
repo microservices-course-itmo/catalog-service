@@ -34,6 +34,8 @@ public class WineSaveService {
     private final KafkaMessageSender<UpdatePriceMessageSentEventOuterClass.UpdatePriceMessageSentEvent> updateWineEventKafkaMessageSender;
     private final KafkaMessageSender<NewWineSavedMessageSentEventOuterClass.NewWineSavedMessageSentEvent> newWineSavedMessageSentEventKafkaMessageSender;
 
+    private final String CITY_NOT_PRESENTED = "CITY_NOT_PRESENTED";
+    private final int ITEMS_IN_STOCK_NOT_PRESENTED = -1;
     private final String PRODUCER_NOT_PRESENTED = "PRODUCER_NOT_PRESENTED";
     private final String BRAND_NOT_PRESENTED = "BRAND_NOT_PRESENTED";
     private final String COLOR_NOT_PRESENTED = "COLOR_NOT_PRESENTED";
@@ -104,6 +106,8 @@ public class WineSaveService {
                             if (sugarName == null || sugarName.equals("")) {
                                 sugarName = SUGAR_NOT_PRESENTED;
                             }
+
+
                             Sugar sugarBySugarName = sugarRepository.findBySugarName(sugarName);
                             if (sugarBySugarName == null) {
                                 Sugar sugar = new Sugar();
@@ -157,12 +161,10 @@ public class WineSaveService {
                             wine.setWineName(parserWine.getName());
                             wine.setProduction_year(parserWine.getYear());
                             wine.setStrength(parserWine.getStrength());
-
                             wine.setWineBrand(brandByBrandName);
                             wine.setWineColor(colorByColorName);
                             wine.setWineSugar(sugarBySugarName);
                             wine.setWineProducer(producerByProducerName);
-
                             wine.setWineRegion(regionsOfWine);
                             wine.setWineGrape(grapesOfWine);
 
@@ -185,6 +187,16 @@ public class WineSaveService {
 
                         }
 
+                        String wineCity = parserWine.getCity();
+                        if (wineCity == null || wineCity.equals("")){
+                            wineCity = CITY_NOT_PRESENTED;
+                        }
+
+                        int itemsInStock = parserWine.getInStock();
+                        if (itemsInStock < 1){
+                            itemsInStock = ITEMS_IN_STOCK_NOT_PRESENTED;
+                        }
+
                         String shopLink = wineParsedEvent.getShopLink();
                         if (shopLink == null || shopLink.equals("")) {
                             shopLink = SHOP_NOT_PRESENTED;
@@ -199,7 +211,6 @@ public class WineSaveService {
                             byShopSite = shop;
                             log.info("New shop with link {} created", shopLink);
                         }
-
 
                         List<WinePosition> allByShopAndWpWine = winePositionRepository.findAllByShopAndWpWine(byShopSite, byWineName);
 
@@ -249,6 +260,8 @@ public class WineSaveService {
 
                                 winePosition.setPrice(parserWine.getOldPrice());
                                 winePosition.setActualPrice(parserWine.getNewPrice());
+                                winePosition.setCity(wineCity);
+                                winePosition.setItemsInStock(itemsInStock);
 
                                 winePositionRepository.save(winePosition);
                             }
@@ -267,6 +280,8 @@ public class WineSaveService {
                             winePosition.setVolume(parserWine.getCapacity());
                             winePosition.setPrice(parserWine.getOldPrice());
                             winePosition.setActualPrice(parserWine.getNewPrice());
+                            winePosition.setItemsInStock(itemsInStock);
+                            winePosition.setCity(wineCity);
 
                             log.info("Wine position of " + winePosition.getWpWine().getWineName()
                                     + " of " + winePosition.getShop().getShopSite() + " shop saved");
