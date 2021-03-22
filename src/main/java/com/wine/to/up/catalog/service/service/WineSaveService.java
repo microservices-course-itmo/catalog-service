@@ -187,14 +187,18 @@ public class WineSaveService {
 
                         }
 
-                        String wineCity = parserWine.getCity();
-                        if (wineCity == null || wineCity.equals("")){
+                        String wineCity;
+                        if (parserWine.getCity() == null || parserWine.getCity().equals("")){
                             wineCity = CITY_NOT_PRESENTED;
+                        }else {
+                            wineCity = parserWine.getCity();
                         }
 
-                        int itemsInStock = parserWine.getInStock();
-                        if (itemsInStock < 1){
+                        int itemsInStock;
+                        if (parserWine.getInStock() < 1){
                             itemsInStock = ITEMS_IN_STOCK_NOT_PRESENTED;
+                        }else {
+                            itemsInStock = parserWine.getInStock();
                         }
 
                         String shopLink = wineParsedEvent.getShopLink();
