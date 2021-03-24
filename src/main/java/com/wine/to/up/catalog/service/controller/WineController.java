@@ -23,24 +23,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/wine")
 @Validated
 @Slf4j
-@Api(value = "WineController", description = "Wine controller")
 public class WineController {
 
     private final WineControllerToWineService converter;
     private final WineService wineService;
 
-    @ApiOperation(value = "Get wine by id",
-            nickname = "getWineById", notes = "",
-            tags = {"wine-controller",})
     @GetMapping("/{id}")
     public WineResponse getWineById(@Valid @PathVariable(name = "id") String wineId) {
         return converter.convert(wineService.read(wineId));
     }
 
-
-    @ApiOperation(value = "Get all wine",
-            nickname = "getAllWines", notes = "",
-            tags = {"wine-controller",})
     @GetMapping("/")
     public List<WineResponse> getAllWines() {
         return wineService.readAll()
@@ -49,17 +41,11 @@ public class WineController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Create wine",
-            nickname = "createWine", notes = "",
-            tags = {"wine-controller",})
     @PostMapping("/")
     public void createWine(@Valid @RequestBody WineRequest wineRequest) {
         wineService.create(converter.convert(wineRequest));
     }
 
-    @ApiOperation(value = "Update wine",
-            nickname = "updateWine", notes = "",
-            tags = {"wine-controller",})
     @PutMapping("/{id}")
     public void updateWine(@Valid @PathVariable(name = "id") String wineId,
                            @Valid @RequestBody WineRequest wineRequest) {

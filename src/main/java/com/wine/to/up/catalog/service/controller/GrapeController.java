@@ -27,18 +27,11 @@ public class GrapeController {
     private final GrapeService grapeService;
     private final GrapeControllerToGrapeService converter;
 
-    @ApiOperation(value = "Get grape position by id",
-            nickname = "getGrapeById", notes = "",
-            tags = {"grape-controller",})
     @GetMapping("/{id}")
     public GrapeResponse getGrapeById(@Valid @PathVariable(name = "id") String grapeId) {
         return converter.convert(grapeService.read(grapeId));
     }
 
-
-    @ApiOperation(value = "Get all grape positions",
-            nickname = "getAllGrapes", notes = "",
-            tags = {"grape-controller",})
     @GetMapping("/")
     public List<GrapeResponse> getAllGrapes() {
         return grapeService.readAll()
@@ -47,18 +40,12 @@ public class GrapeController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Update grape position by id",
-            nickname = "updateGrape", notes = "",
-            tags = {"grape-controller",})
     @PutMapping("/{id}")
     public void updateGrape(@Valid @PathVariable(name = "id") String grapeId,
                             @Valid @RequestBody GrapeRequest grapeRequest) {
         grapeService.update(grapeId, converter.convert(grapeRequest));
     }
 
-    @ApiOperation(value = "Create grape position",
-            nickname = "createGrape", notes = "",
-            tags = {"grape-controller",})
     @PostMapping("/")
     public void createGrape(@Valid @RequestBody GrapeRequest grapeRequest) {
         grapeService.create(converter.convert(grapeRequest));

@@ -22,14 +22,11 @@ import javax.validation.Valid;
 @RequestMapping("/kafka")
 @Validated
 @Slf4j
-@Api(value = "Kafka controller", description = "Kafka controller")
 public class KafkaController {
     private final KafkaMessageSender<UpdatePriceMessageSentEventOuterClass.UpdatePriceMessageSentEvent> updateWineEventKafkaMessageSender;
     private final KafkaMessageSender<NewWineSavedMessageSentEventOuterClass.NewWineSavedMessageSentEvent> newWineSavedMessageSentEventKafkaMessageSender;
 
-    @ApiOperation(value = "Send kafka message",
-            nickname = "update", notes = "",
-            tags = {"kafka-controller",})
+
     @PostMapping("/update")
     public void updateWine(@Valid @RequestBody KafkaWineRequest kafkaWineRequest){
         updateWineEventKafkaMessageSender.sendMessage(UpdatePriceMessageSentEventOuterClass.UpdatePriceMessageSentEvent
@@ -40,9 +37,7 @@ public class KafkaController {
                 .build());
     }
 
-    @ApiOperation(value = "Send kafka message",
-            nickname = "create", notes = "",
-            tags = {"kafka-controller",})
+
     @PostMapping("/save")
     public void saveNewWine(@Valid @RequestBody KafkaNewWineSaveRequest kafkaNewWineSaveRequest){
         newWineSavedMessageSentEventKafkaMessageSender.sendMessage(NewWineSavedMessageSentEventOuterClass.NewWineSavedMessageSentEvent

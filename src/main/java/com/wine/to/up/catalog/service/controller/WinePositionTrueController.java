@@ -50,9 +50,6 @@ public class WinePositionTrueController {
         return favouritePosition.stream().map(this::getWineById).collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Get all wine positions",
-            nickname = "getAllWinePositions", notes = "",
-            tags = {"wine-position-true-controller",})
     @PostMapping("/")
     public List<WinePositionTrueResponse> getAllWinePositions(@RequestBody(required = false) SettingsRequest settingsRequest) {
         if (settingsRequest == null) {
@@ -67,9 +64,6 @@ public class WinePositionTrueController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Get all wine positions",
-            nickname = "getAllWinePositions", notes = "",
-            tags = {"wine-position-true-controller",})
     @GetMapping("/")
     public List<WinePositionTrueResponse> getAllWinePositions(
             @RequestParam(required = false) String from,
