@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
@@ -50,9 +51,7 @@ public class WinePositionTrueController {
         return favouritePosition.stream().map(this::getWineById).collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Get all wine positions",
-            nickname = "getAllWinePositions", notes = "",
-            tags = {"wine-position-true-controller",})
+    @ApiIgnore
     @PostMapping("/")
     public List<WinePositionTrueResponse> getAllWinePositions(@RequestBody(required = false) SettingsRequest settingsRequest) {
         if (settingsRequest == null) {
@@ -67,9 +66,7 @@ public class WinePositionTrueController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Get all wine positions",
-            nickname = "getAllWinePositions", notes = "",
-            tags = {"wine-position-true-controller",})
+    @ApiIgnore
     @GetMapping("/")
     public List<WinePositionTrueResponse> getAllWinePositions(
             @RequestParam(required = false) String from,

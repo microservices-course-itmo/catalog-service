@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -20,22 +21,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/region")
 @Validated
 @Slf4j
-@Api(value = "RegionController", description = "Region controller")
+@ApiIgnore
 public class RegionController {
     private final RegionControllerToRegionService converter;
     private final RegionService regionService;
 
-    @ApiOperation(value = "Get region by id",
-            nickname = "getRegionById", notes = "",
-            tags = {"region-controller",})
     @GetMapping("/{id}")
     public RegionResponse getRegionById(@Valid @PathVariable(name = "id") String regionId) {
         return converter.convert(regionService.read(regionId));
     }
 
-    @ApiOperation(value = "Get all regions positions",
-            nickname = "getAllRegions", notes = "",
-            tags = {"region-controller",})
     @GetMapping("/")
     public List<RegionResponse> getAllRegions() {
         return regionService.readAll()
@@ -44,18 +39,12 @@ public class RegionController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Update region by id",
-            nickname = "updateRegion", notes = "",
-            tags = {"region-controller",})
     @PutMapping("/{id}")
     public void updateRegion(@Valid @PathVariable(name = "id") String regionId,
                              @Valid @RequestBody RegionRequest regionRequest) {
         regionService.update(regionId, converter.convert(regionRequest));
     }
 
-    @ApiOperation(value = "Create region position",
-            nickname = "createRegion", notes = "",
-            tags = {"region-controller",})
     @PostMapping("/")
     public void createRegion(@Valid @RequestBody RegionRequest regionRequest) {
         regionService.create(converter.convert(regionRequest));
