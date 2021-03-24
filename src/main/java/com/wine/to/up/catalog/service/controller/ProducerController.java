@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/producer")
 @Validated
 @Slf4j
+@ApiIgnore
 public class ProducerController {
     private final ProducerControllerToProducerService converter;
     private final ProducerService producerService;

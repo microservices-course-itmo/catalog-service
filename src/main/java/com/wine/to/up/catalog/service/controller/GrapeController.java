@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/grape")
 @Validated
 @Slf4j
-@Api(value = "GrapeController", description = "Grape controller")
+@ApiIgnore
 public class GrapeController {
 
     private final GrapeService grapeService;
