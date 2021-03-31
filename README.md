@@ -10,3 +10,5 @@
 - выполните `docker-compose -f profiles/minimal-Infrastructure.yml -f profiles/demo-service.yml up`
  
  При изменении версии в сервиса в pom файле нужно изменить версию приложения в demo-service.yml  
+ 
+ 
