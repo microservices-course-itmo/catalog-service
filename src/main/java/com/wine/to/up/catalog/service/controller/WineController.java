@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -29,14 +30,11 @@ public class WineController {
     private final WineControllerToWineService converter;
     private final WineService wineService;
 
-    @ApiOperation(value = "Get wine by id",
-            nickname = "getWineById", notes = "",
-            tags = {"wine-controller",})
+    @ApiIgnore
     @GetMapping("/{id}")
     public WineResponse getWineById(@Valid @PathVariable(name = "id") String wineId) {
         return converter.convert(wineService.read(wineId));
     }
-
 
     @ApiOperation(value = "Get all wine",
             nickname = "getAllWines", notes = "",
@@ -49,26 +47,20 @@ public class WineController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Create wine",
-            nickname = "createWine", notes = "",
-            tags = {"wine-controller",})
+    @ApiIgnore
     @PostMapping("/")
     public void createWine(@Valid @RequestBody WineRequest wineRequest) {
         wineService.create(converter.convert(wineRequest));
     }
 
-    @ApiOperation(value = "Update wine",
-            nickname = "updateWine", notes = "",
-            tags = {"wine-controller",})
+    @ApiIgnore
     @PutMapping("/{id}")
     public void updateWine(@Valid @PathVariable(name = "id") String wineId,
                            @Valid @RequestBody WineRequest wineRequest) {
         wineService.update(wineId, converter.convert(wineRequest));
     }
 
-    @ApiOperation(value = "Delete wine",
-            nickname = "deleteWine", notes = "",
-            tags = {"wine-controller",})
+    @ApiIgnore
     @DeleteMapping("/{id}")
     public void deleteWine(@Valid @PathVariable(name = "id") String wineId) {
         wineService.delete(wineId);

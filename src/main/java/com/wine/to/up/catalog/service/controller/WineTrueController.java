@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/wine/true")
 @Validated
 @Slf4j
-@Api(value = "WineTrueController", description = "Wine true controller")
+@ApiIgnore
 public class WineTrueController {
 
     private final WineController wineController;
@@ -28,17 +29,11 @@ public class WineTrueController {
     private final ProducerController producerController;
     private final RegionController regionController;
 
-    @ApiOperation(value = "Get all wine",
-            nickname = "getAllWines", notes = "",
-            tags = {"wine-true-controller",})
     @GetMapping("/")
     public List<WineTrueResponse> getAllWines() {
         return wineController.getAllWines().stream().map(this::getWineTrueResponse).collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Get wine by id",
-            nickname = "getWineById", notes = "",
-            tags = {"wine-true-controller",})
     @GetMapping("/{id}")
     public WineTrueResponse getWineById(@Valid @PathVariable(name = "id") String wineId) {
         WineResponse wineById = wineController.getWineById(wineId);
