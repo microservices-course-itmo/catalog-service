@@ -48,7 +48,7 @@ public class WinePositionTrueResponse {
     private String country;
 
     @JsonProperty("itemsInStock")
-    private int itemsInStock;
+    private Integer itemsInStock;
 
     @JsonProperty("city")
     private String city;

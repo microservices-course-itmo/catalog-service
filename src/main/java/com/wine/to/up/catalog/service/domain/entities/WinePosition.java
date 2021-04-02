@@ -48,5 +48,5 @@ public class WinePosition {
     private String city;
 
     @Column(name = "items_in_stock")
-    private int itemsInStock;
+    private Integer itemsInStock;
 }

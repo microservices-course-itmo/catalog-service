@@ -45,7 +45,7 @@ public class WinePositionResponse {
     private List<Byte> image;
 
     @JsonProperty("itemsInStock")
-    private int itemsInStock;
+    private Integer itemsInStock;
 
     @JsonProperty("city")
     private String city;

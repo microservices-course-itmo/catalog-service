@@ -84,16 +84,15 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
             if (settingsRequest.getSearchParameters().charAt(first + 11) == ':'){
                 int last = settingsRequest.getSearchParameters().indexOf(";", first + 11);
                 first += 12;
-                last -= 1;
                 countryName = settingsRequest.getSearchParameters().substring(first, last);
 
                 if (first - 12 == 0){
                     settingsRequest.
-                            setSearchParameters(settingsRequest.getSearchParameters().substring(last + 2));
+                            setSearchParameters(settingsRequest.getSearchParameters().substring(last + 1));
                 }else {
                     settingsRequest.
-                            setSearchParameters(settingsRequest.getSearchParameters().substring(0, first - 13).
-                                    concat(settingsRequest.getSearchParameters().substring(last + 2)));
+                            setSearchParameters(settingsRequest.getSearchParameters().substring(0, first - 12).
+                                    concat(settingsRequest.getSearchParameters().substring(last + 1)));
                 }
 
                 if (regionRepository.findAllByRegionCountry(countryName) != null){
@@ -130,7 +129,6 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
                 key = matrixArguments.get(keyGroup);
             }
 
-
             wpSpecBuilder.with(key, matcher.group(2), matcher.group(3));
         }
 
@@ -165,6 +163,8 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
         winePositionDTO.setDescription(winePosition.getDescription());
         winePositionDTO.setGastronomy(winePosition.getGastronomy());
         winePositionDTO.setImage(Bytes.asList(winePosition.getImage()));
+        winePositionDTO.setCity(winePosition.getCity());
+        winePositionDTO.setItemsInStock(winePosition.getItemsInStock());
         return winePositionDTO;
     }
 
@@ -194,6 +194,8 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
         winePosition.setDescription(winePositionDTO.getDescription());
         winePosition.setGastronomy(winePositionDTO.getGastronomy());
         winePosition.setImage(Bytes.toArray(winePositionDTO.getImage()));
+        winePosition.setCity(winePositionDTO.getCity());
+        winePosition.setItemsInStock(winePositionDTO.getItemsInStock());
         winePositionRepository.save(winePosition);
     }
 
@@ -211,6 +213,8 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
         winePositionDTO.setDescription(byId.getDescription());
         winePositionDTO.setGastronomy(byId.getGastronomy());
         winePositionDTO.setImage(Bytes.asList(byId.getImage()));
+        winePositionDTO.setCity(byId.getCity());
+        winePositionDTO.setItemsInStock(byId.getItemsInStock());
         return winePositionDTO;
     }
 
@@ -252,6 +256,8 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
         winePosition.setDescription(winePositionDTO.getDescription());
         winePosition.setGastronomy(winePositionDTO.getGastronomy());
         winePosition.setImage(Bytes.toArray(winePositionDTO.getImage()));
+        winePosition.setCity(winePositionDTO.getCity());
+        winePosition.setItemsInStock(winePositionDTO.getItemsInStock());
         winePositionRepository.save(winePosition);
     }
 
