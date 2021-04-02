@@ -74,6 +74,34 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
                 }
             }
         }
+
+        boolean countryFilter = false;
+        String countryName = "";
+
+        if (settingsRequest.getSearchParameters().contains("countryName")){
+
+            int first = settingsRequest.getSearchParameters().lastIndexOf("countryName");
+            if (settingsRequest.getSearchParameters().charAt(first + 11) == ':'){
+                int last = settingsRequest.getSearchParameters().indexOf(";", first + 11);
+                first += 12;
+                last -= 1;
+                countryName = settingsRequest.getSearchParameters().substring(first, last);
+
+                if (first - 12 == 0){
+                    settingsRequest.
+                            setSearchParameters(settingsRequest.getSearchParameters().substring(last + 2));
+                }else {
+                    settingsRequest.
+                            setSearchParameters(settingsRequest.getSearchParameters().substring(0, first - 13).
+                                    concat(settingsRequest.getSearchParameters().substring(last + 2)));
+                }
+
+                if (regionRepository.findAllByRegionCountry(countryName) != null){
+                    countryFilter = true;
+                }
+            }
+        }
+
         PageRequest pageRequest;
         if (sort != null) {
             pageRequest = PageRequest.of(settingsRequest.getFrom(), settingsRequest.getTo(), sort);
@@ -87,6 +115,7 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
         WinePositionSpecificationBuilder wpSpecBuilder = new WinePositionSpecificationBuilder();
         Pattern pattern = Pattern.compile("([\\s\\S]+?)(:|<|>)([\\s\\S]+?);", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcher = pattern.matcher(settingsRequest.getSearchParameters() + ";");
+
 
         while (matcher.find()) {
             String keyGroup = matcher.group(1);
@@ -105,22 +134,7 @@ public class WinePositionService implements BaseCrudService<WinePositionDTO> {
             wpSpecBuilder.with(key, matcher.group(2), matcher.group(3));
         }
 
-        boolean countryFilter = false;
-        String countryName = "";
 
-        if (settingsRequest.getSearchParameters().contains("countryName")){
-
-            int first = settingsRequest.getSearchParameters().lastIndexOf("countryName");
-            if (settingsRequest.getSearchParameters().charAt(first + 11) == ':'){
-                int last = settingsRequest.getSearchParameters().indexOf(";", first + 11);
-                first += 12;
-                last -= 1;
-                countryName = settingsRequest.getSearchParameters().substring(first, last);
-                if (regionRepository.findAllByRegionCountry(countryName) != null){
-                    countryFilter = true;
-                }
-            }
-        }
 
         Specification<WinePosition> wpSpecification = wpSpecBuilder.build();
 
