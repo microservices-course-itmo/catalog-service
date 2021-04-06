@@ -43,4 +43,10 @@ public class WinePosition {
 
     @Column(name = "image")
     private byte[] image;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "items_in_stock")
+    private Integer itemsInStock;
 }

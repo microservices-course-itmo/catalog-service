@@ -32,4 +32,8 @@ public class WinePositionTrueDTO {
 
     private List<Byte> image;
 
+    private Integer itemsInStock;
+
+    private String city;
+
 }

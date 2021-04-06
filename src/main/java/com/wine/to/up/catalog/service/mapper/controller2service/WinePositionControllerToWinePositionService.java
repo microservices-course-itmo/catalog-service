@@ -20,6 +20,8 @@ public class WinePositionControllerToWinePositionService {
         winePositionDTO.setPrice(winePositionRequest.getPrice());
         winePositionDTO.setShop_id(winePositionRequest.getShop_id());
         winePositionDTO.setWine_id(winePositionRequest.getWine_id());
+        winePositionDTO.setCity(winePositionRequest.getCity());
+        winePositionDTO.setItemsInStock(winePositionRequest.getItemsInStock());
         return winePositionDTO;
     }
 
@@ -35,6 +37,8 @@ public class WinePositionControllerToWinePositionService {
         winePositionResponse.setVolume(winePositionDTO.getVolume());
         winePositionResponse.setWine_id(winePositionDTO.getWine_id());
         winePositionResponse.setWine_position_id(winePositionDTO.getWine_position_id());
+        winePositionResponse.setCity(winePositionDTO.getCity());
+        winePositionResponse.setItemsInStock(winePositionDTO.getItemsInStock());
         return winePositionResponse;
     }
 }

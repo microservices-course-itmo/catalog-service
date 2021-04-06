@@ -31,4 +31,10 @@ public class WinePositionTrueRequest {
 
     @JsonProperty("image")
     private List<Byte> image;
+
+    @JsonProperty("itemsInStock")
+    private Integer itemsInStock;
+
+    @JsonProperty("city")
+    private String city;
 }
