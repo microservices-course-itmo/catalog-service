@@ -274,8 +274,8 @@ public class WineSaveService {
                                     .newBuilder()
                                     .setWineName(winePosition.getWpWine().getWineName())
                                     .setWineId(winePosition.getWpId())
+                                    .setWineDescription(winePosition.getDescription())
                                     .build());
-
 
                             winePositionRepository.save(winePosition);
                         }
