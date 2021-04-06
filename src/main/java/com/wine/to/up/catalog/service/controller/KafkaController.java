@@ -49,6 +49,7 @@ public class KafkaController {
                 .newBuilder()
                 .setWineId(kafkaNewWineSaveRequest.getWineId())
                 .setWineName(kafkaNewWineSaveRequest.getWineName())
+                .setWineDescription(kafkaNewWineSaveRequest.getWineDescription())
                 .build());
     }
 }
